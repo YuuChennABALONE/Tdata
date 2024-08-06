@@ -744,11 +744,6 @@
  "input": "[[nodiscard]] LineS Normal(const Point3& p)\t @return The line passing through a point and perpendicular to the line\n\t @param p The point\n\t @brief Get a line passing through a point and perpendicular to the line",
  "output": "#include <catch.hpp>\n#include <testHelper.h>\n\nTEST_CASE(\"case34: Normal Method with Point3 Test\", \"[math][LineS][NormalPoint3]\")\n\tPoint3 point(1., 1., 1.);\n\tLineS line;\n\tLineS normalLine = line.Normal(point);\n\tCHECK(normalLine.Direction().IsEqual(expectedDirection));\n"}
 {"instruction": "Generate a test program based on the following method declarations and parameter parsing.",
- "input": "LineS& Mirror(const Frame3& frame)\t @return The reference to self\n\t @param frame The mirror frame\n\t @brief Mirror the line by a frame",
- "output": "#include <catch.hpp>\n#include <testHelper.h>\n\nTEST_CASE(\"{"instruction": "Generate a test program based on the following method declarations and parameter parsing.",
- "input": "[[nodiscard]] bool Contains(const PointT<double, DIM>& p, double tol)\\t @return True if the point is on the line under the tolerance\\n\\t @param tol The tolerance\\n\\t @param p The point\\n\\t @brief Does the line contain a point under a distance tolerance\\n",
- "output": "#include<catch.hpp>\\n#include<testHelper.h>\\n\\nTEST_CASE(\"Test Contains Method\", \"[Contains]\") {\\n\\tPointT<double, DIM> point;\\n\\tdouble tolerance;\\n\\tbool result = Contains(point, tolerance);\\n\\tCHECK(result == expected);\\n}"}},
-{"instruction": "Generate a test program based on the following method declarations and parameter parsing.",
  "input": "[[nodiscard]] const PointT<double, DIM>& Location()\\t @return The location of the line\\n\\t @brief Get the location point of the line\\n",
  "output": "#include<catch.hpp>\\n#include<testHelper.h>\\n\\nTEST_CASE(\"Test Location Method\", \"[Location]\") {\\n\\tconst PointT<double, DIM>& loc = Location();\\n\\tCHECK(loc == expectedLocation);\\n}"},
 {"instruction": "Generate a test program based on the following method declarations and parameter parsing.",
