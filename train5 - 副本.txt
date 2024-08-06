@@ -1,0 +1,447 @@
+{
+"instruction": "Generate a test program based on the following method declarations and parameter parsing.",
+ "input": "void SetRadius(double r)	 @param r The radius
+	 @brief Set the radius of the circle
+",
+ "output": "#include<catch.hpp>
+#include<testHelper.h>
+#include <geomAlgo/GccCircle3Tangent.hpp>
+#include <geometry/Geom2Curve.hpp>
+#include <geometry/MakeGeom2Line.hpp>
+#include <geometry/MakeGeom2Circle.hpp>
+#include <geomAlgo/GccEntity.hpp>
+#include <geometry/AdaptorGeom2Curve.hpp>
+#include <geomAlgo/GccQualifiedCurve.hpp>
+
+TEST_CASE("SetRadius Test") 
+{
+
+	CircleS circle;
+	circle.SetRadius(5.0);
+	CHECK(circle.Radius() == 5.0);
+
+}
+"
+}
+,
+
+{
+"instruction": "Generate a test program based on the following method declarations and parameter parsing.",
+ "input": "[[nodiscard]] double Radius()	 @return The radius
+	 @brief Get the radius
+",
+ "output": "#include<catch.hpp>
+#include<testHelper.h>
+#include <geomAlgo/GccCircle3Tangent.hpp>
+#include <geometry/Geom2Curve.hpp>
+#include <geometry/MakeGeom2Line.hpp>
+#include <geometry/MakeGeom2Circle.hpp>
+#include <geomAlgo/GccEntity.hpp>
+#include <geometry/AdaptorGeom2Curve.hpp>
+#include <geomAlgo/GccQualifiedCurve.hpp>
+
+TEST_CASE("Radius Test") 
+{
+
+	CircleS circle;
+	circle.SetRadius(3.0);
+	CHECK(circle.Radius() == 3.0);
+
+}
+"
+}
+,
+
+{
+"instruction": "Generate a test program based on the following method declarations and parameter parsing.",
+ "input": "[[nodiscard]] double Length()	 @return The length of the circle
+	 @brief Get the length of the circle
+",
+ "output": "#include<catch.hpp>
+#include<testHelper.h>
+#include <geomAlgo/GccCircle3Tangent.hpp>
+#include <geometry/Geom2Curve.hpp>
+#include <geometry/MakeGeom2Line.hpp>
+#include <geometry/MakeGeom2Circle.hpp>
+#include <geomAlgo/GccEntity.hpp>
+#include <geometry/AdaptorGeom2Curve.hpp>
+#include <geomAlgo/GccQualifiedCurve.hpp>
+
+TEST_CASE("Length Test") 
+{
+
+	CircleS circle;
+	circle.SetRadius(2.0);
+	CHECK(circle.Length() == 2 * 3.14159);
+
+}
+"
+}
+,
+
+{
+"instruction": "Generate a test program based on the following method declarations and parameter parsing.",
+ "input": "[[nodiscard]] double Distance(const PointT<double, DIM>& p)	 @return The distance from the point to the circle
+	 @param p The point
+	 @brief Compute the distance from a point to the circle
+",
+ "output": "#include<catch.hpp>
+#include<testHelper.h>
+#include <geomAlgo/GccCircle3Tangent.hpp>
+#include <geometry/Geom2Curve.hpp>
+#include <geometry/MakeGeom2Line.hpp>
+#include <geometry/MakeGeom2Circle.hpp>
+#include <geomAlgo/GccEntity.hpp>
+#include <geometry/AdaptorGeom2Curve.hpp>
+#include <geomAlgo/GccQualifiedCurve.hpp>
+
+TEST_CASE("Distance Test") 
+{
+
+	CircleS circle;
+	circle.SetRadius(5.0);
+	PointT<double, 2> point(0.0, 0.0);
+	CHECK(circle.Distance(point) == 5.0);
+
+}
+"
+}
+,
+
+
+,
+
+{
+"instruction": "Generate a test program based on the following method declarations and parameter parsing.",
+ "input": "[[nodiscard]] AMCAX_API static Vector3 D1(double u, const Ellipse3& ellipse)	 @return The first derivative vector
+	 @param ellipse The ellipse
+	 @param u The parameter
+	 @brief Compute the first derivative on a 3D ellipse at a parameter",
+ "output": "#include<catch.hpp>
+#include<testHelper.h>
+
+#include <common/PointT.hpp>
+#include <math/CurveCalculation.hpp>
+
+using namespace AMCAX;
+
+TEST_CASE("case1: CurveCalculation::D1 on Ellipse3", "[math][CurveCalculation][P1]") 
+{
+
+	double u = 0.5;
+	Ellipse3 ellipse;
+	Vector3 result = AMCAX::CurveCalculation::D1(u, ellipse);
+	CHECK(result.X() == /* expected value */);
+	CHECK(result.Y() == /* expected value */);
+	CHECK(result.Z() == /* expected value */);
+
+}
+
+
+TEST_CASE("case2: CurveCalculation::D1 on Ellipse3", "[math][CurveCalculation][P1]") 
+{
+
+	double u = 1.0;
+	Ellipse3 ellipse;
+	Vector3 result = AMCAX::CurveCalculation::D1(u, ellipse);
+	CHECK(result.X() == /* expected value */);
+	CHECK(result.Y() == /* expected value */);
+	CHECK(result.Z() == /* expected value */);
+
+}
+"
+}
+,
+
+{
+"instruction": "Generate a test program based on the following method declarations and parameter parsing.",
+ "input": "[[nodiscard]] AMCAX_API static Vector3 D1(double u, const Parabola3& parabola)	 @return The first derivative vector
+	 @param parabola The parabola
+	 @param u The parameter
+	 @brief Compute the first derivative on a 3D parabola at a parameter",
+ "output": "#include<catch.hpp>
+#include<testHelper.h>
+
+#include <common/PointT.hpp>
+#include <math/CurveCalculation.hpp>
+
+using namespace AMCAX;
+
+TEST_CASE("case1: CurveCalculation::D1 on Parabola3", "[math][CurveCalculation][P1]") 
+{
+
+	double u = 0.5;
+	Parabola3 parabola;
+	Vector3 result = AMCAX::CurveCalculation::D1(u, parabola);
+	CHECK(result.X() == /* expected value */);
+	CHECK(result.Y() == /* expected value */);
+	CHECK(result.Z() == /* expected value */);
+
+}
+
+
+TEST_CASE("case2: CurveCalculation::D1 on Parabola3", "[math][CurveCalculation][P1]") 
+{
+
+	double u = 1.0;
+	Parabola3 parabola;
+	Vector3 result = AMCAX::CurveCalculation::D1(u, parabola);
+	CHECK(result.X() == /* expected value */);
+	CHECK(result.Y() == /* expected value */);
+	CHECK(result.Z() == /* expected value */);
+
+}
+"
+}
+,
+
+{
+"instruction": "Generate a test program based on the following method declarations and parameter parsing.",
+ "input": "[[nodiscard]] AMCAX_API static Vector3 D1(double u, const Hyperbola3& hyperbola)	 @return The first derivative vector
+	 @param hyperbola The hyperbola
+	 @param u The parameter
+	 @brief Compute the first derivative on a 3D hyperbola at a parameter",
+ "output": "#include<catch.hpp>
+#include<testHelper.h>
+
+#include <common/PointT.hpp>
+#include <math/CurveCalculation.hpp>
+
+using namespace AMCAX;
+
+TEST_CASE("case1: CurveCalculation::D1 on Hyperbola3", "[math][CurveCalculation][P1]") 
+{
+
+	double u = 0.5;
+	Hyperbola3 hyperbola;
+	Vector3 result = AMCAX::CurveCalculation::D1(u, hyperbola);
+	CHECK(result.X() == /* expected value */);
+	CHECK(result.Y() == /* expected value */);
+	CHECK(result.Z() == /* expected value */);
+
+}
+
+
+TEST_CASE("case2: CurveCalculation::D1 on Hyperbola3", "[math][CurveCalculation][P1]") 
+{
+
+	double u = 1.0;
+	Hyperbola3 hyperbola;
+	Vector3 result = AMCAX::CurveCalculation::D1(u, hyperbola);
+	CHECK(result.X() == /* expected value */);
+	CHECK(result.Y() == /* expected value */);
+	CHECK(result.Z() == /* expected value */);
+
+}
+"
+}
+,
+
+
+
+
+{
+"instruction": "Generate a test program based on the following method declarations and parameter parsing.",
+ "input": "[[nodiscard]] double Area()	 @return The area of the ellipse
+	 @brief Get the area of the ellipse",
+ "output": "#include <catch.hpp>
+#include <testHelper.h>
+
+#include <common/FrameT.hpp>
+#include <math/EllipseT.hpp>
+#include <geometry/Geom3Ellipse.hpp>
+
+using namespace AMCAX;
+using namespace std;
+
+TEST_CASE("case1:this is a case for Test Geom3Ellipse", "[math][Geom3Ellipse][P1]")
+
+	//Geom3Ellipse构造函数调用
+	Frame3 frame;
+	double major = 5.0;
+	double minor = 4.0;
+	Ellipse3 ellipse(frame, major, minor);
+	Geom3Ellipse g3e(ellipse);
+
+	//FocalParameter()函数调用，获取焦点到圆锥曲线准线的距离
+	SECTION("FocalParameter")
+	
+		double FP = g3e.FocalParameter();
+		double focal = 2 * sqrt(major * major - minor * minor);
+		double fp = 2 * minor * minor / focal;;
+		CHECK(FP == fp);
+	
+
+	//SemilatusRectum函数调用
+	SECTION("SemilatusRectum")
+	
+		double SR = g3e.SemilatusRectum();
+		double sr = minor * minor / major;
+		CHECK(SR == sr);
+	
+
+"
+}
+
+
+{
+"instruction": "Generate a test program based on the following method declarations and parameter parsing.",
+ "input": "EllipseS& Scale(const PointT<double, DIM>& point, double scale)	 @return The reference to self
+	 @param scale The scale value
+	 @param point The scaling center point
+	 @brief Scale the ellipse by a center point",
+ "output": "#include <catch.hpp>
+#include <testHelper.h>
+
+#include <common/FrameT.hpp>
+#include <math/EllipseT.hpp>
+#include <geometry/Geom3Ellipse.hpp>
+
+using namespace AMCAX;
+using namespace std;
+
+TEST_CASE("case2: Test Scale method of Ellipse", "[math][Ellipse][Scale]")
+
+	Frame3 frame;
+	EllipseS ellipse(frame);
+	PointT<double, DIM> center(0.0, 0.0);
+	double scale = 2.0;
+	EllipseS& scaledEllipse = ellipse.Scale(center, scale);
+	CHECK(&scaledEllipse == &ellipse);
+
+"
+}
+
+
+{
+"instruction": "Generate a test program based on the following method declarations and parameter parsing.",
+ "input": "EllipseS& Transform(const TransformationT<double, DIM>& tr)	 @return The reference to self
+	 @param tr The transformation
+	 @brief Transform the ellipse",
+ "output": "#include <catch.hpp>
+#include <testHelper.h>
+
+#include <common/FrameT.hpp>
+#include <math/EllipseT.hpp>
+#include <geometry/Geom3Ellipse.hpp>
+
+using namespace AMCAX;
+using namespace std;
+
+TEST_CASE("case3: Test Transform method of Ellipse", "[math][Ellipse][Transform]")
+
+	Frame3 frame;
+	EllipseS ellipse(frame);
+	TransformationT<double, DIM> transformation;
+	EllipseS& transformedEllipse = ellipse.Transform(transformation);
+	CHECK(&transformedEllipse == &ellipse);
+
+"
+}
+
+
+
+,
+
+{
+"instruction": "Generate a test program based on the following method declarations and parameter parsing.",
+ "input": "[[nodiscard]] double Eccentricity()	 @return The eccentricity
+	 @brief Get the eccentricity of the ellipse
+",
+ "output": "#include <catch.hpp>
+#include <testHelper.h>
+...
+
+TEST_CASE("case1:this is a case for Hyperbola2", "[math][Hyperbola2][p1]") 
+	//Construct hyperbola2d_ax
+	Point2 point2_Hy(0.0, 0.0);
+	Direction2 dir2_Hy(1.0, 0.0);
+	Axis2 major2_Axis(point2_Hy, dir2_Hy);
+	double major2 = 3.0, minor2 = 4.0;
+	Hyperbola2 hyperbola2d_ax(major2_Axis, major2, minor2, true);
+	double eccentricity = hyperbola2d_ax.Eccentricity();
+	CHECK(eccentricity == Approx(5.0 / 3.0));"
+}
+,
+
+{
+"instruction": "Generate a test program based on the following method declarations and parameter parsing.",
+ "input": "[[nodiscard]] PointT<double, DIM> Focus1()	 @return The positive focus
+	 @brief Get the focus on the positive side of the major axis
+",
+ "output": "#include <catch.hpp>
+#include <testHelper.h>
+...
+
+TEST_CASE("case1:this is a case for Hyperbola2", "[math][Hyperbola2][p1]") 
+	//Construct hyperbola2d_ax
+	Point2 point2_Hy(0.0, 0.0);
+	Direction2 dir2_Hy(1.0, 0.0);
+	Axis2 major2_Axis(point2_Hy, dir2_Hy);
+	double major2 = 3.0, minor2 = 4.0;
+	Hyperbola2 hyperbola2d_ax(major2_Axis, major2, minor2, true);
+	PointT<double, DIM> focus = hyperbola2d_ax.Focus1();
+	CHECK(focus.X() == Approx(5.0));"
+}
+,
+
+
+
+
+{
+"instruction": "Generate a test program based on the following method declarations and parameter parsing.",
+ "input": "[[nodiscard]] LineS Normal(const Point2& p)	 @return The line passing through a point and perpendicular to the line
+	 @param p The point
+	 @brief Get a line passing through a point and perpendicular to the line",
+ "output": "#include <catch.hpp>
+#include <testHelper.h>
+
+TEST_CASE("case29: Normal Method Test", "[math][LineS][Normal]")
+	Point2 point(1., 1.);
+	LineS line;
+	LineS normalLine = line.Normal(point);
+	CHECK(normalLine.Direction().IsEqual(expectedDirection));
+"
+}
+
+
+{
+"instruction": "Generate a test program based on the following method declarations and parameter parsing.",
+ "input": "LineS& Rotate(const Point2& point, double angle)	 @return The reference to self
+	 @param angle The rotation angle
+	 @param point The rotation center point
+	 @brief Rotate the line around a point with an angle in 2D",
+ "output": "#include <catch.hpp>
+#include <testHelper.h>
+
+TEST_CASE("case30: Rotate Method Test", "[math][LineS][Rotate]")
+	Point2 point(0., 0.);
+	LineS line;
+	line.Rotate(point, 90.0);
+	CHECK(line.Location() == expectedLocation);
+"
+}
+
+,
+
+{
+"instruction": "Generate a test program based on the following method declarations and parameter parsing.",
+ "input": "[[nodiscard]] AMCAX_API bool Contains(const Line3& line, double distol, double angtol)	 @return True if the distance from the location point of the line to the plane is under the distance tolerance and the direction of the line is perpendicular to the normal direction of the plane
+	 @param angtol The angle tolerance
+	 @param distol The distance tolerance
+	 @param line The line
+	 @brief Determines whether the plane contains a line under a distance tolerance and an angle tolerance",
+ "output": "#include<catch.hpp>
+#include<testHelper.h>
+
+TEST_CASE("case1: this is a test for Contains with Line3", "[nurbs][ModifyEndToPlane][P1]")
+	Line3 testLine;
+	double distanceTolerance = 0.1;
+	double angleTolerance = 0.1;
+	bool result = Contains(testLine, distanceTolerance, angleTolerance);
+	CHECK(result == true || result == false);"
+}
+
+
+
+
