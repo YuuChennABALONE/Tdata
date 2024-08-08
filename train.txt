@@ -903,3 +903,67 @@
  "output": "#include<catch.hpp>\n#include<testHelperBase.h>\n#include <polymeshAPI/MeshMakeSphere.hpp>\n#include <polymesh/PolyMeshIO.hpp>\n#include <polymeshAPI/MeshSubdivideHE.hpp>\nusing namespace AMCAX;\n\nTEST_CASE(\"case1: MeshMakeSphere  \", \"[polymeshAPI][SubD][MeshMakeSphere][P1]\") \n\tdouble r = 2.1;\n\tAMCAX::SubD::MeshMakeSphere sphere(r);\n\tAMCAX::SubD::PolyMesh* mesh = sphere.BuildMesh();\n\tCHECK(mesh != nullptr);\n\tAMCAX::SubD::MeshSubdivideHE::CatmullClark(mesh, 3);\n\tbool result = AMCAX::SubD::PolyMeshIO::WriteMesh(OUTPUT_PATH_PREFIX\"MeshMakeSphere_case01.obj\", mesh);\n\tCHECK(result == true);\n"}{"instruction": "Generate a test program based on the following method declarations and parameter parsing.",
  "input": "[[nodiscard]] AMCAX_API double MajorRadius()\t @return The major radius\n\t @brief Get the major radius",
  "output": "#include<catch.hpp>\n#include<testHelper.h>\n\n#include <modeling/MakeTorus.hpp>\n#include <common/CartesianCoordinateSystem.hpp>\n#include <topology/TopoBuilder.hpp>\n\nTEST_CASE(\"bug1: MakeTorus  https://qa.amcax.net/bug-view-445.html \", \"[modeling][MakeTorus][P1][fixbug]\")\n\n\t// Test for MajorRadius\n"},
+根据您提供的方法声明和测试程序进行对比：
+
+方法声明：
+```cpp
+AMCAX_API BoolBRepCut() @details Only set the type of boolean operation to cut
+ @brief Default constructor
+```
+
+测试程序：
+```cpp
+#include<catch.hpp>
+#include<testHelper.h>
+
+#include <boolean/BoolBRepCut.hpp>
+#include <modeling/MakeTorus.hpp>
+#include <modeling/MakeSphere.hpp>
+#include <modeling/MakeCone.hpp>
+#include <topology/TopoExplorer.hpp>
+#include <topology/TopoFace.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+
+using namespace AMCAX;
+```
+
+### 对比结果：
+1. 方法声明是一个默认构造函数，没有参数。
+2. 测试程序中包含了多个头文件，但没有调用构造函数 `BoolBRepCut()`，仅仅是包含了其声明。
+
+因此，测试程序并未测试方法声明中的构造函数。
+
+### 输出：
+```
+00000
+``````根据您提供的方法声明和测试程序进行对比：
+
+方法声明：
+```cpp
+AMCAX_API BoolBRepCut() @details Only set the type of boolean operation to cut
+@brief Default constructor
+```
+
+测试程序：
+```cpp
+TEST_CASE("bug1: in Debug mode: BoolBuilder  ", "boolean][BoolBRepCut][P1][fixbug") {
+    TopoShape torus = MakeTorus(Frame3(Point3(0.0, 0.0, 2.0), Direction3(1.0, 0.0, 0.0)), 4.0, 2.0);
+    TopoShape sphere = MakeSphere(4.0);
+    TopoShape result = BoolBRepCut(sphere, torus);
+    
+    AMCAX::GlobalProperty prop;
+    AMCAX::BRepGlobalProperty::VolumeProperties(result, prop);
+    CHECK(prop.Mass() == Approx(153.229)); 
+    
+    bool isWriteSuccess = AMCAX::OCCTIO::OCCTTool::Write(result, OUTPUT_PATH_PREFIX"BoolBRepCut_bug72.brep", false);
+    CHECK(isWriteSuccess == true);
+}
+```
+
+对比结果：
+- 方法声明中的 `BoolBRepCut()` 是一个构造函数，没有参数。
+- 测试程序中调用了 `BoolBRepCut(sphere, torus)`，这是一个带有参数的函数调用。
+
+因此，测试程序不是该方法声明的测试程序。
+
+输出应为：“00000”。```00000```11111```00000```11111```00000```11111```00000```00000```00000```00000```00000```00000```00000```11111```00000```11111```00000```11111```00000```11111```00000```11111```00000```11111```00000```11111```00000```11111```00000```11111```00000```00000```00000```00000```00000```00000```
