@@ -1,0 +1,1675 @@
+{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API ComputePointsAbscissa(double tol, const Adaptor3Curve& c, double abscissa, double u0)	 @param u0 The starting parameter
+	 @param abscissa The arc length
+	 @param c The curve
+	 @param tol The tolerance
+	 @brief Compute the parameter of a point on a 3D curve with given arc length and a tolerance
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <geometry/MakeGeom2Circle.hpp>
+#include <geometry/AdaptorGeom2Curve.hpp>
+#include <geometry/ComputePointsAbscissa.hpp>
+#include <geometry/MakeGeom3Circle.hpp>
+#include <geometry/AdaptorGeom3Curve.hpp>
+#include <geometry/MakeGeom2Hyperbola.hpp>
+#include <geometry/Geom2Ellipse.hpp>
+#include <geometry/MakeGeom2Ellipse.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <geometry/MakeGeom3Ellipse.hpp>
+#include <geometry/MakeGeom3Hyperbola.hpp>
+#include <geometry/Geom2Line.hpp>
+#include <geometry/Geom2TrimmedCurve.hpp>
+#include <geometry/Geom3Line.hpp>
+#include <geometry/Geom3TrimmedCurve.hpp>
+#include<modeling/MakeEdge.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <geometry/GeometryTool.hpp>
+#include <geometry/Geom2Parabola.hpp>
+#include <geometry/MakeGeom2Parabola.hpp>
+#include <geometry/MakeGeom3Parabola.hpp>
+#include <geometry/Geom2BezierCurve.hpp>
+#include <geometry/Geom3BezierCurve.hpp>
+#include <geometry/Geom2BSplineCurve.hpp>
+#include <geometry/Geom2OffsetCurve.hpp>
+#include <geometry/Geom3OffsetCurve.hpp>
+TEST_CASE("test the arc length is negative - given arc length - 2D", "[geometry][ComputePointsAbscissa][case9]")
+{
+	SECTION("circle")
+    {
+        double r = 2.0;
+        double l = -1.0;
+        std::shared_ptr<Geom2Curve> c = MakeGeom2Circle(Point2(0.0, 0.0), 2.0).Value();
+        AdaptorGeom2Curve circle(c);
+        ComputePointsAbscissa cpa(circle, -1.0, 0.0);
+        double angle1 = l / r;
+        double x = r * cos(angle1);
+        double y = r * sin(angle1);
+        double param = cpa.Parameter();
+        Point2 s = circle.Value(param);
+        Point2 s1(x, y);
+        CHECK(angle1 == cpa.Parameter());
+        CHECK(s.X() == s1.X());
+        CHECK(s.Y() == s1.Y());
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API ComputePointsAbscissa(double tol, const Adaptor2Curve& c, double abscissa, double u0)	 @param u0 The starting parameter
+	 @param abscissa The arc length
+	 @param c The curve
+	 @param tol The tolerance
+	 @brief Compute the parameter of a point on a 2D curve with given arc length and a tolerance
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <geometry/MakeGeom2Circle.hpp>
+#include <geometry/AdaptorGeom2Curve.hpp>
+#include <geometry/ComputePointsAbscissa.hpp>
+#include <geometry/MakeGeom3Circle.hpp>
+#include <geometry/AdaptorGeom3Curve.hpp>
+#include <geometry/MakeGeom2Hyperbola.hpp>
+#include <geometry/Geom2Ellipse.hpp>
+#include <geometry/MakeGeom2Ellipse.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <geometry/MakeGeom3Ellipse.hpp>
+#include <geometry/MakeGeom3Hyperbola.hpp>
+#include <geometry/Geom2Line.hpp>
+#include <geometry/Geom2TrimmedCurve.hpp>
+#include <geometry/Geom3Line.hpp>
+#include <geometry/Geom3TrimmedCurve.hpp>
+#include<modeling/MakeEdge.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <geometry/GeometryTool.hpp>
+#include <geometry/Geom2Parabola.hpp>
+#include <geometry/MakeGeom2Parabola.hpp>
+#include <geometry/MakeGeom3Parabola.hpp>
+#include <geometry/Geom2BezierCurve.hpp>
+#include <geometry/Geom3BezierCurve.hpp>
+#include <geometry/Geom2BSplineCurve.hpp>
+#include <geometry/Geom2OffsetCurve.hpp>
+#include <geometry/Geom3OffsetCurve.hpp>
+TEST_CASE("test the arc length is negative - given arc length - 2D", "[geometry][ComputePointsAbscissa][case9]")
+{
+	SECTION("circle")
+    {
+        double r = 2.0;
+        double l = -1.0;
+        std::shared_ptr<Geom2Curve> c = MakeGeom2Circle(Point2(0.0, 0.0), 2.0).Value();
+        AdaptorGeom2Curve circle(c);
+        ComputePointsAbscissa cpa(circle, -1.0, 0.0);
+        double angle1 = l / r;
+        double x = r * cos(angle1);
+        double y = r * sin(angle1);
+        double param = cpa.Parameter();
+        Point2 s = circle.Value(param);
+        Point2 s1(x, y);
+        CHECK(angle1 == cpa.Parameter());
+        CHECK(s.X() == s1.X());
+        CHECK(s.Y() == s1.Y());
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API ComputePointsAbscissa(const Adaptor3Curve& c, double abscissa, double u0)	 @param u0 The starting parameter
+	 @param abscissa The arc length
+	 @param c The curve
+	 @brief Compute the parameter of a point on a 3D curve with given arc length
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <geometry/MakeGeom2Circle.hpp>
+#include <geometry/AdaptorGeom2Curve.hpp>
+#include <geometry/ComputePointsAbscissa.hpp>
+#include <geometry/MakeGeom3Circle.hpp>
+#include <geometry/AdaptorGeom3Curve.hpp>
+#include <geometry/MakeGeom2Hyperbola.hpp>
+#include <geometry/Geom2Ellipse.hpp>
+#include <geometry/MakeGeom2Ellipse.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <geometry/MakeGeom3Ellipse.hpp>
+#include <geometry/MakeGeom3Hyperbola.hpp>
+#include <geometry/Geom2Line.hpp>
+#include <geometry/Geom2TrimmedCurve.hpp>
+#include <geometry/Geom3Line.hpp>
+#include <geometry/Geom3TrimmedCurve.hpp>
+#include<modeling/MakeEdge.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <geometry/GeometryTool.hpp>
+#include <geometry/Geom2Parabola.hpp>
+#include <geometry/MakeGeom2Parabola.hpp>
+#include <geometry/MakeGeom3Parabola.hpp>
+#include <geometry/Geom2BezierCurve.hpp>
+#include <geometry/Geom3BezierCurve.hpp>
+#include <geometry/Geom2BSplineCurve.hpp>
+#include <geometry/Geom2OffsetCurve.hpp>
+#include <geometry/Geom3OffsetCurve.hpp>
+TEST_CASE("test the arc length is negative - given arc length - 2D", "[geometry][ComputePointsAbscissa][case9]")
+{
+	SECTION("circle")
+    {
+        double r = 2.0;
+        double l = -1.0;
+        std::shared_ptr<Geom2Curve> c = MakeGeom2Circle(Point2(0.0, 0.0), 2.0).Value();
+        AdaptorGeom2Curve circle(c);
+        ComputePointsAbscissa cpa(circle, -1.0, 0.0);
+        double angle1 = l / r;
+        double x = r * cos(angle1);
+        double y = r * sin(angle1);
+        double param = cpa.Parameter();
+        Point2 s = circle.Value(param);
+        Point2 s1(x, y);
+        CHECK(angle1 == cpa.Parameter());
+        CHECK(s.X() == s1.X());
+        CHECK(s.Y() == s1.Y());
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API ComputePointsAbscissa(const Adaptor2Curve& c, double abscissa, double u0)	 @param u0 The starting parameter
+	 @param abscissa The arc length
+	 @param c The curve
+	 @brief Compute the parameter of a point on a 2D curve with given arc length
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <geometry/MakeGeom2Circle.hpp>
+#include <geometry/AdaptorGeom2Curve.hpp>
+#include <geometry/ComputePointsAbscissa.hpp>
+#include <geometry/MakeGeom3Circle.hpp>
+#include <geometry/AdaptorGeom3Curve.hpp>
+#include <geometry/MakeGeom2Hyperbola.hpp>
+#include <geometry/Geom2Ellipse.hpp>
+#include <geometry/MakeGeom2Ellipse.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <geometry/MakeGeom3Ellipse.hpp>
+#include <geometry/MakeGeom3Hyperbola.hpp>
+#include <geometry/Geom2Line.hpp>
+#include <geometry/Geom2TrimmedCurve.hpp>
+#include <geometry/Geom3Line.hpp>
+#include <geometry/Geom3TrimmedCurve.hpp>
+#include<modeling/MakeEdge.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <geometry/GeometryTool.hpp>
+#include <geometry/Geom2Parabola.hpp>
+#include <geometry/MakeGeom2Parabola.hpp>
+#include <geometry/MakeGeom3Parabola.hpp>
+#include <geometry/Geom2BezierCurve.hpp>
+#include <geometry/Geom3BezierCurve.hpp>
+#include <geometry/Geom2BSplineCurve.hpp>
+#include <geometry/Geom2OffsetCurve.hpp>
+#include <geometry/Geom3OffsetCurve.hpp>
+TEST_CASE("test the arc length is negative - given arc length - 2D", "[geometry][ComputePointsAbscissa][case9]")
+{
+	SECTION("circle")
+    {
+        double r = 2.0;
+        double l = -1.0;
+        std::shared_ptr<Geom2Curve> c = MakeGeom2Circle(Point2(0.0, 0.0), 2.0).Value();
+        AdaptorGeom2Curve circle(c);
+        ComputePointsAbscissa cpa(circle, -1.0, 0.0);
+        double angle1 = l / r;
+        double x = r * cos(angle1);
+        double y = r * sin(angle1);
+        double param = cpa.Parameter();
+        Point2 s = circle.Value(param);
+        Point2 s1(x, y);
+        CHECK(angle1 == cpa.Parameter());
+        CHECK(s.X() == s1.X());
+        CHECK(s.Y() == s1.Y());
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API ComputePointsAbscissa(const Adaptor3Curve& c, double abscissa, double u0, double ui)	 @param ui The initial guess of the parameter
+	 @param u0 The starting parameter
+	 @param abscissa The arc length
+	 @param c The curve
+	 @brief Compute the parameter of a point on a 3D curve with given arc length and an initial guess
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <geometry/MakeGeom2Circle.hpp>
+#include <geometry/AdaptorGeom2Curve.hpp>
+#include <geometry/ComputePointsAbscissa.hpp>
+#include <geometry/MakeGeom3Circle.hpp>
+#include <geometry/AdaptorGeom3Curve.hpp>
+#include <geometry/MakeGeom2Hyperbola.hpp>
+#include <geometry/Geom2Ellipse.hpp>
+#include <geometry/MakeGeom2Ellipse.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <geometry/MakeGeom3Ellipse.hpp>
+#include <geometry/MakeGeom3Hyperbola.hpp>
+#include <geometry/Geom2Line.hpp>
+#include <geometry/Geom2TrimmedCurve.hpp>
+#include <geometry/Geom3Line.hpp>
+#include <geometry/Geom3TrimmedCurve.hpp>
+#include<modeling/MakeEdge.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <geometry/GeometryTool.hpp>
+#include <geometry/Geom2Parabola.hpp>
+#include <geometry/MakeGeom2Parabola.hpp>
+#include <geometry/MakeGeom3Parabola.hpp>
+#include <geometry/Geom2BezierCurve.hpp>
+#include <geometry/Geom3BezierCurve.hpp>
+#include <geometry/Geom2BSplineCurve.hpp>
+#include <geometry/Geom2OffsetCurve.hpp>
+#include <geometry/Geom3OffsetCurve.hpp>
+TEST_CASE("test the arc length is negative - given arc length - 3D", "[geometry][ComputePointsAbscissa][case10]")
+{
+	SECTION("circle")
+    {
+        Frame3 frame;
+        double r = 2.0;
+        double l = -1.0;
+        std::shared_ptr<Geom3Curve> c = MakeGeom3Circle(frame, r).Value();
+        AdaptorGeom3Curve circle(c);
+        ComputePointsAbscissa cpa(circle, -1.0, 0.0);
+        double angle1 = l / r;
+        double x = r * cos(angle1);
+        double y = r * sin(angle1);
+        double z = 0;
+        double param = cpa.Parameter();
+        Point3 s = circle.Value(param);
+        Point3 s1(x, y, z);
+        CHECK(angle1 == cpa.Parameter());
+        CHECK(s.X() == s1.X());
+        CHECK(s.Y() == s1.Y());
+        CHECK(s.Z() == s1.Z());
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API ComputePointsAbscissa(const Adaptor2Curve& c, double abscissa, double u0, double ui)	 @param ui The initial guess of the parameter
+	 @param u0 The starting parameter
+	 @param abscissa The arc length
+	 @param c The curve
+	 @brief Compute the parameter of a point on a 2D curve with given arc length and an initial guess
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <geometry/MakeGeom2Circle.hpp>
+#include <geometry/AdaptorGeom2Curve.hpp>
+#include <geometry/ComputePointsAbscissa.hpp>
+#include <geometry/MakeGeom3Circle.hpp>
+#include <geometry/AdaptorGeom3Curve.hpp>
+#include <geometry/MakeGeom2Hyperbola.hpp>
+#include <geometry/Geom2Ellipse.hpp>
+#include <geometry/MakeGeom2Ellipse.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <geometry/MakeGeom3Ellipse.hpp>
+#include <geometry/MakeGeom3Hyperbola.hpp>
+#include <geometry/Geom2Line.hpp>
+#include <geometry/Geom2TrimmedCurve.hpp>
+#include <geometry/Geom3Line.hpp>
+#include <geometry/Geom3TrimmedCurve.hpp>
+#include<modeling/MakeEdge.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <geometry/GeometryTool.hpp>
+#include <geometry/Geom2Parabola.hpp>
+#include <geometry/MakeGeom2Parabola.hpp>
+#include <geometry/MakeGeom3Parabola.hpp>
+#include <geometry/Geom2BezierCurve.hpp>
+#include <geometry/Geom3BezierCurve.hpp>
+#include <geometry/Geom2BSplineCurve.hpp>
+#include <geometry/Geom2OffsetCurve.hpp>
+#include <geometry/Geom3OffsetCurve.hpp>
+TEST_CASE("test the arc length is negative - given arc length - 2D", "[geometry][ComputePointsAbscissa][case9]")
+{
+	SECTION("circle")
+    {
+        double r = 2.0;
+        double l = -1.0;
+        std::shared_ptr<Geom2Curve> c = MakeGeom2Circle(Point2(0.0, 0.0), 2.0).Value();
+        AdaptorGeom2Curve circle(c);
+        ComputePointsAbscissa cpa(circle, -1.0, 0.0);
+        double angle1 = l / r;
+        double x = r * cos(angle1);
+        double y = r * sin(angle1);
+        double param = cpa.Parameter();
+        Point2 s = circle.Value(param);
+        Point2 s1(x, y);
+        CHECK(angle1 == cpa.Parameter());
+        CHECK(s.X() == s1.X());
+        CHECK(s.Y() == s1.Y());
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API ComputePointsAbscissa(const Adaptor3Curve& c, double abscissa, double u0, double ui, double tol)	 @param tol The tolerance
+	 @param ui The initial guess of the parameter
+	 @param u0 The starting parameter
+	 @param abscissa The arc length
+	 @param c The curve
+	 @brief Compute the parameter of a point on a 3D curve with given arc length, an initial guess, and a tolerance
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <geometry/MakeGeom2Circle.hpp>
+#include <geometry/AdaptorGeom2Curve.hpp>
+#include <geometry/ComputePointsAbscissa.hpp>
+#include <geometry/MakeGeom3Circle.hpp>
+#include <geometry/AdaptorGeom3Curve.hpp>
+#include <geometry/MakeGeom2Hyperbola.hpp>
+#include <geometry/Geom2Ellipse.hpp>
+#include <geometry/MakeGeom2Ellipse.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <geometry/MakeGeom3Ellipse.hpp>
+#include <geometry/MakeGeom3Hyperbola.hpp>
+#include <geometry/Geom2Line.hpp>
+#include <geometry/Geom2TrimmedCurve.hpp>
+#include <geometry/Geom3Line.hpp>
+#include <geometry/Geom3TrimmedCurve.hpp>
+#include<modeling/MakeEdge.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <geometry/GeometryTool.hpp>
+#include <geometry/Geom2Parabola.hpp>
+#include <geometry/MakeGeom2Parabola.hpp>
+#include <geometry/MakeGeom3Parabola.hpp>
+#include <geometry/Geom2BezierCurve.hpp>
+#include <geometry/Geom3BezierCurve.hpp>
+#include <geometry/Geom2BSplineCurve.hpp>
+#include <geometry/Geom2OffsetCurve.hpp>
+#include <geometry/Geom3OffsetCurve.hpp>
+TEST_CASE("test the arc length is negative - given arc length - 3D", "[geometry][ComputePointsAbscissa][case10]")
+{
+	SECTION("line")
+    {
+        double t = -2.0;
+        shared_ptr<Geom3Line> line;
+        line = make_shared<Geom3Line>(Point3(0.0, 0.0, 0.0), Direction3(1.0, 2.0, 3.0));
+        shared_ptr<Geom3TrimmedCurve> TrimmedCurve = make_shared<Geom3TrimmedCurve>(line, 0.0, 6.0);
+        AdaptorGeom3Curve line1(TrimmedCurve);
+        ComputePointsAbscissa cpa4(line1, -2.0, 0.0);
+        double param4 = cpa4.Parameter();
+        Point3 start(0.0, 0.0, 0.0);
+        Direction3 direction(1.0, 2.0, 3.0);
+        double x = start.X() + t * direction.X();
+        double y = start.Y() + t * direction.Y();
+        double z = start.Z() + t * direction.Z();
+        Point3 s5 = line1.Value(param4);
+        Point3 s6(x, y, z);
+        CHECK(cpa4.Parameter() == -2.0);
+        CHECK(s5.X() == s6.X());
+        CHECK(s5.Y() == s6.Y());
+        CHECK(s5.Z() == s6.Z());
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API ComputePointsAbscissa(const Adaptor2Curve& c, double abscissa, double u0, double ui, double tol)	 @param tol The tolerance
+	 @param ui The initial guess of the parameter
+	 @param u0 The starting parameter
+	 @param abscissa The arc length
+	 @param c The curve
+	 @brief Compute the parameter of a point on a 2D curve with given arc length, an initial guess, and a tolerance
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <geometry/MakeGeom2Circle.hpp>
+#include <geometry/AdaptorGeom2Curve.hpp>
+#include <geometry/ComputePointsAbscissa.hpp>
+#include <geometry/MakeGeom3Circle.hpp>
+#include <geometry/AdaptorGeom3Curve.hpp>
+#include <geometry/MakeGeom2Hyperbola.hpp>
+#include <geometry/Geom2Ellipse.hpp>
+#include <geometry/MakeGeom2Ellipse.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <geometry/MakeGeom3Ellipse.hpp>
+#include <geometry/MakeGeom3Hyperbola.hpp>
+#include <geometry/Geom2Line.hpp>
+#include <geometry/Geom2TrimmedCurve.hpp>
+#include <geometry/Geom3Line.hpp>
+#include <geometry/Geom3TrimmedCurve.hpp>
+#include<modeling/MakeEdge.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <geometry/GeometryTool.hpp>
+#include <geometry/Geom2Parabola.hpp>
+#include <geometry/MakeGeom2Parabola.hpp>
+#include <geometry/MakeGeom3Parabola.hpp>
+#include <geometry/Geom2BezierCurve.hpp>
+#include <geometry/Geom3BezierCurve.hpp>
+#include <geometry/Geom2BSplineCurve.hpp>
+#include <geometry/Geom2OffsetCurve.hpp>
+#include <geometry/Geom3OffsetCurve.hpp>
+TEST_CASE("test the arc length is negative - given arc length - 2D", "[geometry][ComputePointsAbscissa][case9]")
+{
+	SECTION("circle")
+    {
+        double r = 2.0;
+        double l = -1.0;
+        std::shared_ptr<Geom2Curve> c = MakeGeom2Circle(Point2(0.0, 0.0), 2.0).Value();
+        AdaptorGeom2Curve circle(c);
+        ComputePointsAbscissa cpa(circle, -1.0, 0.0);
+        double angle1 = l / r;
+        double x = r * cos(angle1);
+        double y = r * sin(angle1);
+        double param = cpa.Parameter();
+        Point2 s = circle.Value(param);
+        Point2 s1(x, y);
+        CHECK(angle1 == cpa.Parameter());
+        CHECK(s.X() == s1.X());
+        CHECK(s.Y() == s1.Y());
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API double Parameter()	 @return The parameter of the point
+	 @brief Get the parameter of the point
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <geometry/MakeGeom2Circle.hpp>
+#include <geometry/AdaptorGeom2Curve.hpp>
+#include <geometry/ComputePointsAbscissa.hpp>
+#include <geometry/MakeGeom3Circle.hpp>
+#include <geometry/AdaptorGeom3Curve.hpp>
+#include <geometry/MakeGeom2Hyperbola.hpp>
+#include <geometry/Geom2Ellipse.hpp>
+#include <geometry/MakeGeom2Ellipse.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <geometry/MakeGeom3Ellipse.hpp>
+#include <geometry/MakeGeom3Hyperbola.hpp>
+#include <geometry/Geom2Line.hpp>
+#include <geometry/Geom2TrimmedCurve.hpp>
+#include <geometry/Geom3Line.hpp>
+#include <geometry/Geom3TrimmedCurve.hpp>
+#include<modeling/MakeEdge.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <geometry/GeometryTool.hpp>
+#include <geometry/Geom2Parabola.hpp>
+#include <geometry/MakeGeom2Parabola.hpp>
+#include <geometry/MakeGeom3Parabola.hpp>
+#include <geometry/Geom2BezierCurve.hpp>
+#include <geometry/Geom3BezierCurve.hpp>
+#include <geometry/Geom2BSplineCurve.hpp>
+#include <geometry/Geom2OffsetCurve.hpp>
+#include <geometry/Geom3OffsetCurve.hpp>
+TEST_CASE("test the arc length is negative - given arc length - 2D", "[geometry][ComputePointsAbscissa][case9]")
+{
+	SECTION("circle")
+    {
+        double r = 2.0;
+        double l = -1.0;
+        std::shared_ptr<Geom2Curve> c = MakeGeom2Circle(Point2(0.0, 0.0), 2.0).Value();
+        AdaptorGeom2Curve circle(c);
+        ComputePointsAbscissa cpa(circle, -1.0, 0.0);
+        double angle1 = l / r;
+        double x = r * cos(angle1);
+        double y = r * sin(angle1);
+        double param = cpa.Parameter();
+        Point2 s = circle.Value(param);
+        Point2 s1(x, y);
+        CHECK(angle1 == cpa.Parameter());
+        CHECK(s.X() == s1.X());
+        CHECK(s.Y() == s1.Y());
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API ComputePointsAbscissa(double tol, const Adaptor3Curve& c, double abscissa, double u0)	 @param u0 The starting parameter
+	 @param abscissa The arc length
+	 @param c The curve
+	 @param tol The tolerance
+	 @brief Compute the parameter of a point on a 3D curve with given arc length and a tolerance
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <geometry/MakeGeom2Circle.hpp>
+#include <geometry/AdaptorGeom2Curve.hpp>
+#include <geometry/ComputePointsAbscissa.hpp>
+#include <geometry/MakeGeom3Circle.hpp>
+#include <geometry/AdaptorGeom3Curve.hpp>
+#include <geometry/MakeGeom2Hyperbola.hpp>
+#include <geometry/Geom2Ellipse.hpp>
+#include <geometry/MakeGeom2Ellipse.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <geometry/MakeGeom3Ellipse.hpp>
+#include <geometry/MakeGeom3Hyperbola.hpp>
+#include <geometry/Geom2Line.hpp>
+#include <geometry/Geom2TrimmedCurve.hpp>
+#include <geometry/Geom3Line.hpp>
+#include <geometry/Geom3TrimmedCurve.hpp>
+#include<modeling/MakeEdge.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <geometry/GeometryTool.hpp>
+#include <geometry/Geom2Parabola.hpp>
+#include <geometry/MakeGeom2Parabola.hpp>
+#include <geometry/MakeGeom3Parabola.hpp>
+#include <geometry/Geom2BezierCurve.hpp>
+#include <geometry/Geom3BezierCurve.hpp>
+#include <geometry/Geom2BSplineCurve.hpp>
+#include <geometry/Geom2OffsetCurve.hpp>
+#include <geometry/Geom3OffsetCurve.hpp>
+TEST_CASE("test the arc length parameter over the total length of the curve - given arc length - 2D", "[geometry][ComputePointsAbscissa][case18]")
+{
+	SECTION("line")
+    {
+        shared_ptr<Geom2Line> line;
+        line = make_shared<Geom2Line>(Point2(0.0, 0.0), Direction2(1.0, 0.0));
+        shared_ptr<Geom2TrimmedCurve> TrimmedCurve = make_shared<Geom2TrimmedCurve>(line, 0.0, 6.0);
+        AdaptorGeom2Curve line1(TrimmedCurve);
+        ComputePointsAbscissa cpa4(line1, 8.0, 0.0);
+        double param4 = cpa4.Parameter();
+        double x = 8.0;
+        double y = 0.0;
+        Point2 s5 = line1.Value(param4);
+        Point2 s6(x, y);
+        CHECK(cpa4.Parameter() == 8.0);
+        CHECK(s5.X() == s6.X());
+        CHECK(s5.Y() == s6.Y());
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API ComputePointsAbscissa(double tol, const Adaptor2Curve& c, double abscissa, double u0)	 @param u0 The starting parameter
+	 @param abscissa The arc length
+	 @param c The curve
+	 @param tol The tolerance
+	 @brief Compute the parameter of a point on a 2D curve with given arc length and a tolerance
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <geometry/MakeGeom2Circle.hpp>
+#include <geometry/AdaptorGeom2Curve.hpp>
+#include <geometry/ComputePointsAbscissa.hpp>
+#include <geometry/MakeGeom3Circle.hpp>
+#include <geometry/AdaptorGeom3Curve.hpp>
+#include <geometry/MakeGeom2Hyperbola.hpp>
+#include <geometry/Geom2Ellipse.hpp>
+#include <geometry/MakeGeom2Ellipse.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <geometry/MakeGeom3Ellipse.hpp>
+#include <geometry/MakeGeom3Hyperbola.hpp>
+#include <geometry/Geom2Line.hpp>
+#include <geometry/Geom2TrimmedCurve.hpp>
+#include <geometry/Geom3Line.hpp>
+#include <geometry/Geom3TrimmedCurve.hpp>
+#include<modeling/MakeEdge.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <geometry/GeometryTool.hpp>
+#include <geometry/Geom2Parabola.hpp>
+#include <geometry/MakeGeom2Parabola.hpp>
+#include <geometry/MakeGeom3Parabola.hpp>
+#include <geometry/Geom2BezierCurve.hpp>
+#include <geometry/Geom3BezierCurve.hpp>
+#include <geometry/Geom2BSplineCurve.hpp>
+#include <geometry/Geom2OffsetCurve.hpp>
+#include <geometry/Geom3OffsetCurve.hpp>
+TEST_CASE("test the arc length parameter over the total length of the curve - given arc length - 2D", "[geometry][ComputePointsAbscissa][case18]")
+{
+	SECTION("circle")
+    {
+        double r = 2.0;
+        double l = 19;
+        std::shared_ptr<Geom2Curve> c = MakeGeom2Circle(Point2(0.0, 0.0), 2.0).Value();
+        AdaptorGeom2Curve circle(c);
+        ComputePointsAbscissa cpa(circle, l, 0.0);
+        double angle1 = l / r;
+        double x = r * cos(angle1);
+        double y = r * sin(angle1);
+        double param = cpa.Parameter();
+        Point2 s = circle.Value(param);
+        Point2 s1(x, y);
+        CHECK(angle1 == cpa.Parameter());
+        CHECK(s.X() == s1.X());
+        CHECK(s.Y() == s1.Y());
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API ComputePointsAbscissa(const Adaptor3Curve& c, double abscissa, double u0)	 @param u0 The starting parameter
+	 @param abscissa The arc length
+	 @param c The curve
+	 @brief Compute the parameter of a point on a 3D curve with given arc length
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <geometry/MakeGeom2Circle.hpp>
+#include <geometry/AdaptorGeom2Curve.hpp>
+#include <geometry/ComputePointsAbscissa.hpp>
+#include <geometry/MakeGeom3Circle.hpp>
+#include <geometry/AdaptorGeom3Curve.hpp>
+#include <geometry/MakeGeom2Hyperbola.hpp>
+#include <geometry/Geom2Ellipse.hpp>
+#include <geometry/MakeGeom2Ellipse.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <geometry/MakeGeom3Ellipse.hpp>
+#include <geometry/MakeGeom3Hyperbola.hpp>
+#include <geometry/Geom2Line.hpp>
+#include <geometry/Geom2TrimmedCurve.hpp>
+#include <geometry/Geom3Line.hpp>
+#include <geometry/Geom3TrimmedCurve.hpp>
+#include<modeling/MakeEdge.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <geometry/GeometryTool.hpp>
+#include <geometry/Geom2Parabola.hpp>
+#include <geometry/MakeGeom2Parabola.hpp>
+#include <geometry/MakeGeom3Parabola.hpp>
+#include <geometry/Geom2BezierCurve.hpp>
+#include <geometry/Geom3BezierCurve.hpp>
+#include <geometry/Geom2BSplineCurve.hpp>
+#include <geometry/Geom2OffsetCurve.hpp>
+#include <geometry/Geom3OffsetCurve.hpp>
+TEST_CASE("test the arc length parameter over the total length of the curve - given arc length - 3D", "[geometry][ComputePointsAbscissa][case19]")
+{
+	SECTION("circle")
+    {
+        Frame3 frame;
+        double r = 2.0;
+        double l = 13;
+        std::shared_ptr<Geom3Curve> c = MakeGeom3Circle(frame, r).Value();
+        AdaptorGeom3Curve circle(c);
+        ComputePointsAbscissa cpa(circle, 13, 0.0);
+        double angle1 = l / r;
+        double x = r * cos(angle1);
+        double y = r * sin(angle1);
+        double z = 0;
+        double param = cpa.Parameter();
+        Point3 s = circle.Value(param);
+        Point3 s1(x, y, z);
+        CHECK(angle1 == cpa.Parameter());
+        CHECK(s.X() == s1.X());
+        CHECK(s.Y() == s1.Y());
+        CHECK(s.Z() == s1.Z());
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API ComputePointsAbscissa(const Adaptor2Curve& c, double abscissa, double u0)	 @param u0 The starting parameter
+	 @param abscissa The arc length
+	 @param c The curve
+	 @brief Compute the parameter of a point on a 2D curve with given arc length
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <geometry/MakeGeom2Circle.hpp>
+#include <geometry/AdaptorGeom2Curve.hpp>
+#include <geometry/ComputePointsAbscissa.hpp>
+#include <geometry/MakeGeom3Circle.hpp>
+#include <geometry/AdaptorGeom3Curve.hpp>
+#include <geometry/MakeGeom2Hyperbola.hpp>
+#include <geometry/Geom2Ellipse.hpp>
+#include <geometry/MakeGeom2Ellipse.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <geometry/MakeGeom3Ellipse.hpp>
+#include <geometry/MakeGeom3Hyperbola.hpp>
+#include <geometry/Geom2Line.hpp>
+#include <geometry/Geom2TrimmedCurve.hpp>
+#include <geometry/Geom3Line.hpp>
+#include <geometry/Geom3TrimmedCurve.hpp>
+#include<modeling/MakeEdge.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <geometry/GeometryTool.hpp>
+#include <geometry/Geom2Parabola.hpp>
+#include <geometry/MakeGeom2Parabola.hpp>
+#include <geometry/MakeGeom3Parabola.hpp>
+#include <geometry/Geom2BezierCurve.hpp>
+#include <geometry/Geom3BezierCurve.hpp>
+#include <geometry/Geom2BSplineCurve.hpp>
+#include <geometry/Geom2OffsetCurve.hpp>
+#include <geometry/Geom3OffsetCurve.hpp>
+TEST_CASE("test the arc length parameter over the total length of the curve - given arc length - 2D", "[geometry][ComputePointsAbscissa][case18]")
+{
+	SECTION("circle")
+    {
+        double r = 2.0;
+        double l = 19;
+        std::shared_ptr<Geom2Curve> c = MakeGeom2Circle(Point2(0.0, 0.0), 2.0).Value();
+        AdaptorGeom2Curve circle(c);
+        ComputePointsAbscissa cpa(circle, l, 0.0);
+        double angle1 = l / r;
+        double x = r * cos(angle1);
+        double y = r * sin(angle1);
+        double param = cpa.Parameter();
+        Point2 s = circle.Value(param);
+        Point2 s1(x, y);
+        CHECK(angle1 == cpa.Parameter());
+        CHECK(s.X() == s1.X());
+        CHECK(s.Y() == s1.Y());
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API ComputePointsAbscissa(const Adaptor3Curve& c, double abscissa, double u0, double ui)	 @param ui The initial guess of the parameter
+	 @param u0 The starting parameter
+	 @param abscissa The arc length
+	 @param c The curve
+	 @brief Compute the parameter of a point on a 3D curve with given arc length and an initial guess
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <geometry/MakeGeom2Circle.hpp>
+#include <geometry/AdaptorGeom2Curve.hpp>
+#include <geometry/ComputePointsAbscissa.hpp>
+#include <geometry/MakeGeom3Circle.hpp>
+#include <geometry/AdaptorGeom3Curve.hpp>
+#include <geometry/MakeGeom2Hyperbola.hpp>
+#include <geometry/Geom2Ellipse.hpp>
+#include <geometry/MakeGeom2Ellipse.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <geometry/MakeGeom3Ellipse.hpp>
+#include <geometry/MakeGeom3Hyperbola.hpp>
+#include <geometry/Geom2Line.hpp>
+#include <geometry/Geom2TrimmedCurve.hpp>
+#include <geometry/Geom3Line.hpp>
+#include <geometry/Geom3TrimmedCurve.hpp>
+#include<modeling/MakeEdge.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <geometry/GeometryTool.hpp>
+#include <geometry/Geom2Parabola.hpp>
+#include <geometry/MakeGeom2Parabola.hpp>
+#include <geometry/MakeGeom3Parabola.hpp>
+#include <geometry/Geom2BezierCurve.hpp>
+#include <geometry/Geom3BezierCurve.hpp>
+#include <geometry/Geom2BSplineCurve.hpp>
+#include <geometry/Geom2OffsetCurve.hpp>
+#include <geometry/Geom3OffsetCurve.hpp>
+TEST_CASE("test the arc length parameter over the total length of the curve - given arc length - 2D", "[geometry][ComputePointsAbscissa][case18]")
+{
+	SECTION("line")
+    {
+        shared_ptr<Geom2Line> line;
+        line = make_shared<Geom2Line>(Point2(0.0, 0.0), Direction2(1.0, 0.0));
+        shared_ptr<Geom2TrimmedCurve> TrimmedCurve = make_shared<Geom2TrimmedCurve>(line, 0.0, 6.0);
+        AdaptorGeom2Curve line1(TrimmedCurve);
+        ComputePointsAbscissa cpa4(line1, 8.0, 0.0);
+        double param4 = cpa4.Parameter();
+        double x = 8.0;
+        double y = 0.0;
+        Point2 s5 = line1.Value(param4);
+        Point2 s6(x, y);
+        CHECK(cpa4.Parameter() == 8.0);
+        CHECK(s5.X() == s6.X());
+        CHECK(s5.Y() == s6.Y());
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API ComputePointsAbscissa(const Adaptor2Curve& c, double abscissa, double u0, double ui)	 @param ui The initial guess of the parameter
+	 @param u0 The starting parameter
+	 @param abscissa The arc length
+	 @param c The curve
+	 @brief Compute the parameter of a point on a 2D curve with given arc length and an initial guess
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <geometry/MakeGeom2Circle.hpp>
+#include <geometry/AdaptorGeom2Curve.hpp>
+#include <geometry/ComputePointsAbscissa.hpp>
+#include <geometry/MakeGeom3Circle.hpp>
+#include <geometry/AdaptorGeom3Curve.hpp>
+#include <geometry/MakeGeom2Hyperbola.hpp>
+#include <geometry/Geom2Ellipse.hpp>
+#include <geometry/MakeGeom2Ellipse.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <geometry/MakeGeom3Ellipse.hpp>
+#include <geometry/MakeGeom3Hyperbola.hpp>
+#include <geometry/Geom2Line.hpp>
+#include <geometry/Geom2TrimmedCurve.hpp>
+#include <geometry/Geom3Line.hpp>
+#include <geometry/Geom3TrimmedCurve.hpp>
+#include<modeling/MakeEdge.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <geometry/GeometryTool.hpp>
+#include <geometry/Geom2Parabola.hpp>
+#include <geometry/MakeGeom2Parabola.hpp>
+#include <geometry/MakeGeom3Parabola.hpp>
+#include <geometry/Geom2BezierCurve.hpp>
+#include <geometry/Geom3BezierCurve.hpp>
+#include <geometry/Geom2BSplineCurve.hpp>
+#include <geometry/Geom2OffsetCurve.hpp>
+#include <geometry/Geom3OffsetCurve.hpp>
+TEST_CASE("test the arc length parameter over the total length of the curve - given arc length - 2D", "[geometry][ComputePointsAbscissa][case18]")
+{
+	SECTION("circle")
+    {
+        double r = 2.0;
+        double l = 19;
+        std::shared_ptr<Geom2Curve> c = MakeGeom2Circle(Point2(0.0, 0.0), 2.0).Value();
+        AdaptorGeom2Curve circle(c);
+        ComputePointsAbscissa cpa(circle, l, 0.0);
+        double angle1 = l / r;
+        double x = r * cos(angle1);
+        double y = r * sin(angle1);
+        double param = cpa.Parameter();
+        Point2 s = circle.Value(param);
+        Point2 s1(x, y);
+        CHECK(angle1 == cpa.Parameter());
+        CHECK(s.X() == s1.X());
+        CHECK(s.Y() == s1.Y());
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API ComputePointsAbscissa(const Adaptor3Curve& c, double abscissa, double u0, double ui, double tol)	 @param tol The tolerance
+	 @param ui The initial guess of the parameter
+	 @param u0 The starting parameter
+	 @param abscissa The arc length
+	 @param c The curve
+	 @brief Compute the parameter of a point on a 3D curve with given arc length, an initial guess, and a tolerance
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <geometry/MakeGeom2Circle.hpp>
+#include <geometry/AdaptorGeom2Curve.hpp>
+#include <geometry/ComputePointsAbscissa.hpp>
+#include <geometry/MakeGeom3Circle.hpp>
+#include <geometry/AdaptorGeom3Curve.hpp>
+#include <geometry/MakeGeom2Hyperbola.hpp>
+#include <geometry/Geom2Ellipse.hpp>
+#include <geometry/MakeGeom2Ellipse.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <geometry/MakeGeom3Ellipse.hpp>
+#include <geometry/MakeGeom3Hyperbola.hpp>
+#include <geometry/Geom2Line.hpp>
+#include <geometry/Geom2TrimmedCurve.hpp>
+#include <geometry/Geom3Line.hpp>
+#include <geometry/Geom3TrimmedCurve.hpp>
+#include<modeling/MakeEdge.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <geometry/GeometryTool.hpp>
+#include <geometry/Geom2Parabola.hpp>
+#include <geometry/MakeGeom2Parabola.hpp>
+#include <geometry/MakeGeom3Parabola.hpp>
+#include <geometry/Geom2BezierCurve.hpp>
+#include <geometry/Geom3BezierCurve.hpp>
+#include <geometry/Geom2BSplineCurve.hpp>
+#include <geometry/Geom2OffsetCurve.hpp>
+#include <geometry/Geom3OffsetCurve.hpp>
+TEST_CASE("test the arc length parameter over the total length of the curve - given arc length - 3D", "[geometry][ComputePointsAbscissa][case19]")
+{
+	SECTION("circle")
+    {
+        Frame3 frame;
+        double r = 2.0;
+        double l = 13;
+        std::shared_ptr<Geom3Curve> c = MakeGeom3Circle(frame, r).Value();
+        AdaptorGeom3Curve circle(c);
+        ComputePointsAbscissa cpa(circle, 13, 0.0);
+        double angle1 = l / r;
+        double x = r * cos(angle1);
+        double y = r * sin(angle1);
+        double z = 0;
+        double param = cpa.Parameter();
+        Point3 s = circle.Value(param);
+        Point3 s1(x, y, z);
+        CHECK(angle1 == cpa.Parameter());
+        CHECK(s.X() == s1.X());
+        CHECK(s.Y() == s1.Y());
+        CHECK(s.Z() == s1.Z());
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API ComputePointsAbscissa(const Adaptor2Curve& c, double abscissa, double u0, double ui, double tol)	 @param tol The tolerance
+	 @param ui The initial guess of the parameter
+	 @param u0 The starting parameter
+	 @param abscissa The arc length
+	 @param c The curve
+	 @brief Compute the parameter of a point on a 2D curve with given arc length, an initial guess, and a tolerance
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <geometry/MakeGeom2Circle.hpp>
+#include <geometry/AdaptorGeom2Curve.hpp>
+#include <geometry/ComputePointsAbscissa.hpp>
+#include <geometry/MakeGeom3Circle.hpp>
+#include <geometry/AdaptorGeom3Curve.hpp>
+#include <geometry/MakeGeom2Hyperbola.hpp>
+#include <geometry/Geom2Ellipse.hpp>
+#include <geometry/MakeGeom2Ellipse.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <geometry/MakeGeom3Ellipse.hpp>
+#include <geometry/MakeGeom3Hyperbola.hpp>
+#include <geometry/Geom2Line.hpp>
+#include <geometry/Geom2TrimmedCurve.hpp>
+#include <geometry/Geom3Line.hpp>
+#include <geometry/Geom3TrimmedCurve.hpp>
+#include<modeling/MakeEdge.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <geometry/GeometryTool.hpp>
+#include <geometry/Geom2Parabola.hpp>
+#include <geometry/MakeGeom2Parabola.hpp>
+#include <geometry/MakeGeom3Parabola.hpp>
+#include <geometry/Geom2BezierCurve.hpp>
+#include <geometry/Geom3BezierCurve.hpp>
+#include <geometry/Geom2BSplineCurve.hpp>
+#include <geometry/Geom2OffsetCurve.hpp>
+#include <geometry/Geom3OffsetCurve.hpp>
+TEST_CASE("test the arc length parameter over the total length of the curve - given arc length - 2D", "[geometry][ComputePointsAbscissa][case18]")
+{
+	SECTION("circle")
+    {
+        double r = 2.0;
+        double l = 19;
+        std::shared_ptr<Geom2Curve> c = MakeGeom2Circle(Point2(0.0, 0.0), 2.0).Value();
+        AdaptorGeom2Curve circle(c);
+        ComputePointsAbscissa cpa(circle, l, 0.0);
+        double angle1 = l / r;
+        double x = r * cos(angle1);
+        double y = r * sin(angle1);
+        double param = cpa.Parameter();
+        Point2 s = circle.Value(param);
+        Point2 s1(x, y);
+        CHECK(angle1 == cpa.Parameter());
+        CHECK(s.X() == s1.X());
+        CHECK(s.Y() == s1.Y());
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API double Parameter()	 @return The parameter of the point
+	 @brief Get the parameter of the point
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <geometry/MakeGeom2Circle.hpp>
+#include <geometry/AdaptorGeom2Curve.hpp>
+#include <geometry/ComputePointsAbscissa.hpp>
+#include <geometry/MakeGeom3Circle.hpp>
+#include <geometry/AdaptorGeom3Curve.hpp>
+#include <geometry/MakeGeom2Hyperbola.hpp>
+#include <geometry/Geom2Ellipse.hpp>
+#include <geometry/MakeGeom2Ellipse.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <geometry/MakeGeom3Ellipse.hpp>
+#include <geometry/MakeGeom3Hyperbola.hpp>
+#include <geometry/Geom2Line.hpp>
+#include <geometry/Geom2TrimmedCurve.hpp>
+#include <geometry/Geom3Line.hpp>
+#include <geometry/Geom3TrimmedCurve.hpp>
+#include<modeling/MakeEdge.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <geometry/GeometryTool.hpp>
+#include <geometry/Geom2Parabola.hpp>
+#include <geometry/MakeGeom2Parabola.hpp>
+#include <geometry/MakeGeom3Parabola.hpp>
+#include <geometry/Geom2BezierCurve.hpp>
+#include <geometry/Geom3BezierCurve.hpp>
+#include <geometry/Geom2BSplineCurve.hpp>
+#include <geometry/Geom2OffsetCurve.hpp>
+#include <geometry/Geom3OffsetCurve.hpp>
+TEST_CASE("test the arc length parameter over the total length of the curve - given arc length - 2D", "[geometry][ComputePointsAbscissa][case18]")
+{
+	SECTION("circle")
+    {
+        double r = 2.0;
+        double l = 19;
+        std::shared_ptr<Geom2Curve> c = MakeGeom2Circle(Point2(0.0, 0.0), 2.0).Value();
+        AdaptorGeom2Curve circle(c);
+        ComputePointsAbscissa cpa(circle, l, 0.0);
+        double angle1 = l / r;
+        double x = r * cos(angle1);
+        double y = r * sin(angle1);
+        double param = cpa.Parameter();
+        Point2 s = circle.Value(param);
+        Point2 s1(x, y);
+        CHECK(angle1 == cpa.Parameter());
+        CHECK(s.X() == s1.X());
+        CHECK(s.Y() == s1.Y());
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API static double Length(const Adaptor3Curve& c, double u1, double u2, double tol)	 @return The length of a curve in a given interval
+	 @param tol The tolerance
+	 @param u2 The last parameter
+	 @param u1 The first parameter
+	 @param c The curve
+	 @brief Compute the length of a 3D curve in a given interval with a tolerance
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <geometry/MakeGeom2Circle.hpp>
+#include <geometry/AdaptorGeom2Curve.hpp>
+#include <geometry/ComputePointsAbscissa.hpp>
+#include <geometry/MakeGeom3Circle.hpp>
+#include <geometry/AdaptorGeom3Curve.hpp>
+#include <geometry/MakeGeom2Hyperbola.hpp>
+#include <geometry/Geom2Ellipse.hpp>
+#include <geometry/MakeGeom2Ellipse.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <geometry/MakeGeom3Ellipse.hpp>
+#include <geometry/MakeGeom3Hyperbola.hpp>
+#include <geometry/Geom2Line.hpp>
+#include <geometry/Geom2TrimmedCurve.hpp>
+#include <geometry/Geom3Line.hpp>
+#include <geometry/Geom3TrimmedCurve.hpp>
+#include<modeling/MakeEdge.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <geometry/GeometryTool.hpp>
+#include <geometry/Geom2Parabola.hpp>
+#include <geometry/MakeGeom2Parabola.hpp>
+#include <geometry/MakeGeom3Parabola.hpp>
+#include <geometry/Geom2BezierCurve.hpp>
+#include <geometry/Geom3BezierCurve.hpp>
+#include <geometry/Geom2BSplineCurve.hpp>
+#include <geometry/Geom2OffsetCurve.hpp>
+#include <geometry/Geom3OffsetCurve.hpp>
+TEST_CASE("test the arc length parameter over the total length of the curve - given arc length - 3D", "[geometry][ComputePointsAbscissa][case19]")
+{
+	SECTION("circle")
+    {
+        Frame3 frame;
+        double r = 2.0;
+        double l = 13;
+        std::shared_ptr<Geom3Curve> c = MakeGeom3Circle(frame, r).Value();
+        AdaptorGeom3Curve circle(c);
+        ComputePointsAbscissa cpa(circle, 13, 0.0);
+        double angle1 = l / r;
+        double x = r * cos(angle1);
+        double y = r * sin(angle1);
+        double z = 0;
+        double param = cpa.Parameter();
+        Point3 s = circle.Value(param);
+        Point3 s1(x, y, z);
+        CHECK(angle1 == cpa.Parameter());
+        CHECK(s.X() == s1.X());
+        CHECK(s.Y() == s1.Y());
+        CHECK(s.Z() == s1.Z());
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API ComputePointsAbscissa(double tol, const Adaptor3Curve& c, double abscissa, double u0)	 @param u0 The starting parameter
+	 @param abscissa The arc length
+	 @param c The curve
+	 @param tol The tolerance
+	 @brief Compute the parameter of a point on a 3D curve with given arc length and a tolerance
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <geometry/MakeGeom2Circle.hpp>
+#include <geometry/AdaptorGeom2Curve.hpp>
+#include <geometry/ComputePointsAbscissa.hpp>
+#include <geometry/MakeGeom3Circle.hpp>
+#include <geometry/AdaptorGeom3Curve.hpp>
+#include <geometry/MakeGeom2Hyperbola.hpp>
+#include <geometry/Geom2Ellipse.hpp>
+#include <geometry/MakeGeom2Ellipse.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <geometry/MakeGeom3Ellipse.hpp>
+#include <geometry/MakeGeom3Hyperbola.hpp>
+#include <geometry/Geom2Line.hpp>
+#include <geometry/Geom2TrimmedCurve.hpp>
+#include <geometry/Geom3Line.hpp>
+#include <geometry/Geom3TrimmedCurve.hpp>
+#include<modeling/MakeEdge.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <geometry/GeometryTool.hpp>
+#include <geometry/Geom2Parabola.hpp>
+#include <geometry/MakeGeom2Parabola.hpp>
+#include <geometry/MakeGeom3Parabola.hpp>
+#include <geometry/Geom2BezierCurve.hpp>
+#include <geometry/Geom3BezierCurve.hpp>
+#include <geometry/Geom2BSplineCurve.hpp>
+#include <geometry/Geom2OffsetCurve.hpp>
+#include <geometry/Geom3OffsetCurve.hpp>
+TEST_CASE("test that the arc length is 0 - given arc length - 3D", "[geometry][ComputePointsAbscissa][case27]")
+{
+	SECTION("circle")
+    {
+        Frame3 frame;
+        double r = 2.0;
+        double l = 0.0;
+        std::shared_ptr<Geom3Curve> c = MakeGeom3Circle(frame, r).Value();
+        AdaptorGeom3Curve circle(c);
+        ComputePointsAbscissa cpa(circle, 0.0, 0.0);
+        double angle1 = l / r;
+        double x = r * cos(angle1);
+        double y = r * sin(angle1);
+        double z = 0;
+        double param = cpa.Parameter();
+        Point3 s = circle.Value(param);
+        Point3 s1(x, y, z);
+        CHECK(angle1 == cpa.Parameter());
+        CHECK(s.X() == s1.X());
+        CHECK(s.Y() == s1.Y());
+        CHECK(s.Z() == s1.Z());
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API ComputePointsAbscissa(double tol, const Adaptor2Curve& c, double abscissa, double u0)	 @param u0 The starting parameter
+	 @param abscissa The arc length
+	 @param c The curve
+	 @param tol The tolerance
+	 @brief Compute the parameter of a point on a 2D curve with given arc length and a tolerance
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <geometry/MakeGeom2Circle.hpp>
+#include <geometry/AdaptorGeom2Curve.hpp>
+#include <geometry/ComputePointsAbscissa.hpp>
+#include <geometry/MakeGeom3Circle.hpp>
+#include <geometry/AdaptorGeom3Curve.hpp>
+#include <geometry/MakeGeom2Hyperbola.hpp>
+#include <geometry/Geom2Ellipse.hpp>
+#include <geometry/MakeGeom2Ellipse.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <geometry/MakeGeom3Ellipse.hpp>
+#include <geometry/MakeGeom3Hyperbola.hpp>
+#include <geometry/Geom2Line.hpp>
+#include <geometry/Geom2TrimmedCurve.hpp>
+#include <geometry/Geom3Line.hpp>
+#include <geometry/Geom3TrimmedCurve.hpp>
+#include<modeling/MakeEdge.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <geometry/GeometryTool.hpp>
+#include <geometry/Geom2Parabola.hpp>
+#include <geometry/MakeGeom2Parabola.hpp>
+#include <geometry/MakeGeom3Parabola.hpp>
+#include <geometry/Geom2BezierCurve.hpp>
+#include <geometry/Geom3BezierCurve.hpp>
+#include <geometry/Geom2BSplineCurve.hpp>
+#include <geometry/Geom2OffsetCurve.hpp>
+#include <geometry/Geom3OffsetCurve.hpp>
+TEST_CASE("test that the arc length is 0 - given arc length - 2D", "[geometry][ComputePointsAbscissa][case26]")
+{
+	SECTION("circle")
+    {
+        double r = 2.0;
+        double l = 0.0;
+        std::shared_ptr<Geom2Curve> c = MakeGeom2Circle(Point2(0.0, 0.0), 2.0).Value();
+        AdaptorGeom2Curve circle(c);
+        ComputePointsAbscissa cpa(circle, 0.0, 0.0);
+        double angle1 = l / r;
+        double x = r * cos(angle1);
+        double y = r * sin(angle1);
+        double param = cpa.Parameter();
+        Point2 s = circle.Value(param);
+        Point2 s1(x, y);
+        CHECK(angle1 == cpa.Parameter());
+        CHECK(s.X() == s1.X());
+        CHECK(s.Y() == s1.Y());
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API ComputePointsAbscissa(const Adaptor3Curve& c, double abscissa, double u0)	 @param u0 The starting parameter
+	 @param abscissa The arc length
+	 @param c The curve
+	 @brief Compute the parameter of a point on a 3D curve with given arc length
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <geometry/MakeGeom2Circle.hpp>
+#include <geometry/AdaptorGeom2Curve.hpp>
+#include <geometry/ComputePointsAbscissa.hpp>
+#include <geometry/MakeGeom3Circle.hpp>
+#include <geometry/AdaptorGeom3Curve.hpp>
+#include <geometry/MakeGeom2Hyperbola.hpp>
+#include <geometry/Geom2Ellipse.hpp>
+#include <geometry/MakeGeom2Ellipse.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <geometry/MakeGeom3Ellipse.hpp>
+#include <geometry/MakeGeom3Hyperbola.hpp>
+#include <geometry/Geom2Line.hpp>
+#include <geometry/Geom2TrimmedCurve.hpp>
+#include <geometry/Geom3Line.hpp>
+#include <geometry/Geom3TrimmedCurve.hpp>
+#include<modeling/MakeEdge.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <geometry/GeometryTool.hpp>
+#include <geometry/Geom2Parabola.hpp>
+#include <geometry/MakeGeom2Parabola.hpp>
+#include <geometry/MakeGeom3Parabola.hpp>
+#include <geometry/Geom2BezierCurve.hpp>
+#include <geometry/Geom3BezierCurve.hpp>
+#include <geometry/Geom2BSplineCurve.hpp>
+#include <geometry/Geom2OffsetCurve.hpp>
+#include <geometry/Geom3OffsetCurve.hpp>
+TEST_CASE("test that the arc length is 0 - given arc length - 3D", "[geometry][ComputePointsAbscissa][case27]")
+{
+	SECTION("circle")
+    {
+        Frame3 frame;
+        double r = 2.0;
+        double l = 0.0;
+        std::shared_ptr<Geom3Curve> c = MakeGeom3Circle(frame, r).Value();
+        AdaptorGeom3Curve circle(c);
+        ComputePointsAbscissa cpa(circle, 0.0, 0.0);
+        double angle1 = l / r;
+        double x = r * cos(angle1);
+        double y = r * sin(angle1);
+        double z = 0;
+        double param = cpa.Parameter();
+        Point3 s = circle.Value(param);
+        Point3 s1(x, y, z);
+        CHECK(angle1 == cpa.Parameter());
+        CHECK(s.X() == s1.X());
+        CHECK(s.Y() == s1.Y());
+        CHECK(s.Z() == s1.Z());
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API ComputePointsAbscissa(const Adaptor2Curve& c, double abscissa, double u0)	 @param u0 The starting parameter
+	 @param abscissa The arc length
+	 @param c The curve
+	 @brief Compute the parameter of a point on a 2D curve with given arc length
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <geometry/MakeGeom2Circle.hpp>
+#include <geometry/AdaptorGeom2Curve.hpp>
+#include <geometry/ComputePointsAbscissa.hpp>
+#include <geometry/MakeGeom3Circle.hpp>
+#include <geometry/AdaptorGeom3Curve.hpp>
+#include <geometry/MakeGeom2Hyperbola.hpp>
+#include <geometry/Geom2Ellipse.hpp>
+#include <geometry/MakeGeom2Ellipse.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <geometry/MakeGeom3Ellipse.hpp>
+#include <geometry/MakeGeom3Hyperbola.hpp>
+#include <geometry/Geom2Line.hpp>
+#include <geometry/Geom2TrimmedCurve.hpp>
+#include <geometry/Geom3Line.hpp>
+#include <geometry/Geom3TrimmedCurve.hpp>
+#include<modeling/MakeEdge.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <geometry/GeometryTool.hpp>
+#include <geometry/Geom2Parabola.hpp>
+#include <geometry/MakeGeom2Parabola.hpp>
+#include <geometry/MakeGeom3Parabola.hpp>
+#include <geometry/Geom2BezierCurve.hpp>
+#include <geometry/Geom3BezierCurve.hpp>
+#include <geometry/Geom2BSplineCurve.hpp>
+#include <geometry/Geom2OffsetCurve.hpp>
+#include <geometry/Geom3OffsetCurve.hpp>
+TEST_CASE("test that the arc length is 0 - given arc length - 2D", "[geometry][ComputePointsAbscissa][case26]")
+{
+	SECTION("circle")
+    {
+        double r = 2.0;
+        double l = 0.0;
+        std::shared_ptr<Geom2Curve> c = MakeGeom2Circle(Point2(0.0, 0.0), 2.0).Value();
+        AdaptorGeom2Curve circle(c);
+        ComputePointsAbscissa cpa(circle, 0.0, 0.0);
+        double angle1 = l / r;
+        double x = r * cos(angle1);
+        double y = r * sin(angle1);
+        double param = cpa.Parameter();
+        Point2 s = circle.Value(param);
+        Point2 s1(x, y);
+        CHECK(angle1 == cpa.Parameter());
+        CHECK(s.X() == s1.X());
+        CHECK(s.Y() == s1.Y());
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API ComputePointsAbscissa(const Adaptor3Curve& c, double abscissa, double u0, double ui)	 @param ui The initial guess of the parameter
+	 @param u0 The starting parameter
+	 @param abscissa The arc length
+	 @param c The curve
+	 @brief Compute the parameter of a point on a 3D curve with given arc length and an initial guess
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <geometry/MakeGeom2Circle.hpp>
+#include <geometry/AdaptorGeom2Curve.hpp>
+#include <geometry/ComputePointsAbscissa.hpp>
+#include <geometry/MakeGeom3Circle.hpp>
+#include <geometry/AdaptorGeom3Curve.hpp>
+#include <geometry/MakeGeom2Hyperbola.hpp>
+#include <geometry/Geom2Ellipse.hpp>
+#include <geometry/MakeGeom2Ellipse.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <geometry/MakeGeom3Ellipse.hpp>
+#include <geometry/MakeGeom3Hyperbola.hpp>
+#include <geometry/Geom2Line.hpp>
+#include <geometry/Geom2TrimmedCurve.hpp>
+#include <geometry/Geom3Line.hpp>
+#include <geometry/Geom3TrimmedCurve.hpp>
+#include<modeling/MakeEdge.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <geometry/GeometryTool.hpp>
+#include <geometry/Geom2Parabola.hpp>
+#include <geometry/MakeGeom2Parabola.hpp>
+#include <geometry/MakeGeom3Parabola.hpp>
+#include <geometry/Geom2BezierCurve.hpp>
+#include <geometry/Geom3BezierCurve.hpp>
+#include <geometry/Geom2BSplineCurve.hpp>
+#include <geometry/Geom2OffsetCurve.hpp>
+#include <geometry/Geom3OffsetCurve.hpp>
+TEST_CASE("test that the arc length is 0 - given arc length - 3D", "[geometry][ComputePointsAbscissa][case27]")
+{
+	SECTION("circle")
+    {
+        Frame3 frame;
+        double r = 2.0;
+        double l = 0.0;
+        std::shared_ptr<Geom3Curve> c = MakeGeom3Circle(frame, r).Value();
+        AdaptorGeom3Curve circle(c);
+        ComputePointsAbscissa cpa(circle, 0.0, 0.0);
+        double angle1 = l / r;
+        double x = r * cos(angle1);
+        double y = r * sin(angle1);
+        double z = 0;
+        double param = cpa.Parameter();
+        Point3 s = circle.Value(param);
+        Point3 s1(x, y, z);
+        CHECK(angle1 == cpa.Parameter());
+        CHECK(s.X() == s1.X());
+        CHECK(s.Y() == s1.Y());
+        CHECK(s.Z() == s1.Z());
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API ComputePointsAbscissa(const Adaptor2Curve& c, double abscissa, double u0, double ui)	 @param ui The initial guess of the parameter
+	 @param u0 The starting parameter
+	 @param abscissa The arc length
+	 @param c The curve
+	 @brief Compute the parameter of a point on a 2D curve with given arc length and an initial guess
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <geometry/MakeGeom2Circle.hpp>
+#include <geometry/AdaptorGeom2Curve.hpp>
+#include <geometry/ComputePointsAbscissa.hpp>
+#include <geometry/MakeGeom3Circle.hpp>
+#include <geometry/AdaptorGeom3Curve.hpp>
+#include <geometry/MakeGeom2Hyperbola.hpp>
+#include <geometry/Geom2Ellipse.hpp>
+#include <geometry/MakeGeom2Ellipse.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <geometry/MakeGeom3Ellipse.hpp>
+#include <geometry/MakeGeom3Hyperbola.hpp>
+#include <geometry/Geom2Line.hpp>
+#include <geometry/Geom2TrimmedCurve.hpp>
+#include <geometry/Geom3Line.hpp>
+#include <geometry/Geom3TrimmedCurve.hpp>
+#include<modeling/MakeEdge.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <geometry/GeometryTool.hpp>
+#include <geometry/Geom2Parabola.hpp>
+#include <geometry/MakeGeom2Parabola.hpp>
+#include <geometry/MakeGeom3Parabola.hpp>
+#include <geometry/Geom2BezierCurve.hpp>
+#include <geometry/Geom3BezierCurve.hpp>
+#include <geometry/Geom2BSplineCurve.hpp>
+#include <geometry/Geom2OffsetCurve.hpp>
+#include <geometry/Geom3OffsetCurve.hpp>
+TEST_CASE("test that the arc length is 0 - given arc length - 2D", "[geometry][ComputePointsAbscissa][case26]")
+{
+	SECTION("circle")
+    {
+        double r = 2.0;
+        double l = 0.0;
+        std::shared_ptr<Geom2Curve> c = MakeGeom2Circle(Point2(0.0, 0.0), 2.0).Value();
+        AdaptorGeom2Curve circle(c);
+        ComputePointsAbscissa cpa(circle, 0.0, 0.0);
+        double angle1 = l / r;
+        double x = r * cos(angle1);
+        double y = r * sin(angle1);
+        double param = cpa.Parameter();
+        Point2 s = circle.Value(param);
+        Point2 s1(x, y);
+        CHECK(angle1 == cpa.Parameter());
+        CHECK(s.X() == s1.X());
+        CHECK(s.Y() == s1.Y());
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API ComputePointsAbscissa(const Adaptor3Curve& c, double abscissa, double u0, double ui, double tol)	 @param tol The tolerance
+	 @param ui The initial guess of the parameter
+	 @param u0 The starting parameter
+	 @param abscissa The arc length
+	 @param c The curve
+	 @brief Compute the parameter of a point on a 3D curve with given arc length, an initial guess, and a tolerance
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <geometry/MakeGeom2Circle.hpp>
+#include <geometry/AdaptorGeom2Curve.hpp>
+#include <geometry/ComputePointsAbscissa.hpp>
+#include <geometry/MakeGeom3Circle.hpp>
+#include <geometry/AdaptorGeom3Curve.hpp>
+#include <geometry/MakeGeom2Hyperbola.hpp>
+#include <geometry/Geom2Ellipse.hpp>
+#include <geometry/MakeGeom2Ellipse.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <geometry/MakeGeom3Ellipse.hpp>
+#include <geometry/MakeGeom3Hyperbola.hpp>
+#include <geometry/Geom2Line.hpp>
+#include <geometry/Geom2TrimmedCurve.hpp>
+#include <geometry/Geom3Line.hpp>
+#include <geometry/Geom3TrimmedCurve.hpp>
+#include<modeling/MakeEdge.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <geometry/GeometryTool.hpp>
+#include <geometry/Geom2Parabola.hpp>
+#include <geometry/MakeGeom2Parabola.hpp>
+#include <geometry/MakeGeom3Parabola.hpp>
+#include <geometry/Geom2BezierCurve.hpp>
+#include <geometry/Geom3BezierCurve.hpp>
+#include <geometry/Geom2BSplineCurve.hpp>
+#include <geometry/Geom2OffsetCurve.hpp>
+#include <geometry/Geom3OffsetCurve.hpp>
+TEST_CASE("test that the arc length is 0 - given arc length - 3D", "[geometry][ComputePointsAbscissa][case27]")
+{
+	SECTION("circle")
+    {
+        Frame3 frame;
+        double r = 2.0;
+        double l = 0.0;
+        std::shared_ptr<Geom3Curve> c = MakeGeom3Circle(frame, r).Value();
+        AdaptorGeom3Curve circle(c);
+        ComputePointsAbscissa cpa(circle, 0.0, 0.0);
+        double angle1 = l / r;
+        double x = r * cos(angle1);
+        double y = r * sin(angle1);
+        double z = 0;
+        double param = cpa.Parameter();
+        Point3 s = circle.Value(param);
+        Point3 s1(x, y, z);
+        CHECK(angle1 == cpa.Parameter());
+        CHECK(s.X() == s1.X());
+        CHECK(s.Y() == s1.Y());
+        CHECK(s.Z() == s1.Z());
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API ComputePointsAbscissa(const Adaptor2Curve& c, double abscissa, double u0, double ui, double tol)	 @param tol The tolerance
+	 @param ui The initial guess of the parameter
+	 @param u0 The starting parameter
+	 @param abscissa The arc length
+	 @param c The curve
+	 @brief Compute the parameter of a point on a 2D curve with given arc length, an initial guess, and a tolerance
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <geometry/MakeGeom2Circle.hpp>
+#include <geometry/AdaptorGeom2Curve.hpp>
+#include <geometry/ComputePointsAbscissa.hpp>
+#include <geometry/MakeGeom3Circle.hpp>
+#include <geometry/AdaptorGeom3Curve.hpp>
+#include <geometry/MakeGeom2Hyperbola.hpp>
+#include <geometry/Geom2Ellipse.hpp>
+#include <geometry/MakeGeom2Ellipse.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <geometry/MakeGeom3Ellipse.hpp>
+#include <geometry/MakeGeom3Hyperbola.hpp>
+#include <geometry/Geom2Line.hpp>
+#include <geometry/Geom2TrimmedCurve.hpp>
+#include <geometry/Geom3Line.hpp>
+#include <geometry/Geom3TrimmedCurve.hpp>
+#include<modeling/MakeEdge.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <geometry/GeometryTool.hpp>
+#include <geometry/Geom2Parabola.hpp>
+#include <geometry/MakeGeom2Parabola.hpp>
+#include <geometry/MakeGeom3Parabola.hpp>
+#include <geometry/Geom2BezierCurve.hpp>
+#include <geometry/Geom3BezierCurve.hpp>
+#include <geometry/Geom2BSplineCurve.hpp>
+#include <geometry/Geom2OffsetCurve.hpp>
+#include <geometry/Geom3OffsetCurve.hpp>
+TEST_CASE("test that the arc length is 0 - given arc length - 2D", "[geometry][ComputePointsAbscissa][case26]")
+{
+	SECTION("circle")
+    {
+        double r = 2.0;
+        double l = 0.0;
+        std::shared_ptr<Geom2Curve> c = MakeGeom2Circle(Point2(0.0, 0.0), 2.0).Value();
+        AdaptorGeom2Curve circle(c);
+        ComputePointsAbscissa cpa(circle, 0.0, 0.0);
+        double angle1 = l / r;
+        double x = r * cos(angle1);
+        double y = r * sin(angle1);
+        double param = cpa.Parameter();
+        Point2 s = circle.Value(param);
+        Point2 s1(x, y);
+        CHECK(angle1 == cpa.Parameter());
+        CHECK(s.X() == s1.X());
+        CHECK(s.Y() == s1.Y());
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API double Parameter()	 @return The parameter of the point
+	 @brief Get the parameter of the point
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <geometry/MakeGeom2Circle.hpp>
+#include <geometry/AdaptorGeom2Curve.hpp>
+#include <geometry/ComputePointsAbscissa.hpp>
+#include <geometry/MakeGeom3Circle.hpp>
+#include <geometry/AdaptorGeom3Curve.hpp>
+#include <geometry/MakeGeom2Hyperbola.hpp>
+#include <geometry/Geom2Ellipse.hpp>
+#include <geometry/MakeGeom2Ellipse.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <geometry/MakeGeom3Ellipse.hpp>
+#include <geometry/MakeGeom3Hyperbola.hpp>
+#include <geometry/Geom2Line.hpp>
+#include <geometry/Geom2TrimmedCurve.hpp>
+#include <geometry/Geom3Line.hpp>
+#include <geometry/Geom3TrimmedCurve.hpp>
+#include<modeling/MakeEdge.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <geometry/GeometryTool.hpp>
+#include <geometry/Geom2Parabola.hpp>
+#include <geometry/MakeGeom2Parabola.hpp>
+#include <geometry/MakeGeom3Parabola.hpp>
+#include <geometry/Geom2BezierCurve.hpp>
+#include <geometry/Geom3BezierCurve.hpp>
+#include <geometry/Geom2BSplineCurve.hpp>
+#include <geometry/Geom2OffsetCurve.hpp>
+#include <geometry/Geom3OffsetCurve.hpp>
+TEST_CASE("test that the arc length is 0 - given arc length - 2D", "[geometry][ComputePointsAbscissa][case26]")
+{
+	SECTION("circle")
+    {
+        double r = 2.0;
+        double l = 0.0;
+        std::shared_ptr<Geom2Curve> c = MakeGeom2Circle(Point2(0.0, 0.0), 2.0).Value();
+        AdaptorGeom2Curve circle(c);
+        ComputePointsAbscissa cpa(circle, 0.0, 0.0);
+        double angle1 = l / r;
+        double x = r * cos(angle1);
+        double y = r * sin(angle1);
+        double param = cpa.Parameter();
+        Point2 s = circle.Value(param);
+        Point2 s1(x, y);
+        CHECK(angle1 == cpa.Parameter());
+        CHECK(s.X() == s1.X());
+        CHECK(s.Y() == s1.Y());
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API ComputePointsAbscissa(double tol, const Adaptor3Curve& c, double abscissa, double u0)	 @param u0 The starting parameter
+	 @param abscissa The arc length
+	 @param c The curve
+	 @param tol The tolerance
+	 @brief Compute the parameter of a point on a 3D curve with given arc length and a tolerance
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <geometry/MakeGeom2Circle.hpp>
+#include <geometry/AdaptorGeom2Curve.hpp>
+#include <geometry/ComputePointsAbscissa.hpp>
+#include <geometry/MakeGeom3Circle.hpp>
+#include <geometry/AdaptorGeom3Curve.hpp>
+#include <geometry/MakeGeom2Hyperbola.hpp>
+#include <geometry/Geom2Ellipse.hpp>
+#include <geometry/MakeGeom2Ellipse.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <geometry/MakeGeom3Ellipse.hpp>
+#include <geometry/MakeGeom3Hyperbola.hpp>
+#include <geometry/Geom2Line.hpp>
+#include <geometry/Geom2TrimmedCurve.hpp>
+#include <geometry/Geom3Line.hpp>
+#include <geometry/Geom3TrimmedCurve.hpp>
+#include<modeling/MakeEdge.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <geometry/GeometryTool.hpp>
+#include <geometry/Geom2Parabola.hpp>
+#include <geometry/MakeGeom2Parabola.hpp>
+#include <geometry/MakeGeom3Parabola.hpp>
+#include <geometry/Geom2BezierCurve.hpp>
+#include <geometry/Geom3BezierCurve.hpp>
+#include <geometry/Geom2BSplineCurve.hpp>
+#include <geometry/Geom2OffsetCurve.hpp>
+#include <geometry/Geom3OffsetCurve.hpp>
+TEST_CASE("test the arc length is negative - given arc length - 3D", "[geometry][ComputePointsAbscissa][case10]")
+{
+	SECTION("circle")
+    {
+        Frame3 frame;
+        double r = 2.0;
+        double l = -1.0;
+        std::shared_ptr<Geom3Curve> c = MakeGeom3Circle(frame, r).Value();
+        AdaptorGeom3Curve circle(c);
+        ComputePointsAbscissa cpa(circle, -1.0, 0.0);
+        double angle1 = l / r;
+        double x = r * cos(angle1);
+        double y = r * sin(angle1);
+        double z = 0;
+        double param = cpa.Parameter();
+        Point3 s = circle.Value(param);
+        Point3 s1(x, y, z);
+        CHECK(angle1 == cpa.Parameter());
+        CHECK(s.X() == s1.X());
+        CHECK(s.Y() == s1.Y());
+        CHECK(s.Z() == s1.Z());
+    }}
+}
+,

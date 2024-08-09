@@ -1,0 +1,2235 @@
+{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API BoolBRepCut()	 @details Only set the type of boolean operation to cut
+	 @brief Default constructor
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <boolean/BoolBRepCut.hpp>
+#include <modeling/MakeTorus.hpp>
+#include <modeling/MakeSphere.hpp>
+#include <modeling/MakeCone.hpp>
+#include <topology/TopoExplorer.hpp>
+#include <topology/TopoFace.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+using namespace AMCAX;
+TEST_CASE("bug1: in Debug mode: BoolBuilder  ", "[boolean][BoolBRepCut][P1][fixbug]") {
+	TopoShape torus = MakeTorus(Frame3(Point3(0.0, 0.0, 2.0), Direction3(1.0, 0.0, 0.0)), 4.0, 2.0);
+	TopoShape sphere = MakeSphere(4.0);
+	TopoShape result = BoolBRepCut(sphere, torus);
+	AMCAX::GlobalProperty prop;
+	AMCAX::BRepGlobalProperty::VolumeProperties(result, prop);
+	CHECK(prop.Mass() == Approx(153.229)); 
+	bool isWriteSuccess = AMCAX::OCCTIO::OCCTTool::Write(result, OUTPUT_PATH_PREFIX"BoolBRepCut_bug72.brep", false);
+	CHECK(isWriteSuccess == true);
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API BoolBRepCut(const TopoShape& s1, const TopoShape& s2, bool isForward = true)	 @param isForward Cut s1 by s2 if true, and cut s2 by s1 if false
+	 @param s2 The tool shape
+	 @param s1 The argument shape
+	 @brief Compute the cut operation of two shapes
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <boolean/BoolBRepCut.hpp>
+#include <modeling/MakeTorus.hpp>
+#include <modeling/MakeSphere.hpp>
+#include <modeling/MakeCone.hpp>
+#include <topology/TopoExplorer.hpp>
+#include <topology/TopoFace.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+using namespace AMCAX;
+TEST_CASE("bug1: in Debug mode: BoolBuilder  ", "[boolean][BoolBRepCut][P1][fixbug]") {
+	TopoShape torus = MakeTorus(Frame3(Point3(0.0, 0.0, 2.0), Direction3(1.0, 0.0, 0.0)), 4.0, 2.0);
+	TopoShape sphere = MakeSphere(4.0);
+	TopoShape result = BoolBRepCut(sphere, torus);
+	AMCAX::GlobalProperty prop;
+	AMCAX::BRepGlobalProperty::VolumeProperties(result, prop);
+	CHECK(prop.Mass() == Approx(153.229)); 
+	bool isWriteSuccess = AMCAX::OCCTIO::OCCTTool::Write(result, OUTPUT_PATH_PREFIX"BoolBRepCut_bug72.brep", false);
+	CHECK(isWriteSuccess == true);
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API explicit BoolBRepDefeaturing(const TopoShape& shape)	 @param shape The shape that require remove feature
+	 @brief Construct from a shape.
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <modeling/MakeBox.hpp>
+#include <modeling/MakeCylinder.hpp>
+#include <boolean/BoolBRepCut.hpp>
+#include <topomesh/BRepMeshIncrementalMesh.hpp>
+#include <io/OBJTool.hpp>
+#include <topology/TopoFace.hpp>
+#include <geometry/Geom3Surface.hpp>
+#include <topology/TopoTool.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <boolean/BoolBRepDefeaturing.hpp>
+#include <topology/TopoEdge.hpp>
+#include <common/IndexSet.hpp>
+using namespace AMCAX;
+TEST_CASE("case1: test BoolBRepDefeaturing Algorithm", "[boolean][BRepDefeaturing]")
+{
+	OUTPUT_DIRECTORY(Boolean, BRepDefeaturing);
+	TopoShape box = MakeBox(Point3(-5.0, -5.0, 0.0), Point3(5.0, 5.0, 3.0));
+	TopoShape cyl = MakeCylinder(Frame3(Point3(0.0, 0.0, 0.0), Direction3(0.0, 0.0, 1.0)), 3.0, 5.0);
+	TopoShape shape = BoolBRepCut(box, cyl);
+	OCCTIO::OCCTTool::Write(shape, outdir + "testResultTemp.brep");
+	BRepMeshIncrementalMesh meshT(shape, 0.01, true);
+	OBJTool::WriteShape(shape, outdir + "testResultTemp.obj");
+	IndexSet<TopoShape> shapeFace, shapeEdge, shapeVertex;
+	CHECK(GetTopoToolCount(shape, ShapeType::Face, shapeFace) == 7);
+	CHECK(GetTopoToolCount(shape, ShapeType::Edge, shapeEdge) == 15);
+	CHECK(GetTopoToolCount(shape, ShapeType::Vertex, shapeVertex) == 10);
+	TopoFace cy;
+	std::list<TopoShape> faceToRemove;
+	for (TopoExplorer expF(shape, ShapeType::Face); expF.More(); expF.Next())
+	{
+		TopoFace f = static_cast<const TopoFace&>(expF.Current());
+		std::shared_ptr<Geom3Surface> surface = TopoTool::Surface(f);
+		if (surface->Type() == SurfaceType::Cylinder)
+		{
+			cy = f;
+			OCCTIO::OCCTTool::Write(f, outdir + "RemoveFace.brep");
+			faceToRemove.push_back(f);
+		}
+	}
+	BoolBRepDefeaturing defeature(shape);
+	defeature.AddFaceToRemove(faceToRemove);
+	defeature.Build();
+	TopoShape newShape = defeature.Shape();
+	Point3 p(-3.0, 0.0, 1.0);
+	double tol = -1.0;
+	bool isIn = BRepClassificationTools::IsPointInFace(cy, p, tol);
+	CHECK(isIn == true);
+	for (TopoExplorer expF(newShape, ShapeType::Face); expF.More(); expF.Next())
+	{
+		TopoFace newFace = static_cast<const TopoFace&>(expF.Current());
+		bool isIn1 = BRepClassificationTools::IsPointInFace(newFace, p, tol);
+		CHECK(isIn1 == false);
+	}
+	for (TopoExplorer expF1(newShape, ShapeType::Face); expF1.More(); expF1.Next())
+	{
+		bool result;
+		TopoFace f1 = static_cast<const TopoFace&>(expF1.Current());
+		std::shared_ptr<Geom3Surface> surface1 = TopoTool::Surface(f1);
+		if (surface1->Type() == SurfaceType::Cylinder)
+		{
+			result = false;
+		}
+		else
+		{
+			result = true;
+		}
+		CHECK(result == true);
+	}
+	AMCAX::GlobalProperty props1, props2, props3;
+	IndexSet<TopoShape> newshapeFace, newshapeEdge, newshapeVertex;
+	CHECK(newShape.Type() == ShapeType::Compound);
+	CHECK(GetTopoToolCount(newShape, ShapeType::Face, newshapeFace) == 6);
+	CHECK(GetTopoToolCount(newShape, ShapeType::Edge, newshapeEdge) == 12);
+	CHECK(GetTopoToolCount(newShape, ShapeType::Vertex, newshapeVertex) == 8);
+	CHECK(GetLinearProperties(newShape,props1,true,false)== Approx(10 * 8 + 3 * 4));
+	CHECK(GetSurfaceProperties(newShape, props2, true, false) == Approx(2 * (10 * 10) + 4*(10 * 3)));
+	CHECK(GetVolumeProperties(newShape, props3, true, false) == Approx(10*10*3));
+	Point3 point = props3.CenterOfMass();
+	CHECK(point.X() == Approx(0.0).margin(1e-12));
+	CHECK(point.Y() == Approx(0.0).margin(1e-12));
+	CHECK(point.Z() == Approx(1.5).margin(1e-12));
+	std::cout << "defeature ok " << std::endl;
+	OCCTIO::OCCTTool::Write(newShape, outdir + "testResult.brep");
+	BRepMeshIncrementalMesh meshR(newShape, 0.01, true);
+	OBJTool::WriteShape(newShape, outdir + "testResult.obj");
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API BoolBRepFuse()	 @details Only set the type of boolean operation to fuse
+	 @brief Default constructor
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <boolean/BoolBRepFuse.hpp>
+#include <boolean/BoolBRepCut.hpp>
+using namespace AMCAX;
+TEST_CASE("bug1: BoolBRepFuse ", "[boolean][BoolBRepFuse][fixbug]")
+{
+	TopoShape shape1, shape2;
+	OCCTIO::OCCTTool::Read(shape1, INPUT_PATH_PREFIX"boolean/part.brep");
+	OCCTIO::OCCTTool::Read(shape2, INPUT_PATH_PREFIX"boolean/box.brep");
+	TopoShape result = BoolBRepFuse(shape1, shape2);
+	CHECK(OCCTIO::OCCTTool::Write(result, OUTPUT_PATH_PREFIX"testbug-view-556.brep"));
+	IndexSet<TopoShape> shapeFace, shapeEdge, shapeVertex ,shapeSolid;
+	CHECK( GetTopoToolCount(result, AMCAX::ShapeType::Solid, shapeSolid)==1 );
+}	
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API BoolBRepFuse(const TopoShape& s1, const TopoShape& s2)	 @param s2 The tool shape
+	 @param s1 The argument shape
+	 @brief Compute the fuse of two shapes
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <boolean/BoolBRepFuse.hpp>
+#include <boolean/BoolBRepCut.hpp>
+using namespace AMCAX;
+TEST_CASE("bug1: BoolBRepFuse ", "[boolean][BoolBRepFuse][fixbug]")
+{
+	TopoShape shape1, shape2;
+	OCCTIO::OCCTTool::Read(shape1, INPUT_PATH_PREFIX"boolean/part.brep");
+	OCCTIO::OCCTTool::Read(shape2, INPUT_PATH_PREFIX"boolean/box.brep");
+	TopoShape result = BoolBRepFuse(shape1, shape2);
+	CHECK(OCCTIO::OCCTTool::Write(result, OUTPUT_PATH_PREFIX"testbug-view-556.brep"));
+	IndexSet<TopoShape> shapeFace, shapeEdge, shapeVertex ,shapeSolid;
+	CHECK( GetTopoToolCount(result, AMCAX::ShapeType::Solid, shapeSolid)==1 );
+}	
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API BoolBRepSection(const TopoShape& s1, const TopoShape& s2, bool perfomNow = true)	 @param perfomNow If true, the operation is performed immediately; if false, the Build() function has to be called manually
+	 @param s2 The tool shape
+	 @param s1 The argument shape
+	 @brief Compute the section of two shapes
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <boolean/BoolBRepSection.hpp>
+#include <common/CartesianCoordinateSystem.hpp>
+#include <math/LineT.hpp>
+#include <modeling/MakePrism.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakeFace.hpp>
+#include <geometry/Geom3BezierCurve.hpp>
+#include <modeling/MakeRevol.hpp>
+#include <geometry/Geom3CylindricalSurface.hpp>
+#include <topology/TopoTool.hpp>
+using namespace AMCAX;
+TEST_CASE("bug1: BoolBRepSection ", "[boolean][BoolBRepSection][fixbug]")
+{
+	Line3 line(CartesianCoordinateSystem::OZ());
+	TopoShape infinitePlane1 = MakePrism(MakeEdge(line, 0.0, 1.0), Direction3(-1.0, 0.0, 0.0), false);
+	TopoShape infinitePlane2 = MakePrism(MakeEdge(line, 0.0, 1.0), Direction3(1.0, 0.0, 0.0), false);
+	TopoShape infinitePlane3 = MakePrism(MakeEdge(line, 0.0, 1.0), Direction3(0.0, 1.0, 0.0), false);
+	TopoShape infinitePlane4 = MakePrism(MakeEdge(line, 0.0, 1.0), Direction3(0.0, -1.0, 0.0), false);
+	std::vector<Point3> poles{ Point3(1.0, 0.0, 0.0), Point3(0.8, 0.0, 0.5), Point3(1.0, 0.0, 1.0) };
+	auto bz = std::make_shared<Geom3BezierCurve>(poles);
+	TopoEdge e2 = MakeEdge(bz);
+	TopoShape revolshape = MakeRevol(e2, CartesianCoordinateSystem::OZ());
+	auto surface1 = std::make_shared<Geom3CylindricalSurface>(Frame3(), 1.0);
+	auto surface2 = TopoTool::Surface(TopoCast::Face(revolshape));
+	TopoShape result1 = BoolBRepSection(infinitePlane1, surface2); 
+	TopoShape result2 = BoolBRepSection(infinitePlane2, surface2); 
+	TopoShape result3 = BoolBRepSection(infinitePlane3, surface2); 
+	TopoShape result4 = BoolBRepSection(infinitePlane4, surface2); 
+	GlobalProperty prop1, prop2, prop3, prop4 ;
+	CHECK( GetLinearProperties(result1, prop1, true, false) == Approx(1.0260606301));
+	CHECK( GetLinearProperties(result2, prop1, true, false) == Approx(1.0260606301));
+	CHECK( GetLinearProperties(result3, prop1, true, false) == Approx(1.0260606301));
+	CHECK( GetLinearProperties(result4, prop1, true, false) == Approx(1.0260606301));
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API BoolBRepSection(const TopoShape& s1, const Plane& p1, bool perfomNow = true)	 @param perfomNow If true, the operation is performed immediately; if false, the Build() function has to be called manually
+	 @param p1 The tool plane
+	 @param s1 The argument shape
+	 @brief Special case: compute the section of a shape and an infinite plane
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <boolean/BoolBRepSection.hpp>
+#include <common/CartesianCoordinateSystem.hpp>
+#include <math/LineT.hpp>
+#include <modeling/MakePrism.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakeFace.hpp>
+#include <geometry/Geom3BezierCurve.hpp>
+#include <modeling/MakeRevol.hpp>
+#include <geometry/Geom3CylindricalSurface.hpp>
+#include <topology/TopoTool.hpp>
+using namespace AMCAX;
+TEST_CASE("bug1: BoolBRepSection ", "[boolean][BoolBRepSection][fixbug]")
+{
+	Line3 line(CartesianCoordinateSystem::OZ());
+	TopoShape infinitePlane1 = MakePrism(MakeEdge(line, 0.0, 1.0), Direction3(-1.0, 0.0, 0.0), false);
+	TopoShape infinitePlane2 = MakePrism(MakeEdge(line, 0.0, 1.0), Direction3(1.0, 0.0, 0.0), false);
+	TopoShape infinitePlane3 = MakePrism(MakeEdge(line, 0.0, 1.0), Direction3(0.0, 1.0, 0.0), false);
+	TopoShape infinitePlane4 = MakePrism(MakeEdge(line, 0.0, 1.0), Direction3(0.0, -1.0, 0.0), false);
+	std::vector<Point3> poles{ Point3(1.0, 0.0, 0.0), Point3(0.8, 0.0, 0.5), Point3(1.0, 0.0, 1.0) };
+	auto bz = std::make_shared<Geom3BezierCurve>(poles);
+	TopoEdge e2 = MakeEdge(bz);
+	TopoShape revolshape = MakeRevol(e2, CartesianCoordinateSystem::OZ());
+	auto surface1 = std::make_shared<Geom3CylindricalSurface>(Frame3(), 1.0);
+	auto surface2 = TopoTool::Surface(TopoCast::Face(revolshape));
+	TopoShape result1 = BoolBRepSection(infinitePlane1, surface2); 
+	TopoShape result2 = BoolBRepSection(infinitePlane2, surface2); 
+	TopoShape result3 = BoolBRepSection(infinitePlane3, surface2); 
+	TopoShape result4 = BoolBRepSection(infinitePlane4, surface2); 
+	GlobalProperty prop1, prop2, prop3, prop4 ;
+	CHECK( GetLinearProperties(result1, prop1, true, false) == Approx(1.0260606301));
+	CHECK( GetLinearProperties(result2, prop1, true, false) == Approx(1.0260606301));
+	CHECK( GetLinearProperties(result3, prop1, true, false) == Approx(1.0260606301));
+	CHECK( GetLinearProperties(result4, prop1, true, false) == Approx(1.0260606301));
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API BoolBRepSection(const TopoShape& s1, const std::shared_ptr<Geom3Surface>& surface, bool perfomNow = true)	 @param perfomNow If true, the operation is performed immediately; if false, the Build() function has to be called manually
+	 @param surface The tool surface
+	 @param s1 The argument shape
+	 @brief Special case: compute the section of a shape and a surface
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <boolean/BoolBRepSection.hpp>
+#include <common/CartesianCoordinateSystem.hpp>
+#include <math/LineT.hpp>
+#include <modeling/MakePrism.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakeFace.hpp>
+#include <geometry/Geom3BezierCurve.hpp>
+#include <modeling/MakeRevol.hpp>
+#include <geometry/Geom3CylindricalSurface.hpp>
+#include <topology/TopoTool.hpp>
+using namespace AMCAX;
+TEST_CASE("bug1: BoolBRepSection ", "[boolean][BoolBRepSection][fixbug]")
+{
+	Line3 line(CartesianCoordinateSystem::OZ());
+	TopoShape infinitePlane1 = MakePrism(MakeEdge(line, 0.0, 1.0), Direction3(-1.0, 0.0, 0.0), false);
+	TopoShape infinitePlane2 = MakePrism(MakeEdge(line, 0.0, 1.0), Direction3(1.0, 0.0, 0.0), false);
+	TopoShape infinitePlane3 = MakePrism(MakeEdge(line, 0.0, 1.0), Direction3(0.0, 1.0, 0.0), false);
+	TopoShape infinitePlane4 = MakePrism(MakeEdge(line, 0.0, 1.0), Direction3(0.0, -1.0, 0.0), false);
+	std::vector<Point3> poles{ Point3(1.0, 0.0, 0.0), Point3(0.8, 0.0, 0.5), Point3(1.0, 0.0, 1.0) };
+	auto bz = std::make_shared<Geom3BezierCurve>(poles);
+	TopoEdge e2 = MakeEdge(bz);
+	TopoShape revolshape = MakeRevol(e2, CartesianCoordinateSystem::OZ());
+	auto surface1 = std::make_shared<Geom3CylindricalSurface>(Frame3(), 1.0);
+	auto surface2 = TopoTool::Surface(TopoCast::Face(revolshape));
+	TopoShape result1 = BoolBRepSection(infinitePlane1, surface2); 
+	TopoShape result2 = BoolBRepSection(infinitePlane2, surface2); 
+	TopoShape result3 = BoolBRepSection(infinitePlane3, surface2); 
+	TopoShape result4 = BoolBRepSection(infinitePlane4, surface2); 
+	GlobalProperty prop1, prop2, prop3, prop4 ;
+	CHECK( GetLinearProperties(result1, prop1, true, false) == Approx(1.0260606301));
+	CHECK( GetLinearProperties(result2, prop1, true, false) == Approx(1.0260606301));
+	CHECK( GetLinearProperties(result3, prop1, true, false) == Approx(1.0260606301));
+	CHECK( GetLinearProperties(result4, prop1, true, false) == Approx(1.0260606301));
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API BoolBRepSection(const std::shared_ptr<Geom3Surface>& surface, const TopoShape& s2, bool perfomNow = true)	 @param perfomNow If true, the operation is performed immediately; if false, the Build() function has to be called manually
+	 @param s2 The tool shape
+	 @param surface The argument surface
+	 @brief Special case: compute the section of a surface and a shape
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <boolean/BoolBRepSection.hpp>
+#include <common/CartesianCoordinateSystem.hpp>
+#include <math/LineT.hpp>
+#include <modeling/MakePrism.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakeFace.hpp>
+#include <geometry/Geom3BezierCurve.hpp>
+#include <modeling/MakeRevol.hpp>
+#include <geometry/Geom3CylindricalSurface.hpp>
+#include <topology/TopoTool.hpp>
+using namespace AMCAX;
+TEST_CASE("bug1: BoolBRepSection ", "[boolean][BoolBRepSection][fixbug]")
+{
+	Line3 line(CartesianCoordinateSystem::OZ());
+	TopoShape infinitePlane1 = MakePrism(MakeEdge(line, 0.0, 1.0), Direction3(-1.0, 0.0, 0.0), false);
+	TopoShape infinitePlane2 = MakePrism(MakeEdge(line, 0.0, 1.0), Direction3(1.0, 0.0, 0.0), false);
+	TopoShape infinitePlane3 = MakePrism(MakeEdge(line, 0.0, 1.0), Direction3(0.0, 1.0, 0.0), false);
+	TopoShape infinitePlane4 = MakePrism(MakeEdge(line, 0.0, 1.0), Direction3(0.0, -1.0, 0.0), false);
+	std::vector<Point3> poles{ Point3(1.0, 0.0, 0.0), Point3(0.8, 0.0, 0.5), Point3(1.0, 0.0, 1.0) };
+	auto bz = std::make_shared<Geom3BezierCurve>(poles);
+	TopoEdge e2 = MakeEdge(bz);
+	TopoShape revolshape = MakeRevol(e2, CartesianCoordinateSystem::OZ());
+	auto surface1 = std::make_shared<Geom3CylindricalSurface>(Frame3(), 1.0);
+	auto surface2 = TopoTool::Surface(TopoCast::Face(revolshape));
+	TopoShape result1 = BoolBRepSection(infinitePlane1, surface2); 
+	TopoShape result2 = BoolBRepSection(infinitePlane2, surface2); 
+	TopoShape result3 = BoolBRepSection(infinitePlane3, surface2); 
+	TopoShape result4 = BoolBRepSection(infinitePlane4, surface2); 
+	GlobalProperty prop1, prop2, prop3, prop4 ;
+	CHECK( GetLinearProperties(result1, prop1, true, false) == Approx(1.0260606301));
+	CHECK( GetLinearProperties(result2, prop1, true, false) == Approx(1.0260606301));
+	CHECK( GetLinearProperties(result3, prop1, true, false) == Approx(1.0260606301));
+	CHECK( GetLinearProperties(result4, prop1, true, false) == Approx(1.0260606301));
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API BoolBRepSection(const std::shared_ptr<Geom3Surface>& s1, const std::shared_ptr<Geom3Surface>& s2, bool perfomNow = true)	 @param perfomNow If true, the operation is performed immediately; if false, the Build() function has to be called manually
+	 @param s2 The tool surface
+	 @param s1 The argument surface
+	 @brief Special case: compute the section of two surfaces
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <boolean/BoolBRepSection.hpp>
+#include <common/CartesianCoordinateSystem.hpp>
+#include <math/LineT.hpp>
+#include <modeling/MakePrism.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakeFace.hpp>
+#include <geometry/Geom3BezierCurve.hpp>
+#include <modeling/MakeRevol.hpp>
+#include <geometry/Geom3CylindricalSurface.hpp>
+#include <topology/TopoTool.hpp>
+using namespace AMCAX;
+TEST_CASE("bug1: BoolBRepSection ", "[boolean][BoolBRepSection][fixbug]")
+{
+	Line3 line(CartesianCoordinateSystem::OZ());
+	TopoShape infinitePlane1 = MakePrism(MakeEdge(line, 0.0, 1.0), Direction3(-1.0, 0.0, 0.0), false);
+	TopoShape infinitePlane2 = MakePrism(MakeEdge(line, 0.0, 1.0), Direction3(1.0, 0.0, 0.0), false);
+	TopoShape infinitePlane3 = MakePrism(MakeEdge(line, 0.0, 1.0), Direction3(0.0, 1.0, 0.0), false);
+	TopoShape infinitePlane4 = MakePrism(MakeEdge(line, 0.0, 1.0), Direction3(0.0, -1.0, 0.0), false);
+	std::vector<Point3> poles{ Point3(1.0, 0.0, 0.0), Point3(0.8, 0.0, 0.5), Point3(1.0, 0.0, 1.0) };
+	auto bz = std::make_shared<Geom3BezierCurve>(poles);
+	TopoEdge e2 = MakeEdge(bz);
+	TopoShape revolshape = MakeRevol(e2, CartesianCoordinateSystem::OZ());
+	auto surface1 = std::make_shared<Geom3CylindricalSurface>(Frame3(), 1.0);
+	auto surface2 = TopoTool::Surface(TopoCast::Face(revolshape));
+	TopoShape result1 = BoolBRepSection(infinitePlane1, surface2); 
+	TopoShape result2 = BoolBRepSection(infinitePlane2, surface2); 
+	TopoShape result3 = BoolBRepSection(infinitePlane3, surface2); 
+	TopoShape result4 = BoolBRepSection(infinitePlane4, surface2); 
+	GlobalProperty prop1, prop2, prop3, prop4 ;
+	CHECK( GetLinearProperties(result1, prop1, true, false) == Approx(1.0260606301));
+	CHECK( GetLinearProperties(result2, prop1, true, false) == Approx(1.0260606301));
+	CHECK( GetLinearProperties(result3, prop1, true, false) == Approx(1.0260606301));
+	CHECK( GetLinearProperties(result4, prop1, true, false) == Approx(1.0260606301));
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API void SimplifyResult(bool isUnfiyEdges = true, bool isUnifyFaces = true, double angularTol = Precision::Angular()	 @param angularTol The angular tolerance for checking parallel
+	 @param isUnifyFaces Set whether unify faces
+	 @param isUnfiyEdges Set whether unify edges
+	 @brief Simplify the boolean result, remove redundant edges and faces
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <boolean/BoolBuilder.hpp>
+#include <modeling/MakeBox.hpp>
+#include <boolean/BoolBRepFuse.hpp>
+#include <common/IndexSet.hpp>
+#include <topology/TopoExplorerTool.hpp>
+using namespace AMCAX;
+TEST_CASE("case1: BoolBuilder added SimplifyResult() API at 3.6.0. ", "[boolean][BoolBuilder][P1]") {
+	TopoShape box1 = MakeBox(Point3(0., 0., 0.), Point3(2., 2., 2.));
+	TopoShape box2 = MakeBox(Point3(1., 1., 0.), Point3(3., 3., 2.));
+	BoolBRepFuse fuse(box1, box2);
+	TopoShape shape1 = fuse.Shape();
+	fuse.SimplifyResult();
+	TopoShape shape2 = fuse.Shape();
+	IndexSet<TopoShape> shape1Faces, shape2Faces;
+	TopoExplorerTool::MapShapes(shape1, ShapeType::Face, shape1Faces);
+	TopoExplorerTool::MapShapes(shape2, ShapeType::Face, shape2Faces);
+	std::cout << shape1Faces.size() << "  " << shape2Faces.size() << std::endl;
+	CHECK(shape1Faces.size() == 14);
+	CHECK(shape2Faces.size() == 10);
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2> AxisT(const PointT<OtherScalar, DIM>& point, const DirectionT<OtherScalar2, DIM>& dir),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected) {
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Axis2", "[Common][Axis2]") {
+	SECTION("IsCoaxial 2D") {
+		AxisT<double, 2> a1(PointT<double, 2>{0.0, 0.0}, DirectionT<double, 2>{1.0, 2.0});
+		AxisT<double, 2> a2(PointT<double, 2>{2.0, 4.0}, DirectionT<double, 2>{1.0, 2.0});
+		AxisT<double, 2> a3(PointT<double, 2>{2.0, 4.0}, DirectionT<double, 2>{2.0, 2.0});
+		AxisT<double, 2> a4(PointT<double, 2>{1.0, 4.0}, DirectionT<double, 2>{1.0, 2.0});
+		CHECK(a1.IsCoaxial(a2, 1e-6, 1e-6) == true);
+		CHECK(a1.IsCoaxial(a3, 1e-6, 1e-6) == false);
+		CHECK(a1.IsCoaxial(a4, 1e-6, 1e-6) == false);
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2, typename OtherScalar3, int DIM2 = DIM, std::enable_if_t<DIM2 == 2, int> = 0> [[nodiscard]] bool IsCoaxial(const AxisT<OtherScalar, DIM>& other, const OtherScalar2& angtol, const OtherScalar3& distol),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected) {
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Axis2", "[Common][Axis2]") {
+	SECTION("IsCoaxial 2D") {
+		AxisT<double, 2> a1(PointT<double, 2>{0.0, 0.0}, DirectionT<double, 2>{1.0, 2.0});
+		AxisT<double, 2> a2(PointT<double, 2>{2.0, 4.0}, DirectionT<double, 2>{1.0, 2.0});
+		AxisT<double, 2> a3(PointT<double, 2>{2.0, 4.0}, DirectionT<double, 2>{2.0, 2.0});
+		AxisT<double, 2> a4(PointT<double, 2>{1.0, 4.0}, DirectionT<double, 2>{1.0, 2.0});
+		CHECK(a1.IsCoaxial(a2, 1e-6, 1e-6) == true);
+		CHECK(a1.IsCoaxial(a3, 1e-6, 1e-6) == false);
+		CHECK(a1.IsCoaxial(a4, 1e-6, 1e-6) == false);
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar> AxisT& Mirror(const PointT<OtherScalar, DIM>& point),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected) {
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Axis2", "[Common][Axis2]") {
+	SECTION("Mirror(point) 2D") {
+		AxisT<double, 2> a1(PointT<double, 2>{1.0, 2.0}, DirectionT<double, 2>{1.0, 1.0});
+		PointT<double, 2> p(3.0, 4.0);
+		AxisT<double, 2> a2(PointT<double, 2>{5.0, 6.0}, DirectionT<double, 2>{-1.0, -1.0});
+		CHECK(IsEqual(a1.Mirrored(p), a2));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar> [[nodiscard]] AxisT Mirrored(const PointT<OtherScalar, DIM>& point),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected) {
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Axis2", "[Common][Axis2]") {
+	SECTION("Mirror(point) 2D") {
+		AxisT<double, 2> a1(PointT<double, 2>{1.0, 2.0}, DirectionT<double, 2>{1.0, 1.0});
+		PointT<double, 2> p(3.0, 4.0);
+		AxisT<double, 2> a2(PointT<double, 2>{5.0, 6.0}, DirectionT<double, 2>{-1.0, -1.0});
+		CHECK(IsEqual(a1.Mirrored(p), a2));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2> [[nodiscard]] AxisT Scaled(const PointT<OtherScalar, DIM> point, const OtherScalar2& scale),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected) {
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Axis2", "[Common][Axis2]") {
+	SECTION("Scale 2D") {
+		AxisT<double, 2> a1(PointT<double, 2>{1.0, 2.0}, DirectionT<double, 2>{1.0, 2.0});
+		PointT<double, 2> p(2.0, 3.0);
+		AxisT<double, 2> a2(PointT<double, 2>{0.5, 1.5}, DirectionT<double, 2>{1.0, 2.0});
+		CHECK(IsEqual(a1.Scaled(p, 1.5), a2));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2> AxisT& Translate(const PointT<OtherScalar, DIM>& p1, const PointT<OtherScalar2, DIM>& p2),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected) {
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Axis2", "[Common][Axis2]") {
+	SECTION("Translate(p1, p2) 2D") {
+		AxisT<double, 2> a1(PointT<double, 2>(1.0, 2.0), DirectionT<double, 2>{1.0, 2.0});
+		PointT<double, 2> p1(2.0, 3.0);
+		PointT<double, 2> p2(4.0, 2.0);
+		AxisT<double, 2> a2(PointT<double, 2>(3.0, 1.0), DirectionT<double, 2>{1.0, 2.0});
+		CHECK(IsEqual(a1.Translated(p1, p2), a2));
+	}
+}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AxisT()	 @details The default location is (0, 0, 0). In 2D, the default direction is (1, 0); in 3D, the default direction is (0, 0, 1).
+	 @brief Default constructor
+,
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected){
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Axis3","[Common][Axis3]")
+{
+	int i = 1;
+	SECTION("default constructor 3D"){
+		AxisT<double, 3> a1;
+		AxisT<double, 3> a2(PointT<double, 3>{0.0, 0.0, 0.0}, DirectionT<double, 3>{0.0, 0.0, 1.0});
+		CHECK(IsEqual(a1, a2));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2> AxisT(const PointT<OtherScalar, DIM>& point, const DirectionT<OtherScalar2, DIM>& dir),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected){
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Axis3","[Common][Axis3]")
+{
+	int i = 1;
+	SECTION("Reverse"){
+		AxisT<double, 3> a1(PointT<double, 3>{1.0, 2.0, 3.0}, DirectionT<double, 3>{1.0, 2.0, 1.0});
+		AxisT<double, 3> a2(PointT<double, 3>{1.0, 2.0, 3.0}, DirectionT<double, 3>{-1.0, -2.0, -1.0});
+		CHECK(IsEqual(a1.Reversed(), a2));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar> void SetDirection(const DirectionT<OtherScalar, DIM>& dir),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected){
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Axis3","[Common][Axis3]")
+{
+	int i = 1;
+	SECTION("SetDirection"){
+		AxisT<double, 3> a1;
+		DirectionT<double, 3> d(1.0, 2.0, 3.0);
+		a1.SetDirection(d);
+		AxisT<double, 3> a2(PointT<double, 3>{0.0, 0.0, 0.0}, d);
+		CHECK(IsEqual(a1, a2));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2, typename OtherScalar3, int DIM2 = DIM, std::enable_if_t<DIM2 == 2, int> = 0> [[nodiscard]] bool IsCoaxial(const AxisT<OtherScalar, DIM>& other, const OtherScalar2& angtol, const OtherScalar3& distol),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected){
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Axis3","[Common][Axis3]")
+{
+	int i = 1;
+	SECTION("IsCoaxial 3D"){
+		AxisT<double, 3> a1(PointT<double, 3>{0.0, 0.0, 0.0}, DirectionT<double, 3>{1.0, 2.0, 3.0});
+		AxisT<double, 3> a2(PointT<double, 3>{2.0, 4.0, 6.0}, DirectionT<double, 3>{1.0, 2.0, 3.0});
+		AxisT<double, 3> a3(PointT<double, 3>{2.0, 4.0, 6.0}, DirectionT<double, 3>{2.0, 2.0, 3.0});
+		AxisT<double, 3> a4(PointT<double, 3>{1.0, 4.0, 6.0}, DirectionT<double, 3>{1.0, 2.0, 3.0});
+		CHECK(a1.IsCoaxial(a2, 1e-6, 1e-6) == true);
+		CHECK(a1.IsCoaxial(a3, 1e-6, 1e-6) == false);
+		CHECK(a1.IsCoaxial(a4, 1e-6, 1e-6) == false);
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2, typename OtherScalar3, int DIM2 = DIM, std::enable_if_t<DIM2 == 3, int> = 0> [[nodiscard]] bool IsCoaxial(const AxisT<OtherScalar, DIM>& other, const OtherScalar2& angtol, const OtherScalar3& distol),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected){
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Axis3","[Common][Axis3]")
+{
+	int i = 1;
+	SECTION("IsCoaxial 3D"){
+		AxisT<double, 3> a1(PointT<double, 3>{0.0, 0.0, 0.0}, DirectionT<double, 3>{1.0, 2.0, 3.0});
+		AxisT<double, 3> a2(PointT<double, 3>{2.0, 4.0, 6.0}, DirectionT<double, 3>{1.0, 2.0, 3.0});
+		AxisT<double, 3> a3(PointT<double, 3>{2.0, 4.0, 6.0}, DirectionT<double, 3>{2.0, 2.0, 3.0});
+		AxisT<double, 3> a4(PointT<double, 3>{1.0, 4.0, 6.0}, DirectionT<double, 3>{1.0, 2.0, 3.0});
+		CHECK(a1.IsCoaxial(a2, 1e-6, 1e-6) == true);
+		CHECK(a1.IsCoaxial(a3, 1e-6, 1e-6) == false);
+		CHECK(a1.IsCoaxial(a4, 1e-6, 1e-6) == false);
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2> [[nodiscard]] bool IsNormal(const AxisT<OtherScalar, DIM>& other, const OtherScalar2& tol),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected){
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Axis3","[Common][Axis3]")
+{
+	int i = 1;
+	SECTION("IsNormal"){
+		AxisT<double, 3> a1(PointT<double, 3>{0.0, 0.0, 0.0}, DirectionT<double, 3>{1.0, 2.0, 1.0});
+		AxisT<double, 3> a2(PointT<double, 3>{2.0, 4.0, 3.0}, DirectionT<double, 3>{-1.0, 1.0, -1.0});
+		CHECK(a1.IsNormal(a2, 1e-6) == true);
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2> [[nodiscard]] bool IsOpposite(const AxisT<OtherScalar, DIM>& other, const OtherScalar2& tol),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected){
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Axis3","[Common][Axis3]")
+{
+	int i = 1;
+	SECTION("IsOpposite"){
+		AxisT<double, 3> a1(PointT<double, 3>{0.0, 0.0, 0.0}, DirectionT<double, 3>{1.0, 2.0, 1.0});
+		AxisT<double, 3> a2(PointT<double, 3>{2.0, 4.0, 3.0}, DirectionT<double, 3>{-1.0, -2.0, -1.0});
+		CHECK(a1.IsOpposite(a2, 1e-6) == true);
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2> [[nodiscard]] bool IsParallel(const AxisT<OtherScalar, DIM>& other, const OtherScalar2& tol),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected){
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Axis3","[Common][Axis3]")
+{
+	int i = 1;
+	SECTION("IsParallel"){
+		AxisT<double, 3> a1(PointT<double, 3>{0.0, 0.0, 0.0}, DirectionT<double, 3>{1.0, 2.0, 1.0});
+		AxisT<double, 3> a2(PointT<double, 3>{2.0, 4.0, 3.0}, DirectionT<double, 3>{-1.0, -2.0, -1.0});
+		CHECK(a1.IsParallel(a2, 1e-6) == true);
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar> [[nodiscard]] double Angle(const AxisT<OtherScalar, DIM>& other),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected){
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Axis3","[Common][Axis3]")
+{
+	int i = 1;
+	SECTION("Angle"){
+		AxisT<double, 3> a1(PointT<double, 3>{0.0, 0.0, 0.0}, DirectionT<double, 3>{1.0, 2.0, 1.0});
+		AxisT<double, 3> a2(PointT<double, 3>{2.0, 4.0, 3.0}, DirectionT<double, 3>{-1.0, 1.0, -1.0});
+		CHECK(a1.Angle(a2) == M_PI_2);
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar> AxisT& Mirror(const AxisT<OtherScalar, DIM>& axis),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected){
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Axis3","[Common][Axis3]")
+{
+	int i = 1;
+	SECTION("Mirror(axis) 3D"){
+		AxisT<double, 3> a1(PointT<double, 3>{1.0, 2.0, 3.0}, DirectionT<double, 3>{1.0, 2.0, 3.0});
+		AxisT<double, 3> a2(PointT<double, 3>{2.0, 3.0, 4.0}, DirectionT<double, 3>{7.0, 3.0, 2.0});
+		AxisT<double, 3> a3(PointT<double, 3>{9.0 / 31.0, 88.0 / 31.0, 131.0 / 31.0}, DirectionT<double, 3>{102.0 / 31.0, -5.0 / 31.0, -55.0 / 31.0});
+		CHECK(IsEqual(a1.Mirrored(a2), a3));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, int DIM2 = DIM, std::enable_if_t<DIM2 == 3, int> = 0> AxisT& Mirror(const FrameT<OtherScalar, DIM>& frame),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected){
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Axis3","[Common][Axis3]")
+{
+	int i = 1;
+	SECTION("Mirror(frame) 3D"){
+		AxisT<double, 3> a1(PointT<double, 3>{1.0, 2.0, 3.0}, DirectionT<double, 3>{1.0, 2.0, 3.0});
+		FrameT<double, 3> f(PointT<double, 3>{2.0, 3.0, 4.0}, DirectionT<double, 3>{7.0, 3.0, 2.0});
+		AxisT<double, 3> a2(PointT<double, 3>{115.0 / 31.0, 98.0 / 31.0, 117.0 / 31.0}, DirectionT<double, 3>{-102.0 / 31.0, 5.0 / 31.0, 55.0 / 31.0});
+		CHECK(IsEqual(a1.Mirror(f), a2));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar> [[nodiscard]] AxisT Mirrored(const AxisT<OtherScalar, DIM>& axis),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected){
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Axis3","[Common][Axis3]")
+{
+	int i = 1;
+	SECTION("Mirror(axis) 3D"){
+		AxisT<double, 3> a1(PointT<double, 3>{1.0, 2.0, 3.0}, DirectionT<double, 3>{1.0, 2.0, 3.0});
+		AxisT<double, 3> a2(PointT<double, 3>{2.0, 3.0, 4.0}, DirectionT<double, 3>{7.0, 3.0, 2.0});
+		AxisT<double, 3> a3(PointT<double, 3>{9.0 / 31.0, 88.0 / 31.0, 131.0 / 31.0}, DirectionT<double, 3>{102.0 / 31.0, -5.0 / 31.0, -55.0 / 31.0});
+		CHECK(IsEqual(a1.Mirrored(a2), a3));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, int DIM2 = DIM, std::enable_if_t<DIM2 == 3, int> = 0> [[nodiscard]] AxisT Mirrored(const FrameT<OtherScalar, DIM>& frame),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected){
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Axis3","[Common][Axis3]")
+{
+	int i = 1;
+	SECTION("Mirror(axis) 3D"){
+		AxisT<double, 3> a1(PointT<double, 3>{1.0, 2.0, 3.0}, DirectionT<double, 3>{1.0, 2.0, 3.0});
+		AxisT<double, 3> a2(PointT<double, 3>{2.0, 3.0, 4.0}, DirectionT<double, 3>{7.0, 3.0, 2.0});
+		AxisT<double, 3> a3(PointT<double, 3>{9.0 / 31.0, 88.0 / 31.0, 131.0 / 31.0}, DirectionT<double, 3>{102.0 / 31.0, -5.0 / 31.0, -55.0 / 31.0});
+		CHECK(IsEqual(a1.Mirrored(a2), a3));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2, int DIM2 = DIM, typename = typename std::enable_if_t<DIM2 == 3>> AxisT& Rotate(const AxisT<OtherScalar, DIM>& axis, const OtherScalar2& angle),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected){
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Axis3","[Common][Axis3]")
+{
+	int i = 1;
+	SECTION("Rotate 3D"){
+		AxisT<double, 3> a1(PointT<double, 3>{1.0, 2.0, 3.0}, DirectionT<double, 3>{1.0, 2.0, 3.0});
+		AxisT<double, 3> a2(PointT<double, 3>{2.0, 3.0, 4.0}, DirectionT<double, 3>{1.0, 1.0, 2.0});
+		AxisT<double, 3> a3(PointT<double, 3>{(8.0 + std::sqrt(6.0)) / 6.0, (14.0 - std::sqrt(6.0)) / 6.0, 8.0 / 3.0}, DirectionT<double, 3>{(9.0 - std::sqrt(6.0)) / 6.0, (9.0 - std::sqrt(6.0)) / 6.0, 3.0 + 1.0 / std::sqrt(6.0)});
+		CHECK(IsEqual(a1.Rotated(a2, M_PI_2), a3));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2> [[nodiscard]] AxisT Scaled(const PointT<OtherScalar, DIM> point, const OtherScalar2& scale),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected){
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Axis3","[Common][Axis3]")
+{
+	int i = 1;
+	SECTION("Scale 3D"){
+		AxisT<double, 3> a1(PointT<double, 3>{1.0, 2.0, 3.0}, DirectionT<double, 3>{1.0, 2.0, 3.0});
+		PointT<double, 3> p(2.0, 3.0, 4.0);
+		AxisT<double, 3> a2(PointT<double, 3>{0.5, 1.5, 2.5}, DirectionT<double, 3>{1.0, 2.0, 3.0});
+		CHECK(IsEqual(a1.Scaled(p, 1.5), a2));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] const PointT<Scalar, DIM>& Location()	 @return The location
+	 @brief Get the location
+,
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+TEST_CASE("case1:this is a case for Frame2", "[Common][Frame2]") {
+	SECTION("Mirror axis 2D") {
+		PointT<double, 2> p(1.0, 2.0);
+		DirectionT<double, 2> d(1.0, 3.0);
+		FrameT<double, 2> f1(p, d);
+		PointT<double, 2> p2(2.0, 3.0);
+		DirectionT<double, 2> d2(1.0, 4.0);
+		AxisT<double, 2> axis(p2, d2);
+		PointT<double, 2> p3(41.0 / 17.0, 28.0 / 17.0);
+		DirectionT<double, 2> d3(9.0, 53.0);
+		DirectionT<double, 2> d4(53.0, -9.0);
+		FrameT<double, 2> f2 = f1.Mirrored(axis);
+		CHECK(f2.Location().IsEqual(p3, tol));
+		CHECK(f2.XDirection().IsEqual(d3, tol));
+		CHECK(f2.YDirection().IsEqual(d4, tol));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2, typename OtherScalar3, int DIM2 = DIM, std::enable_if_t<DIM2 == 2, int> = 0> FrameT(const PointT<OtherScalar, DIM>& point, const DirectionT<OtherScalar2, DIM>& xdir, const DirectionT<OtherScalar3, DIM>& ydir),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+TEST_CASE("case1:this is a case for Frame2", "[Common][Frame2]") {
+	SECTION("Construction 2D") {
+		PointT<double, 2> p(0.0, 0.0);
+		DirectionT<double, 2> dx(1.0, 0.0);
+		DirectionT<double, 2> dy(0.0, 1.0);
+		FrameT<double, 2> f1;
+		FrameT<double, 2> f2(p, dx, dy);
+		CHECK(IsEqual(f1, f2));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2, int DIM2 = DIM, std::enable_if_t<DIM2 == 2, int> = 0> FrameT(const PointT<OtherScalar, DIM>& point, const DirectionT<OtherScalar2, DIM>& xdir, bool isright = true),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+TEST_CASE("case1:this is a case for Frame2", "[Common][Frame2]") {
+	SECTION("Construction 2D") {
+		PointT<double, 2> p(0.0, 0.0);
+		DirectionT<double, 2> dx(1.0, 0.0);
+		DirectionT<double, 2> dy(0.0, 1.0);
+		FrameT<double, 2> f1;
+		FrameT<double, 2> f2(p, dx, dy);
+		CHECK(IsEqual(f1, f2));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, int DIM2 = DIM, std::enable_if_t<DIM2 == 2, int> = 0> explicit FrameT(const AxisT<OtherScalar, DIM>& axis, bool isright = true),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+TEST_CASE("case1:this is a case for Frame2", "[Common][Frame2]") {
+	SECTION("Construction 2D") {
+		PointT<double, 2> p(0.0, 0.0);
+		DirectionT<double, 2> dx(1.0, 0.0);
+		DirectionT<double, 2> dy(0.0, 1.0);
+		FrameT<double, 2> f1;
+		FrameT<double, 2> f2(p, dx, dy);
+		CHECK(IsEqual(f1, f2));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, int DIM2 = DIM, std::enable_if_t<DIM2 == 2, int> = 0> void SetXAxis(const AxisT<OtherScalar, DIM>& axis),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+TEST_CASE("case1:this is a case for Frame2", "[Common][Frame2]") {
+	SECTION("SetXAxis 2D") {
+		PointT<double, 2> p(1.0, 2.0);
+		PointT<double, 2> p2(3.0, 1.0);
+		DirectionT<double, 2> dx(1.0, 3.0);
+		FrameT<double, 2> f1(p, dx);
+		DirectionT<double, 2> dx2(-1.0, -2.0);
+		FrameT<double, 2> f2(p2, dx2);
+		AxisT<double, 2> axis(p, dx);
+		f2.SetXAxis(axis);
+		CHECK(IsEqual(f1, f2));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, int DIM2 = DIM, std::enable_if_t<DIM2 == 2, int> = 0> void SetYAxis(const AxisT<OtherScalar, DIM>& axis),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+TEST_CASE("case1:this is a case for Frame2", "[Common][Frame2]") {
+	SECTION("SetYAxis 2D") {
+		PointT<double, 2> p(1.0, 2.0);
+		PointT<double, 2> p2(3.0, 1.0);
+		DirectionT<double, 2> dx(1.0, 3.0);
+		DirectionT<double, 2> dy(-3.0, 1.0);
+		FrameT<double, 2> f1(p, dx);
+		DirectionT<double, 2> dx2(-1.0, -2.0);
+		FrameT<double, 2> f2(p2, dx2);
+		AxisT<double, 2> axis(p, dy);
+		f2.SetYAxis(axis);
+		CHECK(IsEqual(f1, f2));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, int DIM2 = DIM, std::enable_if_t<DIM2 == 2, int> = 0> void SetXDirection(const DirectionT<OtherScalar, DIM>& x),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+TEST_CASE("case1:this is a case for Frame2", "[Common][Frame2]") {
+	SECTION("SetXDirection 2D") {
+		PointT<double, 2> p(1.0, 2.0);
+		DirectionT<double, 2> dx(1.0, 3.0);
+		FrameT<double, 2> f1(p, dx);
+		DirectionT<double, 2> dx2(-1.0, -2.0);
+		FrameT<double, 2> f2(p, dx2);
+		f2.SetXDirection(dx);
+		CHECK(IsEqual(f1, f2));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, int DIM2 = DIM, std::enable_if_t<DIM2 == 2, int> = 0> void SetYDirection(const DirectionT<OtherScalar, DIM>& y),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+TEST_CASE("case1:this is a case for Frame2", "[Common][Frame2]") {
+	SECTION("SetYDirection 2D") {
+		PointT<double, 2> p(1.0, 2.0);
+		DirectionT<double, 2> dx(1.0, 3.0);
+		DirectionT<double, 2> dy(-3.0, 1.0);
+		FrameT<double, 2> f1(p, dx);
+		DirectionT<double, 2> dx2(-1.0, -2.0);
+		FrameT<double, 2> f2(p, dx2);
+		f2.SetYDirection(dy);
+		CHECK(IsEqual(f1, f2));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<int DIM2 = DIM, typename = typename std::enable_if_t<DIM2 >= 1>> [[nodiscard]] const DirectionT<Scalar, DIM>& XDirection(),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+TEST_CASE("case1:this is a case for Frame2", "[Common][Frame2]") {
+	SECTION("Mirror axis 2D") {
+		PointT<double, 2> p(1.0, 2.0);
+		DirectionT<double, 2> d(1.0, 3.0);
+		FrameT<double, 2> f1(p, d);
+		PointT<double, 2> p2(2.0, 3.0);
+		DirectionT<double, 2> d2(1.0, 4.0);
+		AxisT<double, 2> axis(p2, d2);
+		PointT<double, 2> p3(41.0 / 17.0, 28.0 / 17.0);
+		DirectionT<double, 2> d3(9.0, 53.0);
+		DirectionT<double, 2> d4(53.0, -9.0);
+		FrameT<double, 2> f2 = f1.Mirrored(axis);
+		CHECK(f2.Location().IsEqual(p3, tol));
+		CHECK(f2.XDirection().IsEqual(d3, tol));
+		CHECK(f2.YDirection().IsEqual(d4, tol));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<int DIM2 = DIM, typename = typename std::enable_if_t<DIM2 >= 2>> [[nodiscard]] const DirectionT<Scalar, DIM>& YDirection(),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar> FrameT& Mirror(const PointT<OtherScalar, DIM>& point),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+TEST_CASE("case1:this is a case for Frame2", "[Common][Frame2]") {
+	SECTION("Mirror point 2D") {
+		PointT<double, 2> p(1.0, 2.0);
+		DirectionT<double, 2> d(1.0, 3.0);
+		FrameT<double, 2> f1(p, d);
+		PointT<double, 2> p2(2.0, 3.0);
+		PointT<double, 2> p3(3.0, 4.0);
+		DirectionT<double, 2> d2(-1.0, -3.0);
+		FrameT<double, 2> f2(p3, d2);
+		CHECK(IsEqual(f1.Mirrored(p2), f2));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar> [[nodiscard]] FrameT Mirrored(const PointT<OtherScalar, DIM>& point),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+TEST_CASE("case1:this is a case for Frame2", "[Common][Frame2]") {
+	SECTION("Mirror point 2D") {
+		PointT<double, 2> p(1.0, 2.0);
+		DirectionT<double, 2> d(1.0, 3.0);
+		FrameT<double, 2> f1(p, d);
+		PointT<double, 2> p2(2.0, 3.0);
+		PointT<double, 2> p3(3.0, 4.0);
+		DirectionT<double, 2> d2(-1.0, -3.0);
+		FrameT<double, 2> f2(p3, d2);
+		CHECK(IsEqual(f1.Mirrored(p2), f2));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar> [[nodiscard]] FrameT Mirrored(const AxisT<OtherScalar, DIM>& a),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+TEST_CASE("case1:this is a case for Frame2", "[Common][Frame2]") {
+	SECTION("Mirror axis 2D") {
+		PointT<double, 2> p(1.0, 2.0);
+		DirectionT<double, 2> d(1.0, 3.0);
+		FrameT<double, 2> f1(p, d);
+		PointT<double, 2> p2(2.0, 3.0);
+		DirectionT<double, 2> d2(1.0, 4.0);
+		AxisT<double, 2> axis(p2, d2);
+		PointT<double, 2> p3(41.0 / 17.0, 28.0 / 17.0);
+		DirectionT<double, 2> d3(9.0, 53.0);
+		DirectionT<double, 2> d4(53.0, -9.0);
+		FrameT<double, 2> f2 = f1.Mirrored(axis);
+		CHECK(f2.Location().IsEqual(p3, tol));
+		CHECK(f2.XDirection().IsEqual(d3, tol));
+		CHECK(f2.YDirection().IsEqual(d4, tol));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2, int DIM2 = DIM, typename = typename std::enable_if_t<DIM2 == 2>> FrameT& Rotate(const PointT<OtherScalar, DIM>& point, const OtherScalar2& angle),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+TEST_CASE("case1:this is a case for Frame2", "[Common][Frame2]") {
+	SECTION("Construction 2D") {
+		PointT<double, 2> p(1.0, 2.0);
+		DirectionT<double, 2> dx(1.0, 3.0);
+		DirectionT<double, 2> dy(-3.0, 1.0);
+		FrameT<double, 2> f1(p, dx);
+		FrameT<double, 2> f2(p, dx, dy);
+		CHECK(IsEqual(f1, f2));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2, int DIM2 = DIM, typename = typename std::enable_if_t<DIM2 == 2>> [[nodiscard]] FrameT Rotated(const PointT<OtherScalar, DIM>& point, const OtherScalar2& angle),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+TEST_CASE("case1:this is a case for Frame2", "[Common][Frame2]") {
+	SECTION("Construction 2D") {
+		PointT<double, 2> p(0.0, 0.0);
+		DirectionT<double, 2> dx(1.0, 0.0);
+		DirectionT<double, 2> dy(0.0, 1.0);
+		FrameT<double, 2> f1;
+		FrameT<double, 2> f2(p, dx, dy);
+		CHECK(IsEqual(f1, f2));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2> [[nodiscard]] FrameT Scaled(const PointT<OtherScalar, DIM>& point, const OtherScalar2& scale),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+TEST_CASE("case1:this is a case for Frame2", "[Common][Frame2]") {
+	SECTION("Scale 2D") {
+		PointT<double, 2> p(1.0, 2.0);
+		DirectionT<double, 2> d(1.0, 3.0);
+		FrameT<double, 2> f1(p, d);
+		PointT<double, 2> p2(2.0, 3.0);
+		PointT<double, 2> p3(0.5, 1.5);
+		FrameT<double, 2> f2(p3, d);
+		CHECK(IsEqual(f1.Scaled(p2, 1.5), f2));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar> [[nodiscard]] FrameT Translated(const VectorT<OtherScalar, DIM>& vec),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+TEST_CASE("case1:this is a case for Frame2", "[Common][Frame2]") {
+	SECTION("Translate vector 2D") {
+		PointT<double, 2> p(1.0, 2.0);
+		DirectionT<double, 2> d(1.0, 3.0);
+		FrameT<double, 2> f1(p, d);
+		VectorT<double, 2> v(2.0, 3.0);
+		PointT<double, 2> p2(3.0, 5.0);
+		FrameT<double, 2> f2(p2, d);
+		CHECK(IsEqual(f1.Translated(v), f2));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2> [[nodiscard]] FrameT Translated(const PointT<OtherScalar, DIM>& p1, const PointT<OtherScalar2, DIM>& p2),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+TEST_CASE("case1:this is a case for Frame2", "[Common][Frame2]") {
+	SECTION("Translate vector 2D") {
+		PointT<double, 2> p(1.0, 2.0);
+		DirectionT<double, 2> d(1.0, 3.0);
+		FrameT<double, 2> f1(p, d);
+		VectorT<double, 2> v(2.0, 3.0);
+		PointT<double, 2> p2(3.0, 5.0);
+		FrameT<double, 2> f2(p2, d);
+		CHECK(IsEqual(f1.Translated(v), f2));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API BoolBRepCut()	 @details Only set the type of boolean operation to cut
+	 @brief Default constructor
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <boolean/BoolBRepCut.hpp>
+#include <modeling/MakeTorus.hpp>
+#include <modeling/MakeSphere.hpp>
+#include <modeling/MakeCone.hpp>
+#include <topology/TopoExplorer.hpp>
+#include <topology/TopoFace.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+using namespace AMCAX;
+TEST_CASE("bug1: in Debug mode: BoolBuilder  ", "[boolean][BoolBRepCut][P1][fixbug]") {
+	TopoShape torus = MakeTorus(Frame3(Point3(0.0, 0.0, 2.0), Direction3(1.0, 0.0, 0.0)), 4.0, 2.0);
+	TopoShape sphere = MakeSphere(4.0);
+	TopoShape result = BoolBRepCut(sphere, torus);
+	AMCAX::GlobalProperty prop;
+	AMCAX::BRepGlobalProperty::VolumeProperties(result, prop);
+	CHECK(prop.Mass() == Approx(153.229)); 
+	bool isWriteSuccess = AMCAX::OCCTIO::OCCTTool::Write(result, OUTPUT_PATH_PREFIX"BoolBRepCut_bug72.brep", false);
+	CHECK(isWriteSuccess == true);
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API BoolBRepCut(const TopoShape& s1, const TopoShape& s2, bool isForward = true)	 @param isForward Cut s1 by s2 if true, and cut s2 by s1 if false
+	 @param s2 The tool shape
+	 @param s1 The argument shape
+	 @brief Compute the cut operation of two shapes
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <boolean/BoolBRepCut.hpp>
+#include <modeling/MakeTorus.hpp>
+#include <modeling/MakeSphere.hpp>
+#include <modeling/MakeCone.hpp>
+#include <topology/TopoExplorer.hpp>
+#include <topology/TopoFace.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+using namespace AMCAX;
+TEST_CASE("bug1: in Debug mode: BoolBuilder  ", "[boolean][BoolBRepCut][P1][fixbug]") {
+	TopoShape torus = MakeTorus(Frame3(Point3(0.0, 0.0, 2.0), Direction3(1.0, 0.0, 0.0)), 4.0, 2.0);
+	TopoShape sphere = MakeSphere(4.0);
+	TopoShape result = BoolBRepCut(sphere, torus);
+	AMCAX::GlobalProperty prop;
+	AMCAX::BRepGlobalProperty::VolumeProperties(result, prop);
+	CHECK(prop.Mass() == Approx(153.229)); 
+	bool isWriteSuccess = AMCAX::OCCTIO::OCCTTool::Write(result, OUTPUT_PATH_PREFIX"BoolBRepCut_bug72.brep", false);
+	CHECK(isWriteSuccess == true);
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API BoolBRepDefeaturing()	 @brief Default constructor
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <modeling/MakeBox.hpp>
+#include <modeling/MakeCylinder.hpp>
+#include <boolean/BoolBRepCut.hpp>
+#include <topomesh/BRepMeshIncrementalMesh.hpp>
+#include <io/OBJTool.hpp>
+#include <topology/TopoFace.hpp>
+#include <geometry/Geom3Surface.hpp>
+#include <topology/TopoTool.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <boolean/BoolBRepDefeaturing.hpp>
+#include <topology/TopoEdge.hpp>
+#include <common/IndexSet.hpp>
+using namespace AMCAX;
+TEST_CASE("bug1: BoolBRepDefeaturing ", "[boolean][BRepDefeaturing]")
+{
+	TopoShape box = MakeBox(Point3(-5.0, -5.0, 0.0), Point3(5.0, 5.0, 3.0));
+	TopoShape cyl = MakeCylinder(Frame3(Point3(0.0, 0.0, 0.0), Direction3(0.0, 0.0, 1.0)), 3.0, 5.0);
+	TopoShape shape = BoolBRepCut(box, cyl);
+	AMCAX::GlobalProperty prop1, prop2, prop3, prop4, prop5, prop6;
+	BRepGlobalProperty::LinearProperties(box, prop1, true, true);
+	BRepGlobalProperty::LinearProperties(box, prop2, true, false);
+	double result1 = prop1.Mass();
+	double result2 = prop2.Mass();
+	CHECK(result1 == Approx(10 * 8 + 3 * 4));
+	CHECK(result2 == Approx(10 * 8 + 3 * 4));
+	BRepGlobalProperty::SurfaceProperties(box, prop3, true, true);
+	BRepGlobalProperty::SurfaceProperties(box, prop4, true, false);
+	double result3 = prop3.Mass();
+	double result4 = prop4.Mass();
+	CHECK(result3 == Approx(2 * (10 * 10) + 4 * (10 * 3)));
+	CHECK(result4 == Approx(2 * (10 * 10) + 4 * (10 * 3)));
+	BRepGlobalProperty::VolumeProperties(box, prop5, true, true);
+	BRepGlobalProperty::VolumeProperties(box, prop6, true, false);
+	double result5 = prop5.Mass();
+	double result6 = prop6.Mass();
+	CHECK(result5 == Approx(10 * 10 * 3));
+	CHECK(result6 == Approx(10 * 10 * 3));
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API explicit BoolBRepDefeaturing(const TopoShape& shape)	 @param shape The shape that require remove feature
+	 @brief Construct from a shape.
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <modeling/MakeBox.hpp>
+#include <modeling/MakeCylinder.hpp>
+#include <boolean/BoolBRepCut.hpp>
+#include <topomesh/BRepMeshIncrementalMesh.hpp>
+#include <io/OBJTool.hpp>
+#include <topology/TopoFace.hpp>
+#include <geometry/Geom3Surface.hpp>
+#include <topology/TopoTool.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <boolean/BoolBRepDefeaturing.hpp>
+#include <topology/TopoEdge.hpp>
+#include <common/IndexSet.hpp>
+using namespace AMCAX;
+TEST_CASE("case1: test BoolBRepDefeaturing Algorithm", "[boolean][BRepDefeaturing]")
+{
+	OUTPUT_DIRECTORY(Boolean, BRepDefeaturing);
+	TopoShape box = MakeBox(Point3(-5.0, -5.0, 0.0), Point3(5.0, 5.0, 3.0));
+	TopoShape cyl = MakeCylinder(Frame3(Point3(0.0, 0.0, 0.0), Direction3(0.0, 0.0, 1.0)), 3.0, 5.0);
+	TopoShape shape = BoolBRepCut(box, cyl);
+	OCCTIO::OCCTTool::Write(shape, outdir + "testResultTemp.brep");
+	BRepMeshIncrementalMesh meshT(shape, 0.01, true);
+	OBJTool::WriteShape(shape, outdir + "testResultTemp.obj");
+	IndexSet<TopoShape> shapeFace, shapeEdge, shapeVertex;
+	CHECK(GetTopoToolCount(shape, ShapeType::Face, shapeFace) == 7);
+	CHECK(GetTopoToolCount(shape, ShapeType::Edge, shapeEdge) == 15);
+	CHECK(GetTopoToolCount(shape, ShapeType::Vertex, shapeVertex) == 10);
+	TopoFace cy;
+	std::list<TopoShape> faceToRemove;
+	for (TopoExplorer expF(shape, ShapeType::Face); expF.More(); expF.Next())
+	{
+		TopoFace f = static_cast<const TopoFace&>(expF.Current());
+		std::shared_ptr<Geom3Surface> surface = TopoTool::Surface(f);
+		if (surface->Type() == SurfaceType::Cylinder)
+		{
+			cy = f;
+			OCCTIO::OCCTTool::Write(f, outdir + "RemoveFace.brep");
+			faceToRemove.push_back(f);
+		}
+	}
+	BoolBRepDefeaturing defeature(shape);
+	defeature.AddFaceToRemove(faceToRemove);
+	defeature.Build();
+	TopoShape newShape = defeature.Shape();
+	Point3 p(-3.0, 0.0, 1.0);
+	double tol = -1.0;
+	bool isIn = BRepClassificationTools::IsPointInFace(cy, p, tol);
+	CHECK(isIn == true);
+	for (TopoExplorer expF(newShape, ShapeType::Face); expF.More(); expF.Next())
+	{
+		TopoFace newFace = static_cast<const TopoFace&>(expF.Current());
+		bool isIn1 = BRepClassificationTools::IsPointInFace(newFace, p, tol);
+		CHECK(isIn1 == false);
+	}
+	for (TopoExplorer expF1(newShape, ShapeType::Face); expF1.More(); expF1.Next())
+	{
+		bool result;
+		TopoFace f1 = static_cast<const TopoFace&>(expF1.Current());
+		std::shared_ptr<Geom3Surface> surface1 = TopoTool::Surface(f1);
+		if (surface1->Type() == SurfaceType::Cylinder)
+		{
+			result = false;
+		}
+		else
+		{
+			result = true;
+		}
+		CHECK(result == true);
+	}
+	AMCAX::GlobalProperty props1, props2, props3;
+	IndexSet<TopoShape> newshapeFace, newshapeEdge, newshapeVertex;
+	CHECK(newShape.Type() == ShapeType::Compound);
+	CHECK(GetTopoToolCount(newShape, ShapeType::Face, newshapeFace) == 6);
+	CHECK(GetTopoToolCount(newShape, ShapeType::Edge, newshapeEdge) == 12);
+	CHECK(GetTopoToolCount(newShape, ShapeType::Vertex, newshapeVertex) == 8);
+	CHECK(GetLinearProperties(newShape,props1,true,false)== Approx(10 * 8 + 3 * 4));
+	CHECK(GetSurfaceProperties(newShape, props2, true, false) == Approx(2 * (10 * 10) + 4*(10 * 3)));
+	CHECK(GetVolumeProperties(newShape, props3, true, false) == Approx(10*10*3));
+	Point3 point = props3.CenterOfMass();
+	CHECK(point.X() == Approx(0.0).margin(1e-12));
+	CHECK(point.Y() == Approx(0.0).margin(1e-12));
+	CHECK(point.Z() == Approx(1.5).margin(1e-12));
+	std::cout << "defeature ok " << std::endl;
+	OCCTIO::OCCTTool::Write(newShape, outdir + "testResult.brep");
+	BRepMeshIncrementalMesh meshR(newShape, 0.01, true);
+	OBJTool::WriteShape(newShape, outdir + "testResult.obj");
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API BoolBRepFuse()	 @details Only set the type of boolean operation to fuse
+	 @brief Default constructor
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <boolean/BoolBRepFuse.hpp>
+#include <boolean/BoolBRepCut.hpp>
+using namespace AMCAX;
+TEST_CASE("bug1: BoolBRepFuse ", "[boolean][BoolBRepFuse][fixbug]")
+{
+	TopoShape shape1, shape2;
+	OCCTIO::OCCTTool::Read(shape1, INPUT_PATH_PREFIX"boolean/part.brep");
+	OCCTIO::OCCTTool::Read(shape2, INPUT_PATH_PREFIX"boolean/box.brep");
+	TopoShape result = BoolBRepFuse(shape1, shape2);
+	CHECK(OCCTIO::OCCTTool::Write(result, OUTPUT_PATH_PREFIX"testbug-view-556.brep"));
+	IndexSet<TopoShape> shapeFace, shapeEdge, shapeVertex ,shapeSolid;
+	CHECK( GetTopoToolCount(result, AMCAX::ShapeType::Solid, shapeSolid)==1 );
+}	
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API BoolBRepFuse(const TopoShape& s1, const TopoShape& s2)	 @param s2 The tool shape
+	 @param s1 The argument shape
+	 @brief Compute the fuse of two shapes
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <boolean/BoolBRepFuse.hpp>
+#include <boolean/BoolBRepCut.hpp>
+using namespace AMCAX;
+TEST_CASE("bug1: BoolBRepFuse ", "[boolean][BoolBRepFuse][fixbug]")
+{
+	TopoShape shape1, shape2;
+	OCCTIO::OCCTTool::Read(shape1, INPUT_PATH_PREFIX"boolean/part.brep");
+	OCCTIO::OCCTTool::Read(shape2, INPUT_PATH_PREFIX"boolean/box.brep");
+	TopoShape result = BoolBRepFuse(shape1, shape2);
+	CHECK(OCCTIO::OCCTTool::Write(result, OUTPUT_PATH_PREFIX"testbug-view-556.brep"));
+	IndexSet<TopoShape> shapeFace, shapeEdge, shapeVertex ,shapeSolid;
+	CHECK( GetTopoToolCount(result, AMCAX::ShapeType::Solid, shapeSolid)==1 );
+}	
+}
+,

@@ -1,0 +1,740 @@
+{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API static void AdjustPeriodic(double ufirst, double ulast, double precision, double& u1, double& u2)	 @param[in,out] u2 The second parameter to be adjust
+	 @param[in,out] u1 The first parameter to be adjust
+	 @param[in] precision The precision to check equality
+	 @param[in] ulast The upper bound of the period
+	 @param[in] ufirst The lower bound of the period
+	          The parameter u2 is set in the range [u1, u1 + ulast - ufirst]
+	 @details The parameter u1 is set in the range [ufirst, ulast]
+	 @brief Adjust u1 and u2 to be in the period range.
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <common/PointT.hpp>
+#include <math/CurveCalculation.hpp>
+using namespace AMCAX;
+TEST_CASE("case1: CurveCalculation::AdjustPeriodic ", "[math][CurveCalculation][P1]") {
+	double u1 = 0.0;
+	double u2 = 2 * M_PI;
+	double ufirst = 0.0;
+	double ulast = 2 * M_PI; 
+	double precision = 0.001; 
+	AMCAX::CurveCalculation::AdjustPeriodic(ufirst, ulast, precision, u1, u2);
+	CHECK(u1 == 0);
+	CHECK(u2 == 2 * M_PI);
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] AMCAX_API static Vector2 D1(double u, const Circle2& circle)	 @return The first derivative vector
+	 @param circle The circle
+	 @param u The parameter
+	 @brief Compute the first derivative on a 2D circle at a parameter
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <common/PointT.hpp>
+#include <math/CurveCalculation.hpp>
+using namespace AMCAX;
+TEST_CASE("case1: CurveCalculation::CircleD1 1/4 ", "[math][CurveCalculation][P1][CircleD1]") {
+	Direction2 initialDir(1.0, 0.0); 
+	Frame2 defaultFrame2(Point2(1.0, 1.0), initialDir); 
+	double radius = 2.0; 
+	Vector2 tangentAt0 = AMCAX::CurveCalculation::CircleD1(0.0, defaultFrame2, radius);
+	Vector2 tangentAt90Deg = AMCAX::CurveCalculation::CircleD1(M_PI_2, defaultFrame2, radius);
+	Vector2 tangentAt180Deg = AMCAX::CurveCalculation::CircleD1(M_PI, defaultFrame2, radius);
+	Vector2 tangentAt270Deg = AMCAX::CurveCalculation::CircleD1(3 * M_PI_2, defaultFrame2, radius);
+	Vector2 tangentAt360Deg = AMCAX::CurveCalculation::CircleD1(2 * M_PI, defaultFrame2, radius);
+	CHECK(tangentAt0.X() == Approx(-0.0));
+	CHECK(tangentAt0.Y() == Approx(2.0));
+	CHECK(tangentAt90Deg.X() == Approx(-2.0));
+	CHECK(tangentAt90Deg.Y() == Approx(0.0).margin(1e-14));
+	CHECK(tangentAt180Deg.X() == Approx(-0.0).margin(1e-14));
+	CHECK(tangentAt180Deg.Y() == Approx(-2.0));
+	CHECK(tangentAt270Deg.X() == Approx(2.0));
+	CHECK(tangentAt270Deg.Y() == Approx(-0.0).margin(1e-14));
+	CHECK(tangentAt360Deg.X() == Approx(0.0).margin(1e-14));
+	CHECK(tangentAt360Deg.Y() == Approx(2.0));
+	std::cout << "Tangent at 0 deg: " << tangentAt0 << std::endl;
+	std::cout << "Tangent at 90 deg: " << tangentAt90Deg << std::endl;
+	std::cout << "Tangent at 180 deg: " << tangentAt180Deg << std::endl;
+	std::cout << "Tangent at 270 deg: " << tangentAt270Deg << std::endl;
+	std::cout << "Tangent at 360 deg: " << tangentAt360Deg << std::endl;
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API static void AdjustPeriodic(double ufirst, double ulast, double precision, double& u1, double& u2)	 @param[in,out] u2 The second parameter to be adjust
+	 @param[in,out] u1 The first parameter to be adjust
+	 @param[in] precision The precision to check equality
+	 @param[in] ulast The upper bound of the period
+	 @param[in] ufirst The lower bound of the period
+	          The parameter u2 is set in the range [u1, u1 + ulast - ufirst]
+	 @details The parameter u1 is set in the range [ufirst, ulast]
+	 @brief Adjust u1 and u2 to be in the period range.
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <common/PointT.hpp>
+#include <math/CurveCalculation.hpp>
+using namespace AMCAX;
+TEST_CASE("case1: CurveCalculation::AdjustPeriodic ", "[math][CurveCalculation][P1]") {
+	double u1 = 0.0;
+	double u2 = 2 * M_PI;
+	double ufirst = 0.0;
+	double ulast = 2 * M_PI; 
+	double precision = 0.001; 
+	AMCAX::CurveCalculation::AdjustPeriodic(ufirst, ulast, precision, u1, u2);
+	CHECK(u1 == 0);
+	CHECK(u2 == 2 * M_PI);
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] AMCAX_API static Point3 CircleValue(double u, const Frame3& pos, double radius)	 @return The point
+	 @param radius The radius
+	 @param pos The local frame where the circle lies
+	 @param u The parameter
+	 @brief Compute the point on a 3D circle represented by a local frame and a radius at a parameter
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <common/PointT.hpp>
+#include <math/CurveCalculation.hpp>
+using namespace AMCAX;
+TEST_CASE("case1: CurveCalculation::CircleD3 3/4 ", "[math][CurveCalculation][P1][CircleD3]") {
+	Direction3 initialDir(0.0, 0.0, 1.0); 
+	Frame3 defaultFrame3(Point3(1.0, 1.0, 0.0), initialDir); 
+	double radius = 2.0; 
+	Vector3 tangentAt0 = AMCAX::CurveCalculation::CircleD3(0.0, defaultFrame3, radius);
+	Vector3 tangentAt90Deg = AMCAX::CurveCalculation::CircleD3(M_PI_2, defaultFrame3, radius);
+	Vector3 tangentAt180Deg = AMCAX::CurveCalculation::CircleD3(M_PI, defaultFrame3, radius);
+	Vector3 tangentAt270Deg = AMCAX::CurveCalculation::CircleD3(3 * M_PI_2, defaultFrame3, radius);
+	Vector3 tangentAt360Deg = AMCAX::CurveCalculation::CircleD3(2 * M_PI, defaultFrame3, radius);
+	CHECK(tangentAt0.X() == Approx(0.0));
+	CHECK(tangentAt0.Y() == Approx(-2.0));
+	CHECK(tangentAt0.Z() == Approx(-0.0));
+	CHECK(tangentAt90Deg.X() == Approx(2.0).margin(1e-14));
+	CHECK(tangentAt90Deg.Y() == Approx(-0.0).margin(1e-14));
+	CHECK(tangentAt90Deg.Z() == Approx(0.0).margin(1e-14));
+	CHECK(tangentAt180Deg.X() == Approx(0.0).margin(1e-14));
+	CHECK(tangentAt180Deg.Y() == Approx(2.0).margin(1e-14));
+	CHECK(tangentAt180Deg.Z() == Approx(0.0));
+	CHECK(tangentAt270Deg.X() == Approx(-2.0).margin(1e-14));
+	CHECK(tangentAt270Deg.Y() == Approx(0.0).margin(1e-14));
+	CHECK(tangentAt270Deg.Z() == Approx(0.0).margin(1e-14));
+	CHECK(tangentAt360Deg.X() == Approx(-0.0).margin(1e-14));
+	CHECK(tangentAt360Deg.Y() == Approx(-2.0).margin(1e-14));
+	CHECK(tangentAt360Deg.Z() == Approx(0.0).margin(1e-14));
+	std::cout << "Tangent at 0 deg: " << tangentAt0 << std::endl;
+	std::cout << "Tangent at 90 deg: " << tangentAt90Deg << std::endl;
+	std::cout << "Tangent at 180 deg: " << tangentAt180Deg << std::endl;
+	std::cout << "Tangent at 270 deg: " << tangentAt270Deg << std::endl;
+	std::cout << "Tangent at 360 deg: " << tangentAt360Deg << std::endl;
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] AMCAX_API static Point2 CircleValue(double u, const Frame2& pos, double radius)	 @return The point
+	 @param radius The radius
+	 @param pos The local frame where the circle lies
+	 @param u The parameter
+	 @brief Compute the point on a 2D circle represented by a local frame and a radius at a parameter
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <common/PointT.hpp>
+#include <math/CurveCalculation.hpp>
+using namespace AMCAX;
+TEST_CASE("case1: CurveCalculation::CircleValue()[1 / 2] ", "[math][CurveCalculation][P1][CircleValue]") {
+	Direction2 defaultDirection(1.0, 0.0); 
+	Frame2 defaultFrame2(Point2(1.0, 1.0), defaultDirection);
+	Point2 point2 = AMCAX::CurveCalculation::CircleValue(0.0, defaultFrame2, 3.0);
+	CHECK(point2.X() == 4.0);
+	CHECK(point2.Y() == 1.0);
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] AMCAX_API static Point3 CircleD0(double u, const Frame3& pos, double radius)	 @return The point
+	 @param radius The radius
+	 @param pos The local frame where the circle lies
+	 @param u The parameter
+	 @brief Compute the point on a 3D circle represented by a local frame and a radius at a parameter
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <common/PointT.hpp>
+#include <math/CurveCalculation.hpp>
+using namespace AMCAX;
+TEST_CASE("case1: CurveCalculation::CircleD0 2/2 ", "[math][CurveCalculation][P1]") {
+	Direction3 defaultDirection(-1.0, 0.0,0.0); 
+	Frame3 defaultFrame3(Point3(1.0, 0.0,0.0), defaultDirection);
+	double 	r = 3.0;
+	double u = 2 * M_PI / 4; 
+	Point3  pointOnCirecle = CurveCalculation::CircleD0(u, defaultFrame3, r);
+	std::cout << pointOnCirecle.X() << " " << pointOnCirecle.Y() << " " << pointOnCirecle.Y() << std::endl;
+	CHECK(pointOnCirecle.X() == Approx(1.0).epsilon(1e-12));
+	CHECK(pointOnCirecle.Y() == -3.0);
+	CHECK((pointOnCirecle.X() - 1.0) * (pointOnCirecle.X() - 1.0) + pointOnCirecle.Y() * pointOnCirecle.Y() == r * r);
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] AMCAX_API static Point2 CircleD0(double u, const Frame2& pos, double radius)	 @return The point
+	 @param radius The radius
+	 @param pos The local frame where the circle lies
+	 @param u The parameter
+	 @brief Compute the point on a 2D circle represented by a local frame and a radius at a parameter
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <common/PointT.hpp>
+#include <math/CurveCalculation.hpp>
+using namespace AMCAX;
+TEST_CASE("case1: CurveCalculation::CircleD0 1/2 ", "[math][CurveCalculation][P1]") {
+	Direction2 defaultDirection(1.0,0.0); 
+	Frame2 defaultFrame2(Point2(0.0, 0.0), defaultDirection);
+	double 	r = 3.0;
+	double u = 4 * M_PI ; 
+	Point2  pointOnCirecle = CurveCalculation::CircleD0(u, defaultFrame2, r);
+	std::cout << pointOnCirecle.X() << " " << pointOnCirecle.Y() << " "  << std::endl;
+	CHECK(pointOnCirecle.X() == 3.0);
+	CHECK(pointOnCirecle.Y() == Approx(0.0).margin(1e-14));
+	CHECK(pointOnCirecle.X() * pointOnCirecle.X() + pointOnCirecle.Y() * pointOnCirecle.Y() == r * r);
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] AMCAX_API static Vector3 CircleD1(double u, const Frame3& pos, double radius)	 @return The first derivative vector
+	 @param radius The radius
+	 @param pos The local frame where the circle lies
+	 @param u The parameter
+	 @brief Compute the first derivative on a 3D circle represented by a local frame and a radius at a parameter
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <common/PointT.hpp>
+#include <math/CurveCalculation.hpp>
+using namespace AMCAX;
+TEST_CASE("case1: CurveCalculation::CircleD1 3/4 ", "[math][CurveCalculation][P1][CircleD1]") {
+	Direction3 initialDir(0.0, 0.0,1.0); 
+	Frame3 defaultFrame3(Point3(1.0, 0.0,0.0), initialDir); 
+	double radius = 2.0; 
+	Vector3 tangentAt0 = AMCAX::CurveCalculation::CircleD1(0.0, defaultFrame3, radius);
+	Vector3 tangentAt90Deg = AMCAX::CurveCalculation::CircleD1(M_PI_2, defaultFrame3, radius);
+	Vector3 tangentAt180Deg = AMCAX::CurveCalculation::CircleD1(M_PI, defaultFrame3, radius);
+	Vector3 tangentAt270Deg = AMCAX::CurveCalculation::CircleD1(3 * M_PI_2, defaultFrame3, radius);
+	Vector3 tangentAt360Deg = AMCAX::CurveCalculation::CircleD1(2 * M_PI, defaultFrame3, radius);
+	CHECK(tangentAt0.X() == Approx(0.0));
+	CHECK(tangentAt0.Y() == Approx(2.0));
+	CHECK(tangentAt90Deg.X() == Approx(-2.0));
+	CHECK(tangentAt90Deg.Y() == Approx(0.0).margin(1e-14));
+	CHECK(tangentAt180Deg.X() == Approx(0.0).margin(1e-14));
+	CHECK(tangentAt180Deg.Y() == Approx(-2.0));
+	CHECK(tangentAt270Deg.X() == Approx(2.0));
+	CHECK(tangentAt270Deg.Y() == Approx(-0.0).margin(1e-14));
+	CHECK(tangentAt360Deg.X() == Approx(0.0).margin(1e-14));
+	CHECK(tangentAt360Deg.Y() == Approx(2.0));
+	std::cout << "Tangent at 0 deg: " << tangentAt0 << std::endl;
+	std::cout << "Tangent at 90 deg: " << tangentAt90Deg << std::endl;
+	std::cout << "Tangent at 180 deg: " << tangentAt180Deg << std::endl;
+	std::cout << "Tangent at 270 deg: " << tangentAt270Deg << std::endl;
+	std::cout << "Tangent at 360 deg: " << tangentAt360Deg << std::endl;
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API static void CircleD1(double u, const Frame3& pos, double radius, Point3& p, Vector3& v1)	 @param[out] v1 The first derivative
+	 @param[out] p The point
+	 @param[in] radius The radius
+	 @param[in] pos The local frame where the circle lies
+	 @param[in] u The parameter
+	 @brief Compute the point and the first derivative on a 3D circle represented by a local frame and a radius at a parameter
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <common/PointT.hpp>
+#include <math/CurveCalculation.hpp>
+using namespace AMCAX;
+TEST_CASE("case1: CurveCalculation::CircleD1 4/4 ", "[math][CurveCalculation][P1][CircleD1]") {
+	Direction3 initialDir(0.0, 0.0,1.0);
+	Frame3 defaultFrame3(Point3(1.0, 1.0,0.0), initialDir);
+	double radius = 2.0;
+	Point3 p;
+	Vector3 v;
+	SECTION("0 deg case") {
+		AMCAX::CurveCalculation::CircleD1(0.0, defaultFrame3, radius, p, v);
+		CHECK(p.X() == 3.0);
+		CHECK(p.Y() == 1.0);
+		CHECK(p.Z() == 0.0);
+		CHECK(v.X() == Approx(0.0));
+		CHECK(v.Y() == Approx(2.0));
+		CHECK(v.Z() == Approx(0.0));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] AMCAX_API static Vector2 CircleD1(double u, const Frame2& pos, double radius)	 @return The first derivative vector
+	 @param radius The radius
+	 @param pos The local frame where the circle lies
+	 @param u The parameter
+	 @brief Compute the first derivative on a 2D circle represented by a local frame and a radius at a parameter
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <common/PointT.hpp>
+#include <math/CurveCalculation.hpp>
+using namespace AMCAX;
+TEST_CASE("case1: CurveCalculation::CircleD1 1/4 ", "[math][CurveCalculation][P1][CircleD1]") {
+	Direction2 initialDir(1.0, 0.0); 
+	Frame2 defaultFrame2(Point2(1.0, 1.0), initialDir); 
+	double radius = 2.0; 
+	Vector2 tangentAt0 = AMCAX::CurveCalculation::CircleD1(0.0, defaultFrame2, radius);
+	Vector2 tangentAt90Deg = AMCAX::CurveCalculation::CircleD1(M_PI_2, defaultFrame2, radius);
+	Vector2 tangentAt180Deg = AMCAX::CurveCalculation::CircleD1(M_PI, defaultFrame2, radius);
+	Vector2 tangentAt270Deg = AMCAX::CurveCalculation::CircleD1(3 * M_PI_2, defaultFrame2, radius);
+	Vector2 tangentAt360Deg = AMCAX::CurveCalculation::CircleD1(2 * M_PI, defaultFrame2, radius);
+	CHECK(tangentAt0.X() == Approx(-0.0));
+	CHECK(tangentAt0.Y() == Approx(2.0));
+	CHECK(tangentAt90Deg.X() == Approx(-2.0));
+	CHECK(tangentAt90Deg.Y() == Approx(0.0).margin(1e-14));
+	CHECK(tangentAt180Deg.X() == Approx(-0.0).margin(1e-14));
+	CHECK(tangentAt180Deg.Y() == Approx(-2.0));
+	CHECK(tangentAt270Deg.X() == Approx(2.0));
+	CHECK(tangentAt270Deg.Y() == Approx(-0.0).margin(1e-14));
+	CHECK(tangentAt360Deg.X() == Approx(0.0).margin(1e-14));
+	CHECK(tangentAt360Deg.Y() == Approx(2.0));
+	std::cout << "Tangent at 0 deg: " << tangentAt0 << std::endl;
+	std::cout << "Tangent at 90 deg: " << tangentAt90Deg << std::endl;
+	std::cout << "Tangent at 180 deg: " << tangentAt180Deg << std::endl;
+	std::cout << "Tangent at 270 deg: " << tangentAt270Deg << std::endl;
+	std::cout << "Tangent at 360 deg: " << tangentAt360Deg << std::endl;
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API static void CircleD1(double u, const Frame2& pos, double radius, Point2& p, Vector2& v1)	 @param[out] v1 The first derivative
+	 @param[out] p The point
+	 @param[in] radius The radius
+	 @param[in] pos The local frame where the circle lies
+	 @param[in] u The parameter
+	 @brief Compute the point and the first derivative on a 2D circle represented by a local frame and a radius at a parameter
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <common/PointT.hpp>
+#include <math/CurveCalculation.hpp>
+using namespace AMCAX;
+TEST_CASE("case1: CurveCalculation::CircleD1 1/4 ", "[math][CurveCalculation][P1][CircleD1]") {
+	Direction2 initialDir(1.0, 0.0); 
+	Frame2 defaultFrame2(Point2(1.0, 1.0), initialDir); 
+	double radius = 2.0; 
+	Vector2 tangentAt0 = AMCAX::CurveCalculation::CircleD1(0.0, defaultFrame2, radius);
+	Vector2 tangentAt90Deg = AMCAX::CurveCalculation::CircleD1(M_PI_2, defaultFrame2, radius);
+	Vector2 tangentAt180Deg = AMCAX::CurveCalculation::CircleD1(M_PI, defaultFrame2, radius);
+	Vector2 tangentAt270Deg = AMCAX::CurveCalculation::CircleD1(3 * M_PI_2, defaultFrame2, radius);
+	Vector2 tangentAt360Deg = AMCAX::CurveCalculation::CircleD1(2 * M_PI, defaultFrame2, radius);
+	CHECK(tangentAt0.X() == Approx(-0.0));
+	CHECK(tangentAt0.Y() == Approx(2.0));
+	CHECK(tangentAt90Deg.X() == Approx(-2.0));
+	CHECK(tangentAt90Deg.Y() == Approx(0.0).margin(1e-14));
+	CHECK(tangentAt180Deg.X() == Approx(-0.0).margin(1e-14));
+	CHECK(tangentAt180Deg.Y() == Approx(-2.0));
+	CHECK(tangentAt270Deg.X() == Approx(2.0));
+	CHECK(tangentAt270Deg.Y() == Approx(-0.0).margin(1e-14));
+	CHECK(tangentAt360Deg.X() == Approx(0.0).margin(1e-14));
+	CHECK(tangentAt360Deg.Y() == Approx(2.0));
+	std::cout << "Tangent at 0 deg: " << tangentAt0 << std::endl;
+	std::cout << "Tangent at 90 deg: " << tangentAt90Deg << std::endl;
+	std::cout << "Tangent at 180 deg: " << tangentAt180Deg << std::endl;
+	std::cout << "Tangent at 270 deg: " << tangentAt270Deg << std::endl;
+	std::cout << "Tangent at 360 deg: " << tangentAt360Deg << std::endl;
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] AMCAX_API static Vector3 CircleD2(double u, const Frame3& pos, double radius)	 @return The second derivative vector
+	 @param radius The radius
+	 @param pos The local frame where the circle lies
+	 @param u The parameter
+	 @brief Compute the second derivative on a 3D circle represented by a local frame and a radius at a parameter
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <common/PointT.hpp>
+#include <math/CurveCalculation.hpp>
+using namespace AMCAX;
+TEST_CASE("case1: CurveCalculation::CircleD2 3/4 ", "[math][CurveCalculation][P1][CircleD2]") {
+	Direction3 initialDir(0.0, 0.0, 1.0); 
+	Frame3 defaultFrame3(Point3(1.0, 1.0, 0.0), initialDir); 
+	double radius = 2.0; 
+	Vector3 tangentAt0 = AMCAX::CurveCalculation::CircleD2(0.0, defaultFrame3, radius);
+	Vector3 tangentAt90Deg = AMCAX::CurveCalculation::CircleD2(M_PI_2, defaultFrame3, radius);
+	Vector3 tangentAt180Deg = AMCAX::CurveCalculation::CircleD2(M_PI, defaultFrame3, radius);
+	Vector3 tangentAt270Deg = AMCAX::CurveCalculation::CircleD2(3 * M_PI_2, defaultFrame3, radius);
+	Vector3 tangentAt360Deg = AMCAX::CurveCalculation::CircleD2(2 * M_PI, defaultFrame3, radius);
+	CHECK(tangentAt0.X() == Approx(-2.0));
+	CHECK(tangentAt0.Y() == Approx(-0.0));
+	CHECK(tangentAt0.Z() == Approx(0.0));
+	CHECK(tangentAt90Deg.X() == Approx(-0.0).margin(1e-14));
+	CHECK(tangentAt90Deg.Y() == Approx(-2.0).margin(1e-14));
+	CHECK(tangentAt90Deg.Z() == Approx(0.0).margin(1e-14));
+	CHECK(tangentAt180Deg.X() == Approx(2.0).margin(1e-14));
+	CHECK(tangentAt180Deg.Y() == Approx(-0.0).margin(1e-14));
+	CHECK(tangentAt180Deg.Z() == Approx(-0.0));
+	CHECK(tangentAt270Deg.X() == Approx(0.0).margin(1e-14));
+	CHECK(tangentAt270Deg.Y() == Approx(2.0).margin(1e-14));
+	CHECK(tangentAt270Deg.Z() == Approx(0.0).margin(1e-14));
+	CHECK(tangentAt360Deg.X() == Approx(-2.0).margin(1e-14));
+	CHECK(tangentAt360Deg.Y() == Approx(0.0).margin(1e-14));
+	CHECK(tangentAt360Deg.Z() == Approx(0.0).margin(1e-14));
+	std::cout << "Tangent at 0 deg: " << tangentAt0 << std::endl;
+	std::cout << "Tangent at 90 deg: " << tangentAt90Deg << std::endl;
+	std::cout << "Tangent at 180 deg: " << tangentAt180Deg << std::endl;
+	std::cout << "Tangent at 270 deg: " << tangentAt270Deg << std::endl;
+	std::cout << "Tangent at 360 deg: " << tangentAt360Deg << std::endl;
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API static void CircleD2(double u, const Frame3& pos, double radius, Point3& p, Vector3& v1, Vector3& v2)	 @param[out] v2 The second derivative
+	 @param[out] v1 The first derivative
+	 @param[out] p The point
+	 @param[in] radius The radius
+	 @param[in] pos The local frame where the circle lies
+	 @param[in] u The parameter
+	 @brief Compute the point and the first two derivatives on a 3D circle represented by a local frame and a radius at a parameter
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <common/PointT.hpp>
+#include <math/CurveCalculation.hpp>
+using namespace AMCAX;
+TEST_CASE("case1: CurveCalculation::CircleD2 3/4 ", "[math][CurveCalculation][P1][CircleD2]") {
+	Direction3 initialDir(0.0, 0.0, 1.0); 
+	Frame3 defaultFrame3(Point3(1.0, 1.0, 0.0), initialDir); 
+	double radius = 2.0; 
+	Vector3 tangentAt0 = AMCAX::CurveCalculation::CircleD2(0.0, defaultFrame3, radius);
+	Vector3 tangentAt90Deg = AMCAX::CurveCalculation::CircleD2(M_PI_2, defaultFrame3, radius);
+	Vector3 tangentAt180Deg = AMCAX::CurveCalculation::CircleD2(M_PI, defaultFrame3, radius);
+	Vector3 tangentAt270Deg = AMCAX::CurveCalculation::CircleD2(3 * M_PI_2, defaultFrame3, radius);
+	Vector3 tangentAt360Deg = AMCAX::CurveCalculation::CircleD2(2 * M_PI, defaultFrame3, radius);
+	CHECK(tangentAt0.X() == Approx(-2.0));
+	CHECK(tangentAt0.Y() == Approx(-0.0));
+	CHECK(tangentAt0.Z() == Approx(0.0));
+	CHECK(tangentAt90Deg.X() == Approx(-0.0).margin(1e-14));
+	CHECK(tangentAt90Deg.Y() == Approx(-2.0).margin(1e-14));
+	CHECK(tangentAt90Deg.Z() == Approx(0.0).margin(1e-14));
+	CHECK(tangentAt180Deg.X() == Approx(2.0).margin(1e-14));
+	CHECK(tangentAt180Deg.Y() == Approx(-0.0).margin(1e-14));
+	CHECK(tangentAt180Deg.Z() == Approx(-0.0));
+	CHECK(tangentAt270Deg.X() == Approx(0.0).margin(1e-14));
+	CHECK(tangentAt270Deg.Y() == Approx(2.0).margin(1e-14));
+	CHECK(tangentAt270Deg.Z() == Approx(0.0).margin(1e-14));
+	CHECK(tangentAt360Deg.X() == Approx(-2.0).margin(1e-14));
+	CHECK(tangentAt360Deg.Y() == Approx(0.0).margin(1e-14));
+	CHECK(tangentAt360Deg.Z() == Approx(0.0).margin(1e-14));
+	std::cout << "Tangent at 0 deg: " << tangentAt0 << std::endl;
+	std::cout << "Tangent at 90 deg: " << tangentAt90Deg << std::endl;
+	std::cout << "Tangent at 180 deg: " << tangentAt180Deg << std::endl;
+	std::cout << "Tangent at 270 deg: " << tangentAt270Deg << std::endl;
+	std::cout << "Tangent at 360 deg: " << tangentAt360Deg << std::endl;
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] AMCAX_API static Vector2 CircleD2(double u, const Frame2& pos, double radius)	 @return The second derivative vector
+	 @param radius The radius
+	 @param pos The local frame where the circle lies
+	 @param u The parameter
+	 @brief Compute the second derivative on a 2D circle represented by a local frame and a radius at a parameter
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <common/PointT.hpp>
+#include <math/CurveCalculation.hpp>
+using namespace AMCAX;
+TEST_CASE("case1: CurveCalculation::CircleD2 1/4 ", "[math][CurveCalculation][P1][CircleD2]") {
+	Direction2 defaultDirection(1.0, 0.0); 
+	Frame2 defaultFrame2(Point2(0.0, 0.0), defaultDirection);
+	double 	r = 2.0;
+	double u = 0.0; 
+	Vector2  vector2 = CurveCalculation::CircleD2(u, defaultFrame2, r); 
+	std::cout << vector2.X() << " " << vector2.Y() << " " << std::endl;
+	CHECK(vector2.X() == -2.0);
+	CHECK(vector2.Y() == Approx(0.0).margin(1e-14));
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API static void CircleD2(double u, const Frame2& pos, double radius, Point2& p, Vector2& v1, Vector2& v2)	 @param[out] v2 The second derivative
+	 @param[out] v1 The first derivative
+	 @param[out] p The point
+	 @param[in] radius The radius
+	 @param[in] pos The local frame where the circle lies
+	 @param[in] u The parameter
+	 @brief Compute the point and the first two derivatives on a 2D circle represented by a local frame and a radius at a parameter
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <common/PointT.hpp>
+#include <math/CurveCalculation.hpp>
+using namespace AMCAX;
+TEST_CASE("case1: CurveCalculation::CircleD2 1/4 ", "[math][CurveCalculation][P1][CircleD2]") {
+	Direction2 defaultDirection(1.0, 0.0); 
+	Frame2 defaultFrame2(Point2(0.0, 0.0), defaultDirection);
+	double 	r = 2.0;
+	double u = 0.0; 
+	Vector2  vector2 = CurveCalculation::CircleD2(u, defaultFrame2, r); 
+	std::cout << vector2.X() << " " << vector2.Y() << " " << std::endl;
+	CHECK(vector2.X() == -2.0);
+	CHECK(vector2.Y() == Approx(0.0).margin(1e-14));
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] AMCAX_API static Vector3 CircleD3(double u, const Frame3& pos, double radius)	 @return The third derivative vector
+	 @param radius The radius
+	 @param pos The local frame where the circle lies
+	 @param u The parameter
+	 @brief Compute the third derivative on a 3D circle represented by a local frame and a radius at a parameter
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <common/PointT.hpp>
+#include <math/CurveCalculation.hpp>
+using namespace AMCAX;
+TEST_CASE("case1: CurveCalculation::CircleD3 3/4 ", "[math][CurveCalculation][P1][CircleD3]") {
+	Direction3 initialDir(0.0, 0.0, 1.0); 
+	Frame3 defaultFrame3(Point3(1.0, 1.0, 0.0), initialDir); 
+	double radius = 2.0; 
+	Vector3 tangentAt0 = AMCAX::CurveCalculation::CircleD3(0.0, defaultFrame3, radius);
+	Vector3 tangentAt90Deg = AMCAX::CurveCalculation::CircleD3(M_PI_2, defaultFrame3, radius);
+	Vector3 tangentAt180Deg = AMCAX::CurveCalculation::CircleD3(M_PI, defaultFrame3, radius);
+	Vector3 tangentAt270Deg = AMCAX::CurveCalculation::CircleD3(3 * M_PI_2, defaultFrame3, radius);
+	Vector3 tangentAt360Deg = AMCAX::CurveCalculation::CircleD3(2 * M_PI, defaultFrame3, radius);
+	CHECK(tangentAt0.X() == Approx(0.0));
+	CHECK(tangentAt0.Y() == Approx(-2.0));
+	CHECK(tangentAt0.Z() == Approx(-0.0));
+	CHECK(tangentAt90Deg.X() == Approx(2.0).margin(1e-14));
+	CHECK(tangentAt90Deg.Y() == Approx(-0.0).margin(1e-14));
+	CHECK(tangentAt90Deg.Z() == Approx(0.0).margin(1e-14));
+	CHECK(tangentAt180Deg.X() == Approx(0.0).margin(1e-14));
+	CHECK(tangentAt180Deg.Y() == Approx(2.0).margin(1e-14));
+	CHECK(tangentAt180Deg.Z() == Approx(0.0));
+	CHECK(tangentAt270Deg.X() == Approx(-2.0).margin(1e-14));
+	CHECK(tangentAt270Deg.Y() == Approx(0.0).margin(1e-14));
+	CHECK(tangentAt270Deg.Z() == Approx(0.0).margin(1e-14));
+	CHECK(tangentAt360Deg.X() == Approx(-0.0).margin(1e-14));
+	CHECK(tangentAt360Deg.Y() == Approx(-2.0).margin(1e-14));
+	CHECK(tangentAt360Deg.Z() == Approx(0.0).margin(1e-14));
+	std::cout << "Tangent at 0 deg: " << tangentAt0 << std::endl;
+	std::cout << "Tangent at 90 deg: " << tangentAt90Deg << std::endl;
+	std::cout << "Tangent at 180 deg: " << tangentAt180Deg << std::endl;
+	std::cout << "Tangent at 270 deg: " << tangentAt270Deg << std::endl;
+	std::cout << "Tangent at 360 deg: " << tangentAt360Deg << std::endl;
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API static void CircleD3(double u, const Frame3& pos, double radius, Point3& p, Vector3& v1, Vector3& v2, Vector3& v3)	 @param[out] v3 The third derivative
+	 @param[out] v2 The second derivative
+	 @param[out] v1 The first derivative
+	 @param[out] p The point
+	 @param[in] radius The radius
+	 @param[in] pos The local frame where the circle lies
+	 @param[in] u The parameter
+	 @brief Compute the point and the first three derivatives on a 3D circle represented by a local frame and a radius at a parameter
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <common/PointT.hpp>
+#include <math/CurveCalculation.hpp>
+using namespace AMCAX;
+TEST_CASE("case1: CurveCalculation::CircleD3 3/4 ", "[math][CurveCalculation][P1][CircleD3]") {
+	Direction3 initialDir(0.0, 0.0, 1.0); 
+	Frame3 defaultFrame3(Point3(1.0, 1.0, 0.0), initialDir); 
+	double radius = 2.0; 
+	Vector3 tangentAt0 = AMCAX::CurveCalculation::CircleD3(0.0, defaultFrame3, radius);
+	Vector3 tangentAt90Deg = AMCAX::CurveCalculation::CircleD3(M_PI_2, defaultFrame3, radius);
+	Vector3 tangentAt180Deg = AMCAX::CurveCalculation::CircleD3(M_PI, defaultFrame3, radius);
+	Vector3 tangentAt270Deg = AMCAX::CurveCalculation::CircleD3(3 * M_PI_2, defaultFrame3, radius);
+	Vector3 tangentAt360Deg = AMCAX::CurveCalculation::CircleD3(2 * M_PI, defaultFrame3, radius);
+	CHECK(tangentAt0.X() == Approx(0.0));
+	CHECK(tangentAt0.Y() == Approx(-2.0));
+	CHECK(tangentAt0.Z() == Approx(-0.0));
+	CHECK(tangentAt90Deg.X() == Approx(2.0).margin(1e-14));
+	CHECK(tangentAt90Deg.Y() == Approx(-0.0).margin(1e-14));
+	CHECK(tangentAt90Deg.Z() == Approx(0.0).margin(1e-14));
+	CHECK(tangentAt180Deg.X() == Approx(0.0).margin(1e-14));
+	CHECK(tangentAt180Deg.Y() == Approx(2.0).margin(1e-14));
+	CHECK(tangentAt180Deg.Z() == Approx(0.0));
+	CHECK(tangentAt270Deg.X() == Approx(-2.0).margin(1e-14));
+	CHECK(tangentAt270Deg.Y() == Approx(0.0).margin(1e-14));
+	CHECK(tangentAt270Deg.Z() == Approx(0.0).margin(1e-14));
+	CHECK(tangentAt360Deg.X() == Approx(-0.0).margin(1e-14));
+	CHECK(tangentAt360Deg.Y() == Approx(-2.0).margin(1e-14));
+	CHECK(tangentAt360Deg.Z() == Approx(0.0).margin(1e-14));
+	std::cout << "Tangent at 0 deg: " << tangentAt0 << std::endl;
+	std::cout << "Tangent at 90 deg: " << tangentAt90Deg << std::endl;
+	std::cout << "Tangent at 180 deg: " << tangentAt180Deg << std::endl;
+	std::cout << "Tangent at 270 deg: " << tangentAt270Deg << std::endl;
+	std::cout << "Tangent at 360 deg: " << tangentAt360Deg << std::endl;
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] AMCAX_API static Vector2 CircleD3(double u, const Frame2& pos, double radius)	 @return The third derivative vector
+	 @param radius The radius
+	 @param pos The local frame where the circle lies
+	 @param u The parameter
+	 @brief Compute the third derivative on a 2D circle represented by a local frame and a radius at a parameter
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <common/PointT.hpp>
+#include <math/CurveCalculation.hpp>
+using namespace AMCAX;
+TEST_CASE("case1: CurveCalculation::CircleD3 1/4 ", "[math][CurveCalculation][P1][CircleD3]") {
+	Direction2 defaultDir2(1.0, 0.0);
+	Frame2 defaultFrame2(Point2(1.0, 1.0), defaultDir2);
+	double radius = 2.0;
+	Vector2 tangentAt0 = AMCAX::CurveCalculation::CircleD3(0.0, defaultFrame2, radius);
+	Vector2 tangentAt180 = AMCAX::CurveCalculation::CircleD3(M_PI, defaultFrame2, radius);
+	Vector2 tangentAt360 = AMCAX::CurveCalculation::CircleD3(2 * M_PI, defaultFrame2, radius);
+	CHECK(tangentAt0.X() == 0.0);
+	CHECK(tangentAt0.Y() == -2.0);
+	CHECK(tangentAt180.X() == Approx(0.0).margin(1e-14));
+	CHECK(tangentAt180.Y() == 2.0 );
+	CHECK(tangentAt360.X() == Approx(0.0).margin(1e-14));
+	CHECK(tangentAt360.Y() == -2.0 );
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API static void CircleD3(double u, const Frame2& pos, double radius, Point2& p, Vector2& v1, Vector2& v2, Vector2& v3)	 @param[out] v3 The third derivative
+	 @param[out] v2 The second derivative
+	 @param[out] v1 The first derivative
+	 @param[out] p The point
+	 @param[in] radius The radius
+	 @param[in] pos The local frame where the circle lies
+	 @param[in] u The parameter
+	 @brief Compute the point and the first three derivatives on a 2D circle represented by a local frame and a radius at a parameter
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <common/PointT.hpp>
+#include <math/CurveCalculation.hpp>
+using namespace AMCAX;
+TEST_CASE("case1: CurveCalculation::CircleD3 1/4 ", "[math][CurveCalculation][P1][CircleD3]") {
+	Direction2 defaultDir2(1.0, 0.0);
+	Frame2 defaultFrame2(Point2(1.0, 1.0), defaultDir2);
+	double radius = 2.0;
+	Vector2 tangentAt0 = AMCAX::CurveCalculation::CircleD3(0.0, defaultFrame2, radius);
+	Vector2 tangentAt180 = AMCAX::CurveCalculation::CircleD3(M_PI, defaultFrame2, radius);
+	Vector2 tangentAt360 = AMCAX::CurveCalculation::CircleD3(2 * M_PI, defaultFrame2, radius);
+	CHECK(tangentAt0.X() == 0.0);
+	CHECK(tangentAt0.Y() == -2.0);
+	CHECK(tangentAt180.X() == Approx(0.0).margin(1e-14));
+	CHECK(tangentAt180.Y() == 2.0 );
+	CHECK(tangentAt360.X() == Approx(0.0).margin(1e-14));
+	CHECK(tangentAt360.Y() == -2.0 );
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] AMCAX_API static Vector3 CircleDN(double u, const Frame3& pos, double radius, int n)	 @return The n-th derivative vector
+	 @param n The order of derivative
+	 @param radius The radius
+	 @param pos The local frame where the circle lies
+	 @param u The parameter
+	 @brief Compute the n-th derivative on a 3D circle represented by a local frame and a radius at a parameter
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <common/PointT.hpp>
+#include <math/CurveCalculation.hpp>
+using namespace AMCAX;
+TEST_CASE("case1: CurveCalculation::CircleDN 2/2 ", "[math][CurveCalculation][P1][CircleDN]") {
+	Direction3 initialDir(0.0, 0.0, 1.0); 
+	Frame3 defaultFrame3(Point3(1.0, 1.0, 0.0), initialDir); 
+	double radius = 2.0; 
+	double u = 0.0;
+	SECTION("2 derivative vector") {
+		Vector3  vector3 = CurveCalculation::CircleDN(u, defaultFrame3, radius, 2); 
+		std::cout << vector3.X() << " " << vector3.Y() << " " << std::endl;
+		CHECK(vector3.X() == -2.0);
+		CHECK(vector3.Y() == Approx(0.0).margin(1e-14));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] AMCAX_API static Vector2 CircleDN(double u, const Frame2& pos, double radius, int n)	 @return The n-th derivative vector
+	 @param n The order of derivative
+	 @param radius The radius
+	 @param pos The local frame where the circle lies
+	 @param u The parameter
+	 @brief Compute the n-th derivative on a 2D circle represented by a local frame and a radius at a parameter
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <common/PointT.hpp>
+#include <math/CurveCalculation.hpp>
+using namespace AMCAX;
+TEST_CASE("case1: CurveCalculation::CircleDN 1/2 ", "[math][CurveCalculation][P1][CircleDN]") {
+	Direction2 defaultDirection(1.0, 0.0); 
+	Frame2 defaultFrame2(Point2(0.0, 0.0), defaultDirection);
+	double 	r = 2.0;
+	double u = 0.0;
+	SECTION("2 derivative vector") {
+		Vector2  vector2 = CurveCalculation::CircleDN(u, defaultFrame2, r, 2); 
+		std::cout << vector2.X() << " " << vector2.Y() << " " << std::endl;
+		CHECK(vector2.X() == -2.0);
+		CHECK(vector2.Y() == Approx(0.0).margin(1e-14));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] AMCAX_API static double CircleParameter(const Frame3& pos, const Point3& p)	 @return The parameter of point
+	 @param p The given point
+	 @param pos The local frame where the circle lies
+	 @brief Compute the parameter of a given point on a 3D circle represented by a local frame
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <common/PointT.hpp>
+#include <math/CurveCalculation.hpp>
+using namespace AMCAX;
+TEST_CASE("case1: CurveCalculation::CircleParameter() [1/2] ", "[math][CurveCalculation][P1][CircleParameter]") {
+	Direction2 defaultDirection(1.0, 0.0); 
+	Frame2 defaultFrame2(Point2(0.0, 0.0), defaultDirection);
+	double u1 = AMCAX::CurveCalculation::CircleParameter(defaultFrame2, Point2(0.0, 1.0)); 
+	CHECK(u1 == M_PI_2);
+	double u2 = AMCAX::CurveCalculation::CircleParameter(defaultFrame2, Point2(0.0, 0.0));
+	CHECK(u2 == 0.0);
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] AMCAX_API static double CircleParameter(const Frame2& pos, const Point2& p)	 @return The parameter of point
+	 @param p The given point
+	 @param pos The local frame where the circle lies
+	 @brief Compute the parameter of a given point on a 2D circle represented by a local frame
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <common/PointT.hpp>
+#include <math/CurveCalculation.hpp>
+using namespace AMCAX;
+TEST_CASE("case1: CurveCalculation::CircleParameter() [1/2] ", "[math][CurveCalculation][P1][CircleParameter]") {
+	Direction2 defaultDirection(1.0, 0.0); 
+	Frame2 defaultFrame2(Point2(0.0, 0.0), defaultDirection);
+	double u1 = AMCAX::CurveCalculation::CircleParameter(defaultFrame2, Point2(0.0, 1.0)); 
+	CHECK(u1 == M_PI_2);
+	double u2 = AMCAX::CurveCalculation::CircleParameter(defaultFrame2, Point2(0.0, 0.0));
+	CHECK(u2 == 0.0);
+}
+}
+,

@@ -1,0 +1,2526 @@
+{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] const PointT<Scalar, DIM>& Location()	 @return The location
+	 @brief Get the location
+,
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected) {
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Frame3","[Common][Frame3]")
+{
+	SECTION("Location"){
+		PointT<double, 3> p(1.0, 2.0, 3.0);
+		DirectionT<double, 3> dz(1.0, 2.0, 3.0);
+		FrameT<double, 3> f1(p, dz);
+		CHECK(f1.Location().IsEqual(p, tol));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":FrameT()	 @details The default frame is the standard orthogonal frame
+	 @brief Default constructor
+,
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected) {
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Frame3","[Common][Frame3]")
+{
+	SECTION("SetXDirection 3D"){
+		PointT<double, 3> p(0.0, 1.0, 2.0);
+		DirectionT<double, 3> dz(1.0, 2.0, 3.0);
+		DirectionT<double, 3> dx(-1.0, -1.0, 1.0);
+		DirectionT<double, 3> dx2(0.0, 3.0, -2.0);
+		FrameT<double, 3> f1(p, dz);
+		FrameT<double, 3> f2(p, dz, dx);
+		f2.SetXDirection(dx2);
+		CHECK(IsEqual(f1, f2));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2, typename OtherScalar3, int DIM2 = DIM, std::enable_if_t<DIM2 == 2, int> = 0> FrameT(const PointT<OtherScalar, DIM>& point, const DirectionT<OtherScalar2, DIM>& xdir, const DirectionT<OtherScalar3, DIM>& ydir),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected) {
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Frame3","[Common][Frame3]")
+{
+	SECTION("YDirection"){
+		PointT<double, 3> p(1.0, 2.0, 3.0);
+		DirectionT<double, 3> dz(1.0, 2.0, 3.0);
+		DirectionT<double, 3> dy(-13.0, 2.0, 3.0);
+		FrameT<double, 3> f1(p, dz);
+		CHECK(f1.YDirection().IsEqual(dy, tol));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2, int DIM2 = DIM, std::enable_if_t<DIM2 == 2, int> = 0> FrameT(const PointT<OtherScalar, DIM>& point, const DirectionT<OtherScalar2, DIM>& xdir, bool isright = true),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected) {
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Frame3","[Common][Frame3]")
+{
+	SECTION("IsCoplanar frame"){
+		PointT<double, 3> p(1.0, -1.0, 0.0);
+		PointT<double, 3> p2(1.0, 2.0, -2.0);
+		PointT<double, 3> p3(1.0, 2.0, -1.0);
+		DirectionT<double, 3> dz(1.0, 2.0, 3.0);
+		DirectionT<double, 3> dz2(1.0, 2.0, 3.1);
+		FrameT<double, 3> f1(p, dz);
+		FrameT<double, 3> f2(p2, dz);
+		FrameT<double, 3> f3(p3, dz);
+		FrameT<double, 3> f4(p2, dz2);
+		CHECK(f1.IsCoplanar(f2, 1e-6, 1e-6) == true);
+		CHECK(f1.IsCoplanar(f3, 1e-6, 1e-6) == false);
+		CHECK(f1.IsCoplanar(f4, 1e-6, 1e-6) == false);
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, int DIM2 = DIM, std::enable_if_t<DIM2 == 2, int> = 0> explicit FrameT(const AxisT<OtherScalar, DIM>& axis, bool isright = true),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected) {
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Frame3","[Common][Frame3]")
+{
+	SECTION("Location"){
+		PointT<double, 3> p(1.0, 2.0, 3.0);
+		DirectionT<double, 3> dz(1.0, 2.0, 3.0);
+		FrameT<double, 3> f1(p, dz);
+		CHECK(f1.Location().IsEqual(p, tol));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2, typename OtherScalar3, int DIM2 = DIM, std::enable_if_t<DIM2 == 3, int> = 0> FrameT(const PointT<OtherScalar, DIM>& point, const DirectionT<OtherScalar2, DIM>& normal, const DirectionT<OtherScalar3, DIM>& x),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected) {
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Frame3","[Common][Frame3]")
+{
+	SECTION("Default constructor"){
+		FrameT<double, 3> f1;
+		PointT<double, 3> p(0.0, 0.0, 0.0);
+		DirectionT<double, 3> dz(0.0, 0.0, 1.0);
+		DirectionT<double, 3> dx(1.0, 0.0, 0.0);
+		FrameT<double, 3> f2(p, dz, dx);
+		CHECK(IsEqual(f1, f2));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2, int DIM2 = DIM, std::enable_if_t<DIM2 == 3, int> = 0> FrameT(const PointT<OtherScalar, DIM>& point, const DirectionT<OtherScalar2, DIM>& dir),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected) {
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Frame3","[Common][Frame3]")
+{
+	SECTION("Default constructor"){
+		FrameT<double, 3> f1;
+		PointT<double, 3> p(0.0, 0.0, 0.0);
+		DirectionT<double, 3> dz(0.0, 0.0, 1.0);
+		DirectionT<double, 3> dx(1.0, 0.0, 0.0);
+		FrameT<double, 3> f2(p, dz, dx);
+		CHECK(IsEqual(f1, f2));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, int DIM2 = DIM, typename = typename std::enable_if_t<DIM2 == 3>> void SetDirection(const DirectionT<OtherScalar, DIM>& dir),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected) {
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Frame3","[Common][Frame3]")
+{
+	SECTION("SetDirection 3D"){
+		PointT<double, 3> p(0.0, 1.0, 2.0);
+		DirectionT<double, 3> dz(1.0, 2.0, 3.0);
+		DirectionT<double, 3> dz2(2.3, 2.6, 3.3);
+		DirectionT<double, 3> dx(0.0, 3.0, -2.0);
+		FrameT<double, 3> f1(p, dz);
+		FrameT<double, 3> f2(p, dz2);
+		f2.SetDirection(dz);
+		f2.SetXDirection(dx);
+		CHECK(IsEqual(f1, f2));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, int DIM2 = DIM, std::enable_if_t<DIM2 == 3, int> = 0> void SetXDirection(const DirectionT<OtherScalar, DIM>& x),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected) {
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Frame3","[Common][Frame3]")
+{
+	SECTION("SetXDirection 3D"){
+		PointT<double, 3> p(0.0, 1.0, 2.0);
+		DirectionT<double, 3> dz(1.0, 2.0, 3.0);
+		DirectionT<double, 3> dx(-1.0, -1.0, 1.0);
+		DirectionT<double, 3> dx2(0.0, 3.0, -2.0);
+		FrameT<double, 3> f1(p, dz);
+		FrameT<double, 3> f2(p, dz, dx);
+		f2.SetXDirection(dx2);
+		CHECK(IsEqual(f1, f2));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, int DIM2 = DIM, std::enable_if_t<DIM2 == 3, int> = 0> void SetYDirection(const DirectionT<OtherScalar, DIM>& y),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected) {
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Frame3","[Common][Frame3]")
+{
+	SECTION("SetYDirection 3D"){
+		PointT<double, 3> p(0.0, 1.0, 2.0);
+		DirectionT<double, 3> dz(1.0, 2.0, 3.0);
+		DirectionT<double, 3> dx(-1.0, -1.0, 1.0);
+		DirectionT<double, 3> dy2(-13.0, 2.0, 3.0);
+		FrameT<double, 3> f1(p, dz);
+		FrameT<double, 3> f2(p, dz, dx);
+		f2.SetYDirection(dy2);
+		CHECK(IsEqual(f1, f2));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<int DIM2 = DIM, typename = typename std::enable_if_t<DIM2 == 3>> [[nodiscard]] AxisT<Scalar, DIM> Axis(),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected) {
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Frame3","[Common][Frame3]")
+{
+	SECTION("Axis"){
+		PointT<double, 3> p(1.0, 2.0, 3.0);
+		DirectionT<double, 3> dz(1.0, 2.0, 3.0);
+		FrameT<double, 3> f1(p, dz);
+		CHECK(IsEqual(f1.Axis(), AxisT<double, 3>(p, dz)));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<int DIM2 = DIM, typename = typename std::enable_if_t<DIM2 == 3>> [[nodiscard]] const DirectionT<Scalar, DIM>& Direction(),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected) {
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Frame3","[Common][Frame3]")
+{
+	SECTION("Direction"){
+		PointT<double, 3> p(1.0, 2.0, 3.0);
+		DirectionT<double, 3> dz(1.0, 2.0, 3.0);
+		FrameT<double, 3> f1(p, dz);
+		CHECK(f1.Direction().IsEqual(dz, tol));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<int DIM2 = DIM, typename = typename std::enable_if_t<DIM2 >= 1>> [[nodiscard]] const DirectionT<Scalar, DIM>& XDirection(),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected) {
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Frame3","[Common][Frame3]")
+{
+	SECTION("XDirection"){
+		PointT<double, 3> p(1.0, 2.0, 3.0);
+		DirectionT<double, 3> dz(1.0, 2.0, 3.0);
+		DirectionT<double, 3> dx(0.0, 3.0, -2.0);
+		FrameT<double, 3> f1(p, dz);
+		CHECK(f1.XDirection().IsEqual(dx, tol));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2, typename OtherScalar3, int DIM2 = DIM, typename = typename std::enable_if_t<DIM2 == 3>> [[nodiscard]] bool IsCoplanar(const FrameT<OtherScalar, DIM>& other, const OtherScalar2& distol, const OtherScalar3& angtol),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected) {
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Frame3","[Common][Frame3]")
+{
+	SECTION("IsCoplanar frame"){
+		PointT<double, 3> p(1.0, -1.0, 0.0);
+		PointT<double, 3> p2(1.0, 2.0, -2.0);
+		PointT<double, 3> p3(1.0, 2.0, -1.0);
+		DirectionT<double, 3> dz(1.0, 2.0, 3.0);
+		DirectionT<double, 3> dz2(1.0, 2.0, 3.1);
+		FrameT<double, 3> f1(p, dz);
+		FrameT<double, 3> f2(p2, dz);
+		FrameT<double, 3> f3(p3, dz);
+		FrameT<double, 3> f4(p2, dz2);
+		CHECK(f1.IsCoplanar(f2, 1e-6, 1e-6) == true);
+		CHECK(f1.IsCoplanar(f3, 1e-6, 1e-6) == false);
+		CHECK(f1.IsCoplanar(f4, 1e-6, 1e-6) == false);
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2, typename OtherScalar3, int DIM2 = DIM, typename = typename std::enable_if_t<DIM2 == 3>> [[nodiscard]] bool IsCoplanar(const AxisT<OtherScalar, DIM>& a, const OtherScalar2& distol, const OtherScalar3& angtol),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected) {
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Frame3","[Common][Frame3]")
+{
+	SECTION("IsCoplanar frame"){
+		PointT<double, 3> p(1.0, -1.0, 0.0);
+		PointT<double, 3> p2(1.0, 2.0, -2.0);
+		PointT<double, 3> p3(1.0, 2.0, -1.0);
+		DirectionT<double, 3> dz(1.0, 2.0, 3.0);
+		DirectionT<double, 3> dz2(1.0, 2.0, 3.1);
+		FrameT<double, 3> f1(p, dz);
+		FrameT<double, 3> f2(p2, dz);
+		FrameT<double, 3> f3(p3, dz);
+		FrameT<double, 3> f4(p2, dz2);
+		CHECK(f1.IsCoplanar(f2, 1e-6, 1e-6) == true);
+		CHECK(f1.IsCoplanar(f3, 1e-6, 1e-6) == false);
+		CHECK(f1.IsCoplanar(f4, 1e-6, 1e-6) == false);
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar> FrameT& Mirror(const PointT<OtherScalar, DIM>& point),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected) {
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Frame3","[Common][Frame3]")
+{
+	SECTION("Mirror point 3D"){
+		PointT<double, 3> p(1.0, -1.0, 0.0);
+		PointT<double, 3> p2(1.0, 2.0, -2.0);
+		PointT<double, 3> p3(1.0, 5.0, -4.0);
+		DirectionT<double, 3> dz(1.0, 2.0, 3.0);
+		FrameT<double, 3> f1(p, dz);
+		DirectionT<double, 3> dz2(-1.0, -2.0, -3.0);
+		DirectionT<double, 3> dx2(0.0, -3.0, 2.0);
+		FrameT<double, 3> f2(p3, dz2, dx2);
+		FrameT<double, 3> f3 = f1.Mirrored(p2);
+		CHECK(f3.Location().IsEqual(p3, tol));
+		CHECK(f3.Direction().IsEqual(dz2, tol));
+		CHECK(f3.XDirection().IsEqual(dx2, tol));
+		CHECK(f3.YDirection().IsEqual(dx2.Cross(dz2), tol));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar> FrameT& Mirror(const AxisT<OtherScalar, DIM>& a),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected) {
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Frame3","[Common][Frame3]")
+{
+	SECTION("Mirror axis 3D"){
+		PointT<double, 3> p(1.0, -1.0, 0.0);
+		DirectionT<double, 3> dz(1.0, 2.0, 3.0);
+		FrameT<double, 3> f1(p, dz);
+		PointT<double, 3> p2(1.0, 2.0, -2.0);
+		DirectionT<double, 3> d(1.0, 1.0, 1.0);
+		AxisT<double, 3> axis(p2, d);
+		PointT<double, 3> p3(1.0 / 3.0, 13.0 / 3.0, -14.0 / 3.0);
+		DirectionT<double, 3> dz2(3.0, 2.0, 1.0);
+		DirectionT<double, 3> dx2(2.0, -7.0, 8.0);
+		FrameT<double, 3> f2(p3, dz2, dx2);
+		FrameT<double, 3> f3 = f1.Mirrored(axis);
+		CHECK(IsEqual(f2, f3));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, int DIM2 = DIM, std::enable_if_t<DIM2 == 3, int> = 0> FrameT& Mirror(const FrameT<OtherScalar, DIM>& frame),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected) {
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Frame3","[Common][Frame3]")
+{
+	SECTION("Mirror axis 3D"){
+		PointT<double, 3> p(1.0, -1.0, 0.0);
+		DirectionT<double, 3> dz(1.0, 2.0, 3.0);
+		FrameT<double, 3> f1(p, dz);
+		PointT<double, 3> p2(1.0, 2.0, -2.0);
+		DirectionT<double, 3> d(1.0, 1.0, 1.0);
+		AxisT<double, 3> axis(p2, d);
+		PointT<double, 3> p3(1.0 / 3.0, 13.0 / 3.0, -14.0 / 3.0);
+		DirectionT<double, 3> dz2(3.0, 2.0, 1.0);
+		DirectionT<double, 3> dx2(2.0, -7.0, 8.0);
+		FrameT<double, 3> f2(p3, dz2, dx2);
+		FrameT<double, 3> f3 = f1.Mirrored(axis);
+		CHECK(IsEqual(f2, f3));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar> [[nodiscard]] FrameT Mirrored(const PointT<OtherScalar, DIM>& point),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected) {
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Frame3","[Common][Frame3]")
+{
+	SECTION("Mirror point 3D"){
+		PointT<double, 3> p(1.0, -1.0, 0.0);
+		PointT<double, 3> p2(1.0, 2.0, -2.0);
+		PointT<double, 3> p3(1.0, 5.0, -4.0);
+		DirectionT<double, 3> dz(1.0, 2.0, 3.0);
+		FrameT<double, 3> f1(p, dz);
+		DirectionT<double, 3> dz2(-1.0, -2.0, -3.0);
+		DirectionT<double, 3> dx2(0.0, -3.0, 2.0);
+		FrameT<double, 3> f2(p3, dz2, dx2);
+		FrameT<double, 3> f3 = f1.Mirrored(p2);
+		CHECK(f3.Location().IsEqual(p3, tol));
+		CHECK(f3.Direction().IsEqual(dz2, tol));
+		CHECK(f3.XDirection().IsEqual(dx2, tol));
+		CHECK(f3.YDirection().IsEqual(dx2.Cross(dz2), tol));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar> [[nodiscard]] FrameT Mirrored(const AxisT<OtherScalar, DIM>& a),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected) {
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Frame3","[Common][Frame3]")
+{
+	SECTION("Mirror axis 3D"){
+		PointT<double, 3> p(1.0, -1.0, 0.0);
+		DirectionT<double, 3> dz(1.0, 2.0, 3.0);
+		FrameT<double, 3> f1(p, dz);
+		PointT<double, 3> p2(1.0, 2.0, -2.0);
+		DirectionT<double, 3> d(1.0, 1.0, 1.0);
+		AxisT<double, 3> axis(p2, d);
+		PointT<double, 3> p3(1.0 / 3.0, 13.0 / 3.0, -14.0 / 3.0);
+		DirectionT<double, 3> dz2(3.0, 2.0, 1.0);
+		DirectionT<double, 3> dx2(2.0, -7.0, 8.0);
+		FrameT<double, 3> f2(p3, dz2, dx2);
+		FrameT<double, 3> f3 = f1.Mirrored(axis);
+		CHECK(IsEqual(f2, f3));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, int DIM2 = DIM, std::enable_if_t<DIM2 == 3, int> = 0> [[nodiscard]] FrameT Mirrored(const FrameT<OtherScalar, DIM>& frame),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected) {
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Frame3","[Common][Frame3]")
+{
+	SECTION("XDirection"){
+		PointT<double, 3> p(1.0, 2.0, 3.0);
+		DirectionT<double, 3> dz(1.0, 2.0, 3.0);
+		DirectionT<double, 3> dx(0.0, 3.0, -2.0);
+		FrameT<double, 3> f1(p, dz);
+		CHECK(f1.XDirection().IsEqual(dx, tol));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2, int DIM2 = DIM, typename = typename std::enable_if_t<DIM2 == 3>> FrameT& Rotate(const AxisT<OtherScalar, DIM>& a, const OtherScalar2& angle),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected) {
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Frame3","[Common][Frame3]")
+{
+	SECTION("Rotate 3D"){
+		PointT<double, 3> p(1.0, -1.0, 0.0);
+		DirectionT<double, 3> dz(1.0, 2.0, 3.0);
+		FrameT<double, 3> f1(p, dz);
+		PointT<double, 3> p2(1.0, 2.0, 3.0);
+		DirectionT<double, 3> dz2(3.0, 2.0, 1.0);
+		AxisT<double, 3> axis(p2, dz2);
+		PointT<double, 3> p3(-3.0 / sqrt(14.0) - 13.0 / 14.0, 9.0 / std::sqrt(14.0) + 10.0 / 14.0, -9.0 / std::sqrt(14.0) + 33.0 / 14.0);
+		DirectionT<double, 3> dz3(4.0 / sqrt(14.0) + 15.0 / 7.0, -8.0 / sqrt(14.0) + 10.0 / 7.0, 4.0 / sqrt(14.0) + 5.0 / 7.0);
+		DirectionT<double, 3> dx3(-7.0 / sqrt(14.0) + 6.0 / 7.0, 6.0 / sqrt(14.0) + 4.0 / 7.0, 9.0 / sqrt(14.0) + 2.0 / 7.0);
+		FrameT<double, 3> f2(p3, dz3, dx3);
+		FrameT<double, 3> f3 = f1.Rotated(axis, M_PI_2);
+		CHECK(IsEqual(f3, f2));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2, int DIM2 = DIM, typename = typename std::enable_if_t<DIM2 == 2>> [[nodiscard]] FrameT Rotated(const PointT<OtherScalar, DIM>& point, const OtherScalar2& angle),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected) {
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Frame3","[Common][Frame3]")
+{
+	SECTION("Rotate 3D"){
+		PointT<double, 3> p(1.0, -1.0, 0.0);
+		DirectionT<double, 3> dz(1.0, 2.0, 3.0);
+		FrameT<double, 3> f1(p, dz);
+		PointT<double, 3> p2(1.0, 2.0, 3.0);
+		DirectionT<double, 3> dz2(3.0, 2.0, 1.0);
+		AxisT<double, 3> axis(p2, dz2);
+		PointT<double, 3> p3(-3.0 / sqrt(14.0) - 13.0 / 14.0, 9.0 / std::sqrt(14.0) + 10.0 / 14.0, -9.0 / std::sqrt(14.0) + 33.0 / 14.0);
+		DirectionT<double, 3> dz3(4.0 / sqrt(14.0) + 15.0 / 7.0, -8.0 / sqrt(14.0) + 10.0 / 7.0, 4.0 / sqrt(14.0) + 5.0 / 7.0);
+		DirectionT<double, 3> dx3(-7.0 / sqrt(14.0) + 6.0 / 7.0, 6.0 / sqrt(14.0) + 4.0 / 7.0, 9.0 / sqrt(14.0) + 2.0 / 7.0);
+		FrameT<double, 3> f2(p3, dz3, dx3);
+		FrameT<double, 3> f3 = f1.Rotated(axis, M_PI_2);
+		CHECK(IsEqual(f3, f2));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2, int DIM2 = DIM, typename = typename std::enable_if_t<DIM2 == 3>> [[nodiscard]] FrameT Rotated(const AxisT<OtherScalar, DIM>& a, const OtherScalar2& angle),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected) {
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Frame3","[Common][Frame3]")
+{
+	SECTION("Rotate 3D"){
+		PointT<double, 3> p(1.0, -1.0, 0.0);
+		DirectionT<double, 3> dz(1.0, 2.0, 3.0);
+		FrameT<double, 3> f1(p, dz);
+		PointT<double, 3> p2(1.0, 2.0, 3.0);
+		DirectionT<double, 3> dz2(3.0, 2.0, 1.0);
+		AxisT<double, 3> axis(p2, dz2);
+		PointT<double, 3> p3(-3.0 / sqrt(14.0) - 13.0 / 14.0, 9.0 / std::sqrt(14.0) + 10.0 / 14.0, -9.0 / std::sqrt(14.0) + 33.0 / 14.0);
+		DirectionT<double, 3> dz3(4.0 / sqrt(14.0) + 15.0 / 7.0, -8.0 / sqrt(14.0) + 10.0 / 7.0, 4.0 / sqrt(14.0) + 5.0 / 7.0);
+		DirectionT<double, 3> dx3(-7.0 / sqrt(14.0) + 6.0 / 7.0, 6.0 / sqrt(14.0) + 4.0 / 7.0, 9.0 / sqrt(14.0) + 2.0 / 7.0);
+		FrameT<double, 3> f2(p3, dz3, dx3);
+		FrameT<double, 3> f3 = f1.Rotated(axis, M_PI_2);
+		CHECK(IsEqual(f3, f2));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2> FrameT& Scale(const PointT<OtherScalar, DIM>& point, const OtherScalar2& scale),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected) {
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Frame3","[Common][Frame3]")
+{
+	SECTION("Scale 3D"){
+		PointT<double, 3> p(1.0, -1.0, 0.0);
+		DirectionT<double, 3> dz(1.0, 2.0, 3.0);
+		FrameT<double, 3> f1(p, dz);
+		PointT<double, 3> p2(1.0, 2.0, 3.0);
+		PointT<double, 3> p3(1.0, -2.5, -1.5);
+		FrameT<double, 3> f2(p3, dz);
+		CHECK(IsEqual(f1.Scaled(p2, 1.5), f2));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2> [[nodiscard]] FrameT Scaled(const PointT<OtherScalar, DIM>& point, const OtherScalar2& scale),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected) {
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Frame3","[Common][Frame3]")
+{
+	SECTION("Scale 3D"){
+		PointT<double, 3> p(1.0, -1.0, 0.0);
+		DirectionT<double, 3> dz(1.0, 2.0, 3.0);
+		FrameT<double, 3> f1(p, dz);
+		PointT<double, 3> p2(1.0, 2.0, 3.0);
+		PointT<double, 3> p3(1.0, -2.5, -1.5);
+		FrameT<double, 3> f2(p3, dz);
+		CHECK(IsEqual(f1.Scaled(p2, 1.5), f2));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar> FrameT& Translate(const VectorT<OtherScalar, DIM>& vec),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+template<typename T, int DIM>
+bool IsEqual(const FrameT<T, DIM>& result, const FrameT<T, DIM>& expected)
+{
+	if constexpr (DIM == 1)
+	{
+		return result.Location().IsEqual(expected, tol) && result.Direction().IsEqual(expected.Direction(), tol);
+	}
+	else if constexpr (DIM == 2)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else if constexpr (DIM == 3)
+	{
+		return result.Location().IsEqual(expected.Location(), tol) && result.Direction().IsEqual(expected.Direction(), tol) && result.YDirection().IsEqual(expected.YDirection(), tol) && result.XDirection().IsEqual(expected.XDirection(), tol);
+	}
+	else
+	{
+		return false;
+	}
+}
+template<typename T, int DIM>
+bool IsEqual(const AxisT<T, DIM>& result, const AxisT<T, DIM>& expected) {
+	return result.Location().IsEqual(expected.Location(), tol) &&
+		result.Direction().IsEqual(expected.Direction(), tol);
+}
+TEST_CASE("case1:this is a case for Frame3","[Common][Frame3]")
+{
+	SECTION("Translate vector 3D"){
+		PointT<double, 3> p(1.0, -1.0, 0.0);
+		DirectionT<double, 3> dz(1.0, 2.0, 3.0);
+		FrameT<double, 3> f1(p, dz);
+		VectorT<double, 3> v(2.0, 3.0, -1.0);
+		PointT<double, 3> p2(3.0, 2.0, -1.0);
+		FrameT<double, 3> f2(p2, dz);
+		CHECK(IsEqual(f1.Translated(v), f2));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar> explicit DirectionT(const VectorT<OtherScalar, DIM>& vec),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Direction2", "[Common][Direction2]") {
+	SECTION("Angle 2D") {
+        DirectionT<double, 2> v1(1.0, 3.0);
+        DirectionT<double, 2> v2(-1.0, 2.0);
+        CHECK(v1.Angle(v2) == Approx(acos(M_SQRT1_2)));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar> explicit DirectionT(const CoordT<OtherScalar, DIM>& v),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Direction2", "[Common][Direction2]") {
+	SECTION("Mirror(point) 2D") {
+        DirectionT<double, 2> p1(1.0, 2.0);
+        DirectionT<double, 2> p2(2.0, 3.0);
+        DirectionT<double, 2> p3(19.0 / 13.0, 22.0 / 13.0);
+        CHECK(p1.Mirrored(p2).IsEqual(p3, tol));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename... T> explicit DirectionT(T... vs),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Direction2", "[Common][Direction2]") {
+	SECTION("Angle 2D") {
+        DirectionT<double, 2> v1(1.0, 3.0);
+        DirectionT<double, 2> v2(-1.0, 2.0);
+        CHECK(v1.Angle(v2) == Approx(acos(M_SQRT1_2)));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2> [[nodiscard]] bool IsEqual(const DirectionT<OtherScalar, DIM>& other, const OtherScalar2& tol),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Direction2", "[Common][Direction2]") {
+	SECTION("Mirror(axis) 2D") {
+        DirectionT<double, 2> p1(1.0, 2.0);
+        PointT<double, 2> p2(2.0, 3.0);
+        DirectionT<double, 2> d(7.0, 3.0);
+        AxisT<double, 2> a(p2, d);
+        DirectionT<double, 2> p3(62.0 / 29.0, -19.0 / 29.0);
+        CHECK(p1.Mirrored(a).IsEqual(p3, tol));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, int DIM2 = DIM, std::enable_if_t<DIM2 == 2, int> = 0> [[nodiscard]] auto Angle(const DirectionT<OtherScalar, DIM>& other),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Direction2", "[Common][Direction2]") {
+	SECTION("Angle 2D") {
+        DirectionT<double, 2> v1(1.0, 3.0);
+        DirectionT<double, 2> v2(-1.0, 2.0);
+        CHECK(v1.Angle(v2) == Approx(acos(M_SQRT1_2)));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar> [[nodiscard]] auto Cross(const DirectionT<OtherScalar, DIM>& other),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Direction2", "[Common][Direction2]") {
+	SECTION("Cross 2D") {
+        DirectionT<double, 2> v1(1.0, 2.0);
+        DirectionT<double, 2> v2(2.0, 3.0);
+        CHECK(v1.Cross(v2) == Approx(-1.0/sqrt(65.0)));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar> DirectionT& Mirror(const DirectionT<OtherScalar, DIM>& dir),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Direction2", "[Common][Direction2]") {
+	SECTION("Mirror(axis) 2D") {
+        DirectionT<double, 2> p1(1.0, 2.0);
+        PointT<double, 2> p2(2.0, 3.0);
+        DirectionT<double, 2> d(7.0, 3.0);
+        AxisT<double, 2> a(p2, d);
+        DirectionT<double, 2> p3(62.0 / 29.0, -19.0 / 29.0);
+        CHECK(p1.Mirrored(a).IsEqual(p3, tol));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar> DirectionT& Mirror(const AxisT<OtherScalar, DIM>& axis),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Direction2", "[Common][Direction2]") {
+	SECTION("Mirror(axis) 2D") {
+        DirectionT<double, 2> p1(1.0, 2.0);
+        PointT<double, 2> p2(2.0, 3.0);
+        DirectionT<double, 2> d(7.0, 3.0);
+        AxisT<double, 2> a(p2, d);
+        DirectionT<double, 2> p3(62.0 / 29.0, -19.0 / 29.0);
+        CHECK(p1.Mirrored(a).IsEqual(p3, tol));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar> [[nodiscard]] DirectionT Mirrored(const DirectionT<OtherScalar, DIM>& dir),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Direction2", "[Common][Direction2]") {
+	SECTION("Mirror(axis) 2D") {
+        DirectionT<double, 2> p1(1.0, 2.0);
+        PointT<double, 2> p2(2.0, 3.0);
+        DirectionT<double, 2> d(7.0, 3.0);
+        AxisT<double, 2> a(p2, d);
+        DirectionT<double, 2> p3(62.0 / 29.0, -19.0 / 29.0);
+        CHECK(p1.Mirrored(a).IsEqual(p3, tol));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar> [[nodiscard]] DirectionT Mirrored(const AxisT<OtherScalar, DIM>& axis),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Direction2", "[Common][Direction2]") {
+	SECTION("Mirror(axis) 2D") {
+        DirectionT<double, 2> p1(1.0, 2.0);
+        PointT<double, 2> p2(2.0, 3.0);
+        DirectionT<double, 2> d(7.0, 3.0);
+        AxisT<double, 2> a(p2, d);
+        DirectionT<double, 2> p3(62.0 / 29.0, -19.0 / 29.0);
+        CHECK(p1.Mirrored(a).IsEqual(p3, tol));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, int DIM2 = DIM, typename = typename std::enable_if_t<DIM2 == 2>> DirectionT& Rotate(const OtherScalar& angle),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Direction2", "[Common][Direction2]") {
+	SECTION("Mirror(axis) 2D") {
+        DirectionT<double, 2> p1(1.0, 2.0);
+        PointT<double, 2> p2(2.0, 3.0);
+        DirectionT<double, 2> d(7.0, 3.0);
+        AxisT<double, 2> a(p2, d);
+        DirectionT<double, 2> p3(62.0 / 29.0, -19.0 / 29.0);
+        CHECK(p1.Mirrored(a).IsEqual(p3, tol));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, int DIM2 = DIM, typename = typename std::enable_if_t<DIM2 == 2>> [[nodiscard]] DirectionT Rotated(const OtherScalar& angle),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Direction2", "[Common][Direction2]") {
+	SECTION("Angle 2D") {
+        DirectionT<double, 2> v1(1.0, 3.0);
+        DirectionT<double, 2> v2(-1.0, 2.0);
+        CHECK(v1.Angle(v2) == Approx(acos(M_SQRT1_2)));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":DirectionT()	 @details Default direction is (1, 0, ... , 0)
+	 @brief Default constructor
+,
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Direction3", "[Common][Direction3]") {
+	SECTION("Default constructor") {
+        DirectionT<double, 3> p1;
+        DirectionT<double, 3> p2(1.0, 0.0, 0.0);
+        CHECK(p1.IsEqual(p2, tol));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar> explicit DirectionT(const VectorT<OtherScalar, DIM>& vec),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Direction3", "[Common][Direction3]") {
+	SECTION("Constructor from vector") {
+        VectorT<double, 3> v(1.0, 2.0, 3.0);
+        DirectionT<double, 3> result(v);
+        CoordT<double, 3> expected(1.0 / sqrt(14.0), 2.0 / sqrt(14.0), 3.0 / sqrt(14.0));
+        CHECK(result.Coord().IsEqual(expected, tol));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar> explicit DirectionT(const CoordT<OtherScalar, DIM>& v),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Direction3", "[Common][Direction3]") {
+	SECTION("Constructor from vector") {
+        VectorT<double, 3> v(1.0, 2.0, 3.0);
+        DirectionT<double, 3> result(v);
+        CoordT<double, 3> expected(1.0 / sqrt(14.0), 2.0 / sqrt(14.0), 3.0 / sqrt(14.0));
+        CHECK(result.Coord().IsEqual(expected, tol));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename... T> explicit DirectionT(T... vs),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Direction3", "[Common][Direction3]") {
+	SECTION("Default constructor") {
+        DirectionT<double, 3> p1;
+        DirectionT<double, 3> p2(1.0, 0.0, 0.0);
+        CHECK(p1.IsEqual(p2, tol));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename... T> void SetCoord(T... vs),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Direction3", "[Common][Direction3]") {
+	SECTION("SetCoord(x, y, z)") {
+        DirectionT<double, 3> result;
+        result.SetCoord(1.0, 2.0, 3.0);
+        CoordT<double, 3> expected(1.0 / sqrt(14.0), 2.0 / sqrt(14.0), 3.0 / sqrt(14.0));
+        CHECK(result.Coord().IsEqual(expected, tol));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename = typename std::enable_if_t<DIM >= 4 && std::is_convertible_v<OtherScalar, Scalar>>> void SetW(const OtherScalar& w),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Direction3", "[Common][Direction3]") {
+	SECTION("SetX, SetY, SetZ, SetW"){
+        DirectionT<double, 4> result;
+        result.SetX(1);
+        result.SetY(2);
+        result.SetZ(3);
+        result.SetW(4);
+        CoordT<double, 4> expected(1.0 / sqrt(850.0), 2.0 / sqrt(850.0), 3.0 / sqrt(170), 4.0 / sqrt(17));
+        CHECK(result.X() == Approx(1.0 / sqrt(850.0)));
+        CHECK(result.Y() == Approx(2.0 / sqrt(850.0)));
+        CHECK(result.Z() == Approx(3.0 / sqrt(170.0)));
+        CHECK(result.W() == Approx(4.0 / sqrt(17.0)));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2> [[nodiscard]] bool IsEqual(const DirectionT<OtherScalar, DIM>& other, const OtherScalar2& tol),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Direction3", "[Common][Direction3]") {
+	SECTION("Constructor from vector") {
+        VectorT<double, 3> v(1.0, 2.0, 3.0);
+        DirectionT<double, 3> result(v);
+        CoordT<double, 3> expected(1.0 / sqrt(14.0), 2.0 / sqrt(14.0), 3.0 / sqrt(14.0));
+        CHECK(result.Coord().IsEqual(expected, tol));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2> [[nodiscard]] bool IsNormal(const DirectionT<OtherScalar, DIM>& other, const OtherScalar2& tol),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Direction3", "[Common][Direction3]") {
+	SECTION("IsNormal") {
+        DirectionT<double, 3> v1(1.0, 2.0, 3.0);
+        DirectionT<double, 3> v2(-4.0, -1.0, 2.01);
+        CHECK(v1.IsNormal(v2, tol) == false);
+        CHECK(v1.IsNormal(v2, 0.1));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2> [[nodiscard]] bool IsOpposite(const DirectionT<OtherScalar, DIM>& other, const OtherScalar2& tol),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Direction3", "[Common][Direction3]") {
+	SECTION("IsOpposite") {
+        DirectionT<double, 3> v1(1.0, 2.0, 3.0);
+        DirectionT<double, 3> v2(-1.0, -2.0, -3.01);
+        CHECK(v1.IsOpposite(v2, 0.1));
+        CHECK(v1.IsOpposite(v2, tol) == false);
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2> [[nodiscard]] bool IsParallel(const DirectionT<OtherScalar, DIM>& other, const OtherScalar2& tol),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Direction3", "[Common][Direction3]") {
+	SECTION("IsParallel"){
+        DirectionT<double, 3> v1(1.0, 2.0, 3.0);
+        DirectionT<double, 3> v2(-1.0, -2.0, -3.01);
+        CHECK(v1.IsParallel(v2, tol) == false);
+        CHECK(v1.IsParallel(v2, 0.1));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, int DIM2 = DIM, std::enable_if_t<DIM2 == 3, int> = 0> [[nodiscard]] auto Angle(const DirectionT<OtherScalar, DIM>& other),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Direction3", "[Common][Direction3]") {
+	SECTION("Angle 3D") {
+        DirectionT<double, 3> v1(1.0, 2.0, 3.0);
+        DirectionT<double, 3> v2(-3.0, 2.0, -1.0);
+        CHECK(v1.Angle(v2) == acos(-1.0 / 7.0));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2, int DIM2 = DIM, typename = typename std::enable_if_t<DIM2 == 3>> [[nodiscard]] auto AngleWithRef(const DirectionT<OtherScalar, DIM>& other, const DirectionT<OtherScalar2, DIM>& ref),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Direction3", "[Common][Direction3]") {
+	SECTION("AngleWithRef") {
+        DirectionT<double, 3> v1(1.0, 2.0, 3.0);
+        DirectionT<double, 3> v2(-3.0, 2.0, -1.0);
+        DirectionT<double, 3> v3(1.0, 1.0, 1.0);
+        CHECK(v1.AngleWithRef(v2, v3) == Approx(-acos(-1.0 / 7.0)));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar> [[nodiscard]] auto Cross(const DirectionT<OtherScalar, DIM>& other),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Direction3", "[Common][Direction3]") {
+	SECTION("Cross 3D") {
+        DirectionT<double, 3> v1(1.0, 2.0, 3.0);
+        DirectionT<double, 3> v2(2.0, 3.0, 4.0);
+        CoordT<double, 3> v3(-1.0 / std::sqrt(6.0), 2.0 / std::sqrt(6.0), -1.0 / std::sqrt(6.0));
+        CHECK(v1.Cross(v2).Coord().IsEqual(v3, tol));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar> DirectionT& Mirror(const DirectionT<OtherScalar, DIM>& dir),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Direction3", "[Common][Direction3]") {
+	SECTION("Mirror(frame) 3D") {
+        DirectionT<double, 3> p1(1.0, 2.0, 3.0);
+        PointT<double, 3> p2(2.0, 3.0, 4.0);
+        DirectionT<double, 3> d(7.0, 3.0, 2.0);
+        FrameT<double, 3> f(p2, d);
+        DirectionT<double, 3> p3(-102.0 / 31.0, 5.0 / 31.0, 55.0 / 31.0);
+        CHECK(p1.Mirrored(f).IsEqual(p3, tol));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar> DirectionT& Mirror(const AxisT<OtherScalar, DIM>& axis),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Direction3", "[Common][Direction3]") {
+	SECTION("Mirror(axis) 3D") {
+        DirectionT<double, 3> p1(1.0, 2.0, 3.0);
+        PointT<double, 3> p2(2.0, 3.0, 4.0);
+        DirectionT<double, 3> d(7.0, 3.0, 2.0);
+        AxisT<double, 3> a(p2, d);
+        DirectionT<double, 3> p3(102.0 / 31.0, -5.0 / 31.0, -55.0 / 31.0);
+        CHECK(p1.Mirrored(a).IsEqual(p3, tol));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, int DIM2 = DIM, std::enable_if_t<DIM2 == 3, int> = 0> DirectionT& Mirror(const FrameT<OtherScalar, DIM>& frame),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Direction3", "[Common][Direction3]") {
+	SECTION("Default constructor") {
+        DirectionT<double, 3> p1;
+        DirectionT<double, 3> p2(1.0, 0.0, 0.0);
+        CHECK(p1.IsEqual(p2, tol));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar> [[nodiscard]] DirectionT Mirrored(const AxisT<OtherScalar, DIM>& axis),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Direction3", "[Common][Direction3]") {
+	SECTION("Mirror(axis) 3D") {
+        DirectionT<double, 3> p1(1.0, 2.0, 3.0);
+        PointT<double, 3> p2(2.0, 3.0, 4.0);
+        DirectionT<double, 3> d(7.0, 3.0, 2.0);
+        AxisT<double, 3> a(p2, d);
+        DirectionT<double, 3> p3(102.0 / 31.0, -5.0 / 31.0, -55.0 / 31.0);
+        CHECK(p1.Mirrored(a).IsEqual(p3, tol));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, int DIM2 = DIM, std::enable_if_t<DIM2 == 3, int> = 0> [[nodiscard]] DirectionT Mirrored(const FrameT<OtherScalar, DIM>& frame),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Direction3", "[Common][Direction3]") {
+	SECTION("Default constructor") {
+        DirectionT<double, 3> p1;
+        DirectionT<double, 3> p2(1.0, 0.0, 0.0);
+        CHECK(p1.IsEqual(p2, tol));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2, int DIM2 = DIM, typename = typename std::enable_if_t<DIM2 == 3>> [[nodiscard]] DirectionT Rotated(const AxisT<OtherScalar, DIM>& axis, const OtherScalar2& angle),
+ "output":#include<catch.hpp>
+#include <sstream>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Direction3", "[Common][Direction3]") {
+	SECTION("IsParallel"){
+        DirectionT<double, 3> v1(1.0, 2.0, 3.0);
+        DirectionT<double, 3> v2(-1.0, -2.0, -3.01);
+        CHECK(v1.IsParallel(v2, tol) == false);
+        CHECK(v1.IsParallel(v2, 0.1));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename... T> explicit VectorT(T... vs),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Vector2", "[Common][Vector2]"){
+	SECTION("Angle 2D") {
+        VectorT<double, 2> v1(1.0, 3.0);
+        VectorT<double, 2> v2(-1.0, 2.0);
+        CHECK(v1.Angle(v2) == Approx(acos(M_SQRT1_2)));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, typename OtherScalar2> VectorT(const PointT<OtherScalar, DIM>& p1, const PointT<OtherScalar2, DIM>& p2),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Vector2", "[Common][Vector2]"){
+	SECTION("Angle 2D") {
+        VectorT<double, 2> v1(1.0, 3.0);
+        VectorT<double, 2> v2(-1.0, 2.0);
+        CHECK(v1.Angle(v2) == Approx(acos(M_SQRT1_2)));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, int DIM2 = DIM, std::enable_if_t<DIM2 == 2, int> = 0> [[nodiscard]] auto Angle(const VectorT<OtherScalar, DIM>& other),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Vector2", "[Common][Vector2]"){
+	SECTION("Angle 2D") {
+        VectorT<double, 2> v1(1.0, 3.0);
+        VectorT<double, 2> v2(-1.0, 2.0);
+        CHECK(v1.Angle(v2) == Approx(acos(M_SQRT1_2)));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar> [[nodiscard]] auto Cross(const VectorT<OtherScalar, DIM>& other),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Vector2", "[Common][Vector2]"){
+	SECTION("Cross 2D") {
+        VectorT<double, 2> v1(1.0, 2.0);
+        VectorT<double, 2> v2(2.0, 3.0);
+        CHECK(v1.Cross(v2) == -1.0);
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar> VectorT& Mirror(const VectorT<OtherScalar, DIM>& p),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Vector2", "[Common][Vector2]"){
+	SECTION("Mirror(axis) 2D") {
+        VectorT<double, 2> p1(1.0, 2.0);
+        PointT<double, 2> p2(2.0, 3.0);
+        DirectionT<double, 2> d(7.0, 3.0);
+        AxisT<double, 2> a(p2, d);
+        VectorT<double, 2> p3(62.0 / 29.0, -19.0 / 29.0);
+        CHECK(p1.Mirrored(a).IsEqual(p3, tolDis, tolAng));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar> VectorT& Mirror(const AxisT<OtherScalar, DIM>& axis),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Vector2", "[Common][Vector2]"){
+	SECTION("Mirror(axis) 2D") {
+        VectorT<double, 2> p1(1.0, 2.0);
+        PointT<double, 2> p2(2.0, 3.0);
+        DirectionT<double, 2> d(7.0, 3.0);
+        AxisT<double, 2> a(p2, d);
+        VectorT<double, 2> p3(62.0 / 29.0, -19.0 / 29.0);
+        CHECK(p1.Mirrored(a).IsEqual(p3, tolDis, tolAng));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar> [[nodiscard]] VectorT Mirrored(const VectorT<OtherScalar, DIM>& p),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Vector2", "[Common][Vector2]"){
+	SECTION("Mirror(point) 2D") {
+        VectorT<double, 2> p1(1.0, 2.0);
+        VectorT<double, 2> p2(2.0, 3.0);
+        VectorT<double, 2> p3(19.0 / 13.0, 22.0 / 13.0);
+        CHECK(p1.Mirrored(p2).IsEqual(p3, tolDis, tolAng));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar> [[nodiscard]] VectorT Mirrored(const AxisT<OtherScalar, DIM>& axis),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Vector2", "[Common][Vector2]"){
+	SECTION("Mirror(axis) 2D") {
+        VectorT<double, 2> p1(1.0, 2.0);
+        PointT<double, 2> p2(2.0, 3.0);
+        DirectionT<double, 2> d(7.0, 3.0);
+        AxisT<double, 2> a(p2, d);
+        VectorT<double, 2> p3(62.0 / 29.0, -19.0 / 29.0);
+        CHECK(p1.Mirrored(a).IsEqual(p3, tolDis, tolAng));
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, int DIM2 = DIM, typename = typename std::enable_if_t<DIM2 == 2>> VectorT& Rotate(const OtherScalar& angle),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Vector2", "[Common][Vector2]"){
+	SECTION("Rotate 2D") {
+        VectorT<double, 2> p1(1.0, 2.0);
+        VectorT<double, 2> p3(-2.0, 1.0);
+        CHECK(p1.Rotated(M_PI_2).IsEqual(p3, tolDis, tolAng));
+    }
+}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":template<typename OtherScalar, int DIM2 = DIM, typename = typename std::enable_if_t<DIM2 == 2>> [[nodiscard]] VectorT Rotated(const OtherScalar& angle),
+ "output":#include<catch.hpp>
+#include <common/AxisT.hpp>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <common/PointT.hpp>
+#include <common/TransformationT.hpp>
+#include <common/VectorT.hpp>
+#include <iostream>
+#define tol 0.001
+#define tolDis 0.001
+#define tolAng 0.01
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Vector2", "[Common][Vector2]"){
+	SECTION("Rotate 2D") {
+        VectorT<double, 2> p1(1.0, 2.0);
+        VectorT<double, 2> p3(-2.0, 1.0);
+        CHECK(p1.Rotated(M_PI_2).IsEqual(p3, tolDis, tolAng));
+    }
+}}
+}
+,
