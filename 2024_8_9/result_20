@@ -1,0 +1,50 @@
+{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] double FocalParameter()	 @return The focal parameter
+	          Focal parameter = 2 * focalLength.
+	 @details The focal parameter of parabola is the distance from the focus to the directrix.
+	 @brief Get the focal parameter of the parabola
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <geometry/Geom3Parabola.hpp>
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Test Geom3Parabola", "[math][Geom3Parabola][P1]")
+{
+	Frame3 frame;
+	double focal = 5.0;
+	Geom3Parabola g3p(frame, focal);
+	SECTION("FocalParameter")
+	{
+		double FP = g3p.FocalParameter();
+		double fp = 2 * focal;
+		CHECK(FP == fp);
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] double SemilatusRectum()	 @return The semilatus rectum
+	          Semilatus rectum = 2 * focalLength
+	 @details The semilatus rectum of parabola is half of the length of the chord through a focus parallel to the directrix.
+	 @brief Get the semilatus rectum of the parabola
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <geometry/Geom3Parabola.hpp>
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Test Geom3Parabola", "[math][Geom3Parabola][P1]")
+{
+	Frame3 frame;
+	double focal = 5.0;
+	Geom3Parabola g3p(frame, focal);
+	SECTION("SemilatusRectum")
+	{
+		double SR = g3p.SemilatusRectum();
+		double sr = 2 * focal;
+		CHECK(SR == sr);
+	}
+}}
+}
+,

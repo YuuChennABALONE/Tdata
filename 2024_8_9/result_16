@@ -1,0 +1,46 @@
+{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] bool Contains(const PointT<double, DIM>& p, double tol)	 @return True if the point is on the line under the tolerance
+	 @param tol The tolerance
+	 @param p The point
+	 @brief Does the line contain a point under a distance tolerance
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <math/LineT.hpp>
+#include <modeling/MakeEdge2d.hpp>
+using AMCAX::Line2;
+#define ONE_RADIAN (M_PI / 180.)
+TEST_CASE("case2: Line base method Test", "[math][Line2][p1]")
+{
+	SECTION("Contains")
+	{
+		Line2 line(Axis2(Point2(2., 1.), Direction2(1., 1.)));  
+		Point2 point1(2., 1.);  
+		Point2 point2(1., 1.);  
+		CHECK(line.Contains(point1, 1e-5));
+		CHECK_FALSE(line.Contains(point2, 1e-5));
+		CHECK(line.Contains(point2, 1.));  
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] const PointT<double, DIM>& Location()	 @return The location of the line
+	 @brief Get the location point of the line
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <math/LineT.hpp>
+#include <modeling/MakeEdge2d.hpp>
+using AMCAX::Line2;
+#define ONE_RADIAN (M_PI / 180.)
+TEST_CASE("case1: Line basic interface test", "[math][Line2][p1]")
+{
+	SECTION("Parameterless constructor test")
+	{
+		Line2 line;  
+		CHECK(line.Location().IsEqual(Axis2().Location(), 0.001));
+		CHECK(line.Direction().IsEqual(Axis2().Direction(), 1e-5 * ONE_RADIAN));
+	}}
+}
+,

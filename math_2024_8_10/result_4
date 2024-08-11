@@ -1,0 +1,1183 @@
+{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API Classifier2d(const std::vector<Point2>& pts, double tolU, double tolV, double uMin, double vMin, double uMax, double vMax)	 @param vMax The upper bound of v
+	 @param uMax The upper bound of u
+	 @param vMin The lower bound of v
+	 @param uMin The lower bound of u
+	 @param tolV The tolerance of v bound
+	 @param tolU The tolerance of u bound
+	 @param pts The points of a 2D closed polygon, the last point does not required to repeat the first point
+	 @details Require uMax > uMin, vMax > vMin, and at least 3 points
+	 @brief Construct from a 2D polygon and uv-bounds
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <common/PointT.hpp>
+#include <math/Classifier2d.hpp>
+using namespace AMCAX;
+TEST_CASE("case1: Classifier2d ", "[math][Classifier2d][P1]") {
+    std::vector<Point2> pts = {
+        Point2(2.0, 0.0),
+        Point2(1.0, 1.0),
+        Point2(2.0, 2.0),
+        Point2(3.0, 2.0)
+    }; 
+    double tolU = 0.1;
+    double tolV = 0.1;
+    double uMin = 0.0;
+    double vMin = 0.0;
+    double uMax = 2.5;
+    double vMax = 1.5;
+    Classifier2d classifier(pts, tolU, tolV, uMin, vMin, uMax, vMax);
+	SECTION("IsInOut Point normal set") {
+        Point2 OutPoint(0.0, 0.0);
+        Point2 OnPoint(1.0, 1.0);
+        Point2 InPoint(2.0, 1.0);
+        CHECK(classifier.IsInOut(OutPoint) == -1);
+        CHECK(classifier.IsInOut(OnPoint) == 0);
+        CHECK(classifier.IsInOut(InPoint) == 1);
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API int IsInOut(const Point2& p)	 @return 1: in; 0: on; -1: out
+	 @param p The test point
+	 @brief Check a point is in or out of the polygon
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <common/PointT.hpp>
+#include <math/Classifier2d.hpp>
+using namespace AMCAX;
+TEST_CASE("case1: Classifier2d ", "[math][Classifier2d][P1]") {
+    std::vector<Point2> pts = {
+        Point2(2.0, 0.0),
+        Point2(1.0, 1.0),
+        Point2(2.0, 2.0),
+        Point2(3.0, 2.0)
+    }; 
+    double tolU = 0.1;
+    double tolV = 0.1;
+    double uMin = 0.0;
+    double vMin = 0.0;
+    double uMax = 2.5;
+    double vMax = 1.5;
+    Classifier2d classifier(pts, tolU, tolV, uMin, vMin, uMax, vMax);
+	SECTION("IsInOut Point normal set") {
+        Point2 OutPoint(0.0, 0.0);
+        Point2 OnPoint(1.0, 1.0);
+        Point2 InPoint(2.0, 1.0);
+        CHECK(classifier.IsInOut(OutPoint) == -1);
+        CHECK(classifier.IsInOut(OnPoint) == 0);
+        CHECK(classifier.IsInOut(InPoint) == 1);
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API int IsInOutOn(const Point2& p, double tol)	 @return 1: in; 0: on; -1: out
+	 @param tol The tolerance of the point
+	 @param p The test point
+	 @brief Check a point is in or out of the polygon
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <common/PointT.hpp>
+#include <math/Classifier2d.hpp>
+using namespace AMCAX;
+TEST_CASE("case3: Classifier2d ", "[math][Classifier2d][P1]") {
+    std::vector<Point2> pts = {
+        Point2(2.0, 0.0),
+        Point2(1.0, 1.0),
+        Point2(2.0, 2.0),
+        Point2(3.0, 2.0)
+    }; 
+    double tolU = 0.1;
+    double tolV = 0.1;
+    double uMin = 0.0;
+    double vMin = 0.0;
+    double uMax = 2.5;
+    double vMax = 1.5;
+    Classifier2d classifier(pts, tolU, tolV, uMin, vMin, uMax, vMax);
+	SECTION("IsInOutOn Point normal set") {
+        Point2 OutPoint(0.0, 0.0);
+        Point2 OnPoint(1.0, 1.0);
+        Point2 AnothOnPoint(2.0, 2.0);
+        Point2 InPoint(2.0, 1.0);
+        CHECK(classifier.IsInOutOn(OutPoint,0.0) == -1);
+        CHECK(classifier.IsInOutOn(OnPoint,0.0) != 0);
+        CHECK(classifier.IsInOutOn(OnPoint, 1.0) == 0);
+        CHECK(classifier.IsInOutOn(AnothOnPoint, 1.0) == 0); 
+        CHECK(classifier.IsInOutOn(InPoint,0.0) == 1);
+    }}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] AMCAX_API Point3 Apex()	 @return The apex point
+	 @brief Get the apex of the cone
+,
+ "output":#include<iostream>
+#include "catch.hpp"
+#include <common/FrameT.hpp>
+#include <modeling/MakeFace.hpp>
+#include <common/AxisT.hpp>
+#include <common/FrameT.hpp>
+#include <common/VectorT.hpp>
+#include <math/Cone.hpp>
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("TestCone", "[math][Cone]")
+{
+	AMCAX::Frame3 frame;
+	double radius = 5.0;
+	double angle = M_PI / 4;
+	AMCAX::Cone cone(frame, radius, angle);
+	AMCAX::Point3 apex = cone.Apex();
+	CHECK(apex.X() == 0.0);
+	CHECK(apex.Y() == 0.0);
+	CHECK(apex.Z() == Approx(-5.0));
+	AMCAX::Axis3 axis = cone.Axis();
+	std::cout << axis.Direction().X() << std::endl;
+	std::cout << axis.Direction().Y() << std::endl;
+	std::cout << axis.Direction().Z() << std::endl;
+	CHECK(axis.Direction().X() == 0.0);
+	CHECK(axis.Direction().Y() == 0.0);
+	CHECK(axis.Direction().Z() == 1.0);
+	double a1, a2, a3, b1, b2, b3, c1, c2, c3, d;
+	cone.Coefficients(a1, a2, a3, b1, b2, b3, c1, c2, c3, d);
+	std::cout << "a1: " << a1 << ", a2: " << a2 << ", a3: " << a3 << std::endl;
+	std::cout << "b1: " << b1 << ", b2: " << b2 << ", b3: " << b3 << std::endl;
+	std::cout << "c1: " << c1 << ", c2: " << c2 << ", c3: " << c3 << std::endl;
+	std::cout << "d: " << d << std::endl;
+	CHECK(a1 == 1.0);
+	CHECK(a2 == 1.0);
+	CHECK(a3 == Approx(-1.0));
+	CHECK(b1 == 0);
+	CHECK(b2 == 0);
+	CHECK(b3 == 0);
+	CHECK(c1 == 0);
+	CHECK(c2 == 0);
+	CHECK(c3 == Approx(-5.0));
+	CHECK(d == -25.0);
+	CHECK(cone.IsDirect() == true);
+	CHECK(cone.Location().X() == 0.0);
+	CHECK(cone.Location().Y() == 0.0);
+	CHECK(cone.Location().Z() == 0.0);
+	AMCAX::PointT<double, 3>mirrorPoint(5.0, 0.0, 0.0);
+	cone.Mirror(mirrorPoint);
+	auto mirroredLocation = cone.Location();
+	CHECK(mirroredLocation.X() == 10.0);
+	CHECK(mirroredLocation.Y() == 0.0);
+	CHECK(mirroredLocation.Z() == 0.0);
+	AMCAX::Frame3 coneFrame = cone.Position();
+	CHECK(frame.Location().X() == 0.0);
+	CHECK(frame.Location().Y() == 0.0);
+	CHECK(frame.Location().Z() == 0.0);
+	CHECK(cone.Radius() == 5.0);
+	double  scaleCone = 2.0;
+	cone.Scale(cone.Location(), scaleCone);
+	CHECK(cone.Radius() == radius * 2.0);
+	double semiCone = cone.SemiAngle();
+	CHECK(semiCone == Approx(0.785398));
+	const  Frame3& position = cone.Position();
+	std::cout << position.XAxis() << std::endl;
+	std::cout << position.YAxis() << std::endl;
+	Direction3 zDirection(0.0, 0.0, 1.0);
+	AMCAX::Point3  centerCone(0.0, 0.0, 0.0);
+	Axis3 zAxis(centerCone, zDirection);
+	cone.Rotated(zAxis, angle);
+	AMCAX::Frame3 coneFrame2 = cone.Position();
+	CHECK(coneFrame.Location().X() == 10.0);
+	CHECK(coneFrame.Location().Y() == 0.0);
+	CHECK(coneFrame.Location().Z() == 0.0);
+	double scale = 2.0;
+	cone.Scale(centerCone, scale);
+	CHECK(cone.Radius() == radius * 4.0);
+	double semiAngle = cone.SemiAngle();
+	std::cout << semiAngle << std::endl;
+	CHECK(semiAngle == Approx(0.785398));
+	VectorT<double, 3> translationVector(5.0, 5.0, 0.0);
+	cone.Translate(translationVector);
+	CHECK(cone.Location().X() == 25.0);
+	CHECK(cone.Location().Y() == 5.0);
+	CHECK(cone.Location().Z() == 0.0);
+	auto xAxis = cone.XAxis();
+	auto yAxis = cone.YAxis();
+	CHECK(xAxis.Direction().X() == Approx(-1.0));
+	CHECK(yAxis.Direction().Y() == Approx(-1.0));
+	AMCAX::Transformation3 tr;
+	tr.SetTranslation(Vector3(1.0, 2.0, 3.0));
+	cone.Transform(tr);
+	Axis3 newXAxis = cone.Position().XAxis();
+	CHECK(newXAxis.Location().X() == 26.0);
+	CHECK(newXAxis.Location().Y() == 7.0);
+	CHECK(newXAxis.Location().Z() == 3.0);
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] AMCAX_API double SemiAngle()	 @return The semi-angle
+	 @brief Get the semi-angle
+,
+ "output":#include<iostream>
+#include "catch.hpp"
+#include <common/FrameT.hpp>
+#include <modeling/MakeFace.hpp>
+#include <common/AxisT.hpp>
+#include <common/FrameT.hpp>
+#include <common/VectorT.hpp>
+#include <math/Cone.hpp>
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("TestCone", "[math][Cone]")
+{
+	AMCAX::Frame3 frame;
+	double radius = 5.0;
+	double angle = M_PI / 4;
+	AMCAX::Cone cone(frame, radius, angle);
+	AMCAX::Point3 apex = cone.Apex();
+	CHECK(apex.X() == 0.0);
+	CHECK(apex.Y() == 0.0);
+	CHECK(apex.Z() == Approx(-5.0));
+	AMCAX::Axis3 axis = cone.Axis();
+	std::cout << axis.Direction().X() << std::endl;
+	std::cout << axis.Direction().Y() << std::endl;
+	std::cout << axis.Direction().Z() << std::endl;
+	CHECK(axis.Direction().X() == 0.0);
+	CHECK(axis.Direction().Y() == 0.0);
+	CHECK(axis.Direction().Z() == 1.0);
+	double a1, a2, a3, b1, b2, b3, c1, c2, c3, d;
+	cone.Coefficients(a1, a2, a3, b1, b2, b3, c1, c2, c3, d);
+	std::cout << "a1: " << a1 << ", a2: " << a2 << ", a3: " << a3 << std::endl;
+	std::cout << "b1: " << b1 << ", b2: " << b2 << ", b3: " << b3 << std::endl;
+	std::cout << "c1: " << c1 << ", c2: " << c2 << ", c3: " << c3 << std::endl;
+	std::cout << "d: " << d << std::endl;
+	CHECK(a1 == 1.0);
+	CHECK(a2 == 1.0);
+	CHECK(a3 == Approx(-1.0));
+	CHECK(b1 == 0);
+	CHECK(b2 == 0);
+	CHECK(b3 == 0);
+	CHECK(c1 == 0);
+	CHECK(c2 == 0);
+	CHECK(c3 == Approx(-5.0));
+	CHECK(d == -25.0);
+	CHECK(cone.IsDirect() == true);
+	CHECK(cone.Location().X() == 0.0);
+	CHECK(cone.Location().Y() == 0.0);
+	CHECK(cone.Location().Z() == 0.0);
+	AMCAX::PointT<double, 3>mirrorPoint(5.0, 0.0, 0.0);
+	cone.Mirror(mirrorPoint);
+	auto mirroredLocation = cone.Location();
+	CHECK(mirroredLocation.X() == 10.0);
+	CHECK(mirroredLocation.Y() == 0.0);
+	CHECK(mirroredLocation.Z() == 0.0);
+	AMCAX::Frame3 coneFrame = cone.Position();
+	CHECK(frame.Location().X() == 0.0);
+	CHECK(frame.Location().Y() == 0.0);
+	CHECK(frame.Location().Z() == 0.0);
+	CHECK(cone.Radius() == 5.0);
+	double  scaleCone = 2.0;
+	cone.Scale(cone.Location(), scaleCone);
+	CHECK(cone.Radius() == radius * 2.0);
+	double semiCone = cone.SemiAngle();
+	CHECK(semiCone == Approx(0.785398));
+	const  Frame3& position = cone.Position();
+	std::cout << position.XAxis() << std::endl;
+	std::cout << position.YAxis() << std::endl;
+	Direction3 zDirection(0.0, 0.0, 1.0);
+	AMCAX::Point3  centerCone(0.0, 0.0, 0.0);
+	Axis3 zAxis(centerCone, zDirection);
+	cone.Rotated(zAxis, angle);
+	AMCAX::Frame3 coneFrame2 = cone.Position();
+	CHECK(coneFrame.Location().X() == 10.0);
+	CHECK(coneFrame.Location().Y() == 0.0);
+	CHECK(coneFrame.Location().Z() == 0.0);
+	double scale = 2.0;
+	cone.Scale(centerCone, scale);
+	CHECK(cone.Radius() == radius * 4.0);
+	double semiAngle = cone.SemiAngle();
+	std::cout << semiAngle << std::endl;
+	CHECK(semiAngle == Approx(0.785398));
+	VectorT<double, 3> translationVector(5.0, 5.0, 0.0);
+	cone.Translate(translationVector);
+	CHECK(cone.Location().X() == 25.0);
+	CHECK(cone.Location().Y() == 5.0);
+	CHECK(cone.Location().Z() == 0.0);
+	auto xAxis = cone.XAxis();
+	auto yAxis = cone.YAxis();
+	CHECK(xAxis.Direction().X() == Approx(-1.0));
+	CHECK(yAxis.Direction().Y() == Approx(-1.0));
+	AMCAX::Transformation3 tr;
+	tr.SetTranslation(Vector3(1.0, 2.0, 3.0));
+	cone.Transform(tr);
+	Axis3 newXAxis = cone.Position().XAxis();
+	CHECK(newXAxis.Location().X() == 26.0);
+	CHECK(newXAxis.Location().Y() == 7.0);
+	CHECK(newXAxis.Location().Z() == 3.0);
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API Cone(const Frame3& frame, double r, double angle)	 @param angle The semi-angle
+	 @param r The reference radius
+	 @param frame The local frame
+	 @brief Construct from a local frame, a reference radius and a semi-angle
+,
+ "output":#include<iostream>
+#include "catch.hpp"
+#include <common/FrameT.hpp>
+#include <modeling/MakeFace.hpp>
+#include <common/AxisT.hpp>
+#include <common/FrameT.hpp>
+#include <common/VectorT.hpp>
+#include <math/Cone.hpp>
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("TestCone", "[math][Cone]")
+{
+	AMCAX::Frame3 frame;
+	double radius = 5.0;
+	double angle = M_PI / 4;
+	AMCAX::Cone cone(frame, radius, angle);
+	AMCAX::Point3 apex = cone.Apex();
+	CHECK(apex.X() == 0.0);
+	CHECK(apex.Y() == 0.0);
+	CHECK(apex.Z() == Approx(-5.0));
+	AMCAX::Axis3 axis = cone.Axis();
+	std::cout << axis.Direction().X() << std::endl;
+	std::cout << axis.Direction().Y() << std::endl;
+	std::cout << axis.Direction().Z() << std::endl;
+	CHECK(axis.Direction().X() == 0.0);
+	CHECK(axis.Direction().Y() == 0.0);
+	CHECK(axis.Direction().Z() == 1.0);
+	double a1, a2, a3, b1, b2, b3, c1, c2, c3, d;
+	cone.Coefficients(a1, a2, a3, b1, b2, b3, c1, c2, c3, d);
+	std::cout << "a1: " << a1 << ", a2: " << a2 << ", a3: " << a3 << std::endl;
+	std::cout << "b1: " << b1 << ", b2: " << b2 << ", b3: " << b3 << std::endl;
+	std::cout << "c1: " << c1 << ", c2: " << c2 << ", c3: " << c3 << std::endl;
+	std::cout << "d: " << d << std::endl;
+	CHECK(a1 == 1.0);
+	CHECK(a2 == 1.0);
+	CHECK(a3 == Approx(-1.0));
+	CHECK(b1 == 0);
+	CHECK(b2 == 0);
+	CHECK(b3 == 0);
+	CHECK(c1 == 0);
+	CHECK(c2 == 0);
+	CHECK(c3 == Approx(-5.0));
+	CHECK(d == -25.0);
+	CHECK(cone.IsDirect() == true);
+	CHECK(cone.Location().X() == 0.0);
+	CHECK(cone.Location().Y() == 0.0);
+	CHECK(cone.Location().Z() == 0.0);
+	AMCAX::PointT<double, 3>mirrorPoint(5.0, 0.0, 0.0);
+	cone.Mirror(mirrorPoint);
+	auto mirroredLocation = cone.Location();
+	CHECK(mirroredLocation.X() == 10.0);
+	CHECK(mirroredLocation.Y() == 0.0);
+	CHECK(mirroredLocation.Z() == 0.0);
+	AMCAX::Frame3 coneFrame = cone.Position();
+	CHECK(frame.Location().X() == 0.0);
+	CHECK(frame.Location().Y() == 0.0);
+	CHECK(frame.Location().Z() == 0.0);
+	CHECK(cone.Radius() == 5.0);
+	double  scaleCone = 2.0;
+	cone.Scale(cone.Location(), scaleCone);
+	CHECK(cone.Radius() == radius * 2.0);
+	double semiCone = cone.SemiAngle();
+	CHECK(semiCone == Approx(0.785398));
+	const  Frame3& position = cone.Position();
+	std::cout << position.XAxis() << std::endl;
+	std::cout << position.YAxis() << std::endl;
+	Direction3 zDirection(0.0, 0.0, 1.0);
+	AMCAX::Point3  centerCone(0.0, 0.0, 0.0);
+	Axis3 zAxis(centerCone, zDirection);
+	cone.Rotated(zAxis, angle);
+	AMCAX::Frame3 coneFrame2 = cone.Position();
+	CHECK(coneFrame.Location().X() == 10.0);
+	CHECK(coneFrame.Location().Y() == 0.0);
+	CHECK(coneFrame.Location().Z() == 0.0);
+	double scale = 2.0;
+	cone.Scale(centerCone, scale);
+	CHECK(cone.Radius() == radius * 4.0);
+	double semiAngle = cone.SemiAngle();
+	std::cout << semiAngle << std::endl;
+	CHECK(semiAngle == Approx(0.785398));
+	VectorT<double, 3> translationVector(5.0, 5.0, 0.0);
+	cone.Translate(translationVector);
+	CHECK(cone.Location().X() == 25.0);
+	CHECK(cone.Location().Y() == 5.0);
+	CHECK(cone.Location().Z() == 0.0);
+	auto xAxis = cone.XAxis();
+	auto yAxis = cone.YAxis();
+	CHECK(xAxis.Direction().X() == Approx(-1.0));
+	CHECK(yAxis.Direction().Y() == Approx(-1.0));
+	AMCAX::Transformation3 tr;
+	tr.SetTranslation(Vector3(1.0, 2.0, 3.0));
+	cone.Transform(tr);
+	Axis3 newXAxis = cone.Position().XAxis();
+	CHECK(newXAxis.Location().X() == 26.0);
+	CHECK(newXAxis.Location().Y() == 7.0);
+	CHECK(newXAxis.Location().Z() == 3.0);
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API Cone& Scale(const Point3& point, double scale)	 @return The reference to self
+	 @param scale The scale value
+	 @param point The scaling center point
+	 @brief Scale the cone by a point
+,
+ "output":#include<iostream>
+#include "catch.hpp"
+#include <common/FrameT.hpp>
+#include <modeling/MakeFace.hpp>
+#include <common/AxisT.hpp>
+#include <common/FrameT.hpp>
+#include <common/VectorT.hpp>
+#include <math/Cone.hpp>
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("TestCone", "[math][Cone]")
+{
+	AMCAX::Frame3 frame;
+	double radius = 5.0;
+	double angle = M_PI / 4;
+	AMCAX::Cone cone(frame, radius, angle);
+	AMCAX::Point3 apex = cone.Apex();
+	CHECK(apex.X() == 0.0);
+	CHECK(apex.Y() == 0.0);
+	CHECK(apex.Z() == Approx(-5.0));
+	AMCAX::Axis3 axis = cone.Axis();
+	std::cout << axis.Direction().X() << std::endl;
+	std::cout << axis.Direction().Y() << std::endl;
+	std::cout << axis.Direction().Z() << std::endl;
+	CHECK(axis.Direction().X() == 0.0);
+	CHECK(axis.Direction().Y() == 0.0);
+	CHECK(axis.Direction().Z() == 1.0);
+	double a1, a2, a3, b1, b2, b3, c1, c2, c3, d;
+	cone.Coefficients(a1, a2, a3, b1, b2, b3, c1, c2, c3, d);
+	std::cout << "a1: " << a1 << ", a2: " << a2 << ", a3: " << a3 << std::endl;
+	std::cout << "b1: " << b1 << ", b2: " << b2 << ", b3: " << b3 << std::endl;
+	std::cout << "c1: " << c1 << ", c2: " << c2 << ", c3: " << c3 << std::endl;
+	std::cout << "d: " << d << std::endl;
+	CHECK(a1 == 1.0);
+	CHECK(a2 == 1.0);
+	CHECK(a3 == Approx(-1.0));
+	CHECK(b1 == 0);
+	CHECK(b2 == 0);
+	CHECK(b3 == 0);
+	CHECK(c1 == 0);
+	CHECK(c2 == 0);
+	CHECK(c3 == Approx(-5.0));
+	CHECK(d == -25.0);
+	CHECK(cone.IsDirect() == true);
+	CHECK(cone.Location().X() == 0.0);
+	CHECK(cone.Location().Y() == 0.0);
+	CHECK(cone.Location().Z() == 0.0);
+	AMCAX::PointT<double, 3>mirrorPoint(5.0, 0.0, 0.0);
+	cone.Mirror(mirrorPoint);
+	auto mirroredLocation = cone.Location();
+	CHECK(mirroredLocation.X() == 10.0);
+	CHECK(mirroredLocation.Y() == 0.0);
+	CHECK(mirroredLocation.Z() == 0.0);
+	AMCAX::Frame3 coneFrame = cone.Position();
+	CHECK(frame.Location().X() == 0.0);
+	CHECK(frame.Location().Y() == 0.0);
+	CHECK(frame.Location().Z() == 0.0);
+	CHECK(cone.Radius() == 5.0);
+	double  scaleCone = 2.0;
+	cone.Scale(cone.Location(), scaleCone);
+	CHECK(cone.Radius() == radius * 2.0);
+	double semiCone = cone.SemiAngle();
+	CHECK(semiCone == Approx(0.785398));
+	const  Frame3& position = cone.Position();
+	std::cout << position.XAxis() << std::endl;
+	std::cout << position.YAxis() << std::endl;
+	Direction3 zDirection(0.0, 0.0, 1.0);
+	AMCAX::Point3  centerCone(0.0, 0.0, 0.0);
+	Axis3 zAxis(centerCone, zDirection);
+	cone.Rotated(zAxis, angle);
+	AMCAX::Frame3 coneFrame2 = cone.Position();
+	CHECK(coneFrame.Location().X() == 10.0);
+	CHECK(coneFrame.Location().Y() == 0.0);
+	CHECK(coneFrame.Location().Z() == 0.0);
+	double scale = 2.0;
+	cone.Scale(centerCone, scale);
+	CHECK(cone.Radius() == radius * 4.0);
+	double semiAngle = cone.SemiAngle();
+	std::cout << semiAngle << std::endl;
+	CHECK(semiAngle == Approx(0.785398));
+	VectorT<double, 3> translationVector(5.0, 5.0, 0.0);
+	cone.Translate(translationVector);
+	CHECK(cone.Location().X() == 25.0);
+	CHECK(cone.Location().Y() == 5.0);
+	CHECK(cone.Location().Z() == 0.0);
+	auto xAxis = cone.XAxis();
+	auto yAxis = cone.YAxis();
+	CHECK(xAxis.Direction().X() == Approx(-1.0));
+	CHECK(yAxis.Direction().Y() == Approx(-1.0));
+	AMCAX::Transformation3 tr;
+	tr.SetTranslation(Vector3(1.0, 2.0, 3.0));
+	cone.Transform(tr);
+	Axis3 newXAxis = cone.Position().XAxis();
+	CHECK(newXAxis.Location().X() == 26.0);
+	CHECK(newXAxis.Location().Y() == 7.0);
+	CHECK(newXAxis.Location().Z() == 3.0);
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":AMCAX_API Cone& Transform(const Transformation3& tr)	 @return The reference to self
+	 @param tr The transformation
+	 @brief Transform the cone
+,
+ "output":#include<iostream>
+#include "catch.hpp"
+#include <common/FrameT.hpp>
+#include <modeling/MakeFace.hpp>
+#include <common/AxisT.hpp>
+#include <common/FrameT.hpp>
+#include <common/VectorT.hpp>
+#include <math/Cone.hpp>
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("TestCone", "[math][Cone]")
+{
+	AMCAX::Frame3 frame;
+	double radius = 5.0;
+	double angle = M_PI / 4;
+	AMCAX::Cone cone(frame, radius, angle);
+	AMCAX::Point3 apex = cone.Apex();
+	CHECK(apex.X() == 0.0);
+	CHECK(apex.Y() == 0.0);
+	CHECK(apex.Z() == Approx(-5.0));
+	AMCAX::Axis3 axis = cone.Axis();
+	std::cout << axis.Direction().X() << std::endl;
+	std::cout << axis.Direction().Y() << std::endl;
+	std::cout << axis.Direction().Z() << std::endl;
+	CHECK(axis.Direction().X() == 0.0);
+	CHECK(axis.Direction().Y() == 0.0);
+	CHECK(axis.Direction().Z() == 1.0);
+	double a1, a2, a3, b1, b2, b3, c1, c2, c3, d;
+	cone.Coefficients(a1, a2, a3, b1, b2, b3, c1, c2, c3, d);
+	std::cout << "a1: " << a1 << ", a2: " << a2 << ", a3: " << a3 << std::endl;
+	std::cout << "b1: " << b1 << ", b2: " << b2 << ", b3: " << b3 << std::endl;
+	std::cout << "c1: " << c1 << ", c2: " << c2 << ", c3: " << c3 << std::endl;
+	std::cout << "d: " << d << std::endl;
+	CHECK(a1 == 1.0);
+	CHECK(a2 == 1.0);
+	CHECK(a3 == Approx(-1.0));
+	CHECK(b1 == 0);
+	CHECK(b2 == 0);
+	CHECK(b3 == 0);
+	CHECK(c1 == 0);
+	CHECK(c2 == 0);
+	CHECK(c3 == Approx(-5.0));
+	CHECK(d == -25.0);
+	CHECK(cone.IsDirect() == true);
+	CHECK(cone.Location().X() == 0.0);
+	CHECK(cone.Location().Y() == 0.0);
+	CHECK(cone.Location().Z() == 0.0);
+	AMCAX::PointT<double, 3>mirrorPoint(5.0, 0.0, 0.0);
+	cone.Mirror(mirrorPoint);
+	auto mirroredLocation = cone.Location();
+	CHECK(mirroredLocation.X() == 10.0);
+	CHECK(mirroredLocation.Y() == 0.0);
+	CHECK(mirroredLocation.Z() == 0.0);
+	AMCAX::Frame3 coneFrame = cone.Position();
+	CHECK(frame.Location().X() == 0.0);
+	CHECK(frame.Location().Y() == 0.0);
+	CHECK(frame.Location().Z() == 0.0);
+	CHECK(cone.Radius() == 5.0);
+	double  scaleCone = 2.0;
+	cone.Scale(cone.Location(), scaleCone);
+	CHECK(cone.Radius() == radius * 2.0);
+	double semiCone = cone.SemiAngle();
+	CHECK(semiCone == Approx(0.785398));
+	const  Frame3& position = cone.Position();
+	std::cout << position.XAxis() << std::endl;
+	std::cout << position.YAxis() << std::endl;
+	Direction3 zDirection(0.0, 0.0, 1.0);
+	AMCAX::Point3  centerCone(0.0, 0.0, 0.0);
+	Axis3 zAxis(centerCone, zDirection);
+	cone.Rotated(zAxis, angle);
+	AMCAX::Frame3 coneFrame2 = cone.Position();
+	CHECK(coneFrame.Location().X() == 10.0);
+	CHECK(coneFrame.Location().Y() == 0.0);
+	CHECK(coneFrame.Location().Z() == 0.0);
+	double scale = 2.0;
+	cone.Scale(centerCone, scale);
+	CHECK(cone.Radius() == radius * 4.0);
+	double semiAngle = cone.SemiAngle();
+	std::cout << semiAngle << std::endl;
+	CHECK(semiAngle == Approx(0.785398));
+	VectorT<double, 3> translationVector(5.0, 5.0, 0.0);
+	cone.Translate(translationVector);
+	CHECK(cone.Location().X() == 25.0);
+	CHECK(cone.Location().Y() == 5.0);
+	CHECK(cone.Location().Z() == 0.0);
+	auto xAxis = cone.XAxis();
+	auto yAxis = cone.YAxis();
+	CHECK(xAxis.Direction().X() == Approx(-1.0));
+	CHECK(yAxis.Direction().Y() == Approx(-1.0));
+	AMCAX::Transformation3 tr;
+	tr.SetTranslation(Vector3(1.0, 2.0, 3.0));
+	cone.Transform(tr);
+	Axis3 newXAxis = cone.Position().XAxis();
+	CHECK(newXAxis.Location().X() == 26.0);
+	CHECK(newXAxis.Location().Y() == 7.0);
+	CHECK(newXAxis.Location().Z() == 3.0);
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":void SetRadius(double r)	 @param r The radius
+	 @brief Set the radius of the circle
+,
+ "output":#include <math/CircleT.hpp>
+#include <common/CoordT.hpp>
+#include <common/TransformationType.hpp>
+#include <common/DirectionT.hpp>
+#include <common/PointT.hpp>
+#include <common/Precision.hpp>
+#include <common/CoordT.hpp>
+#include <common/TransformationType.hpp>
+#include <topology/TopoEdge.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <topology/TopoWire.hpp>
+#include <modeling/MakeWire.hpp>
+#include <geometry/GlobalProperty.hpp>
+#include <topology/BRepGlobalProperty.hpp>
+#include<iostream>
+#include "catch.hpp" 
+using namespace std;
+using namespace AMCAX;
+TEST_CASE("TestCircle2D", "[math][Circle2D]")
+{
+	AMCAX::CircleT<double, 2> circle2D;
+	AMCAX::Point2 center2D(0.0, 0.0);
+	double redius2D = 5.0;
+	double tol = 0.1;
+	circle2D.SetLocation(center2D);
+	circle2D.SetRadius(redius2D);
+	double area2D = circle2D.Area();
+	double length2D = circle2D.Length();
+	AMCAX::Point2 retcenter2D = circle2D.Location();
+	double retarea2D = M_PI * redius2D * redius2D;
+	double retlength2D = 2 * M_PI * redius2D;
+	std::cout << area2D << std::endl;
+	std::cout << length2D << std::endl;
+	std::cout << retcenter2D.X() << std::endl;
+	std::cout << retcenter2D.Y() << std::endl;
+	CHECK(area2D == retarea2D);
+	CHECK(length2D == retlength2D);
+	CHECK(retcenter2D.X() == center2D.X());
+	CHECK(retcenter2D.Y() == center2D.Y());
+	double a, b, c, d, e, f;
+	circle2D.Coefficients(a, b, c, d, e, f);
+	std::cout << a << std::endl;
+	std::cout << b << std::endl;
+	std::cout << c << std::endl;
+	std::cout << d << std::endl;
+	std::cout << e << std::endl;
+	std::cout << f << std::endl;
+	CHECK(a == 1);
+	CHECK(b == 1);
+	CHECK(c == 0);
+	CHECK(d == 0);
+	CHECK(e == 0);
+	CHECK(f == -25);
+	std::vector < AMCAX::Point2> testPoints = {
+		AMCAX::Point2(3.0, 4.0),
+		AMCAX::Point2(5.0, 0.0),
+		AMCAX::Point2(4.9, 0.0),
+		AMCAX::Point2(5.1, 0.0),
+		AMCAX::Point2(6.0, 0.0)
+	};
+	for (const auto& point : testPoints)
+	{
+		double distanceToCenter = std::sqrt(point.X() * point.X() + point.Y() * point.Y());
+		bool expectedIsInCircle = distanceToCenter <= 5.0 + tol;
+		bool isInCircle = circle2D.Contains(point, tol);
+		CHECK(isInCircle == expectedIsInCircle);
+	}
+	for (const auto& point : testPoints)
+	{
+		double distance = circle2D.Distance(point);
+		double expectedDistance = std::abs(std::sqrt(std::pow(point.X() - center2D.X(), 2) + std::pow(point.Y() - center2D.Y(), 2)) - redius2D);
+		CHECK(distance == expectedDistance);
+	}
+	AMCAX::AxisT<double, 2> mirrorAxis(AMCAX::Point2(0.0, 0.0), AMCAX::Direction2(0.0, 1.0));
+	circle2D.Mirror(mirrorAxis);
+	AMCAX::Point2 mirroredCenter = circle2D.Location();
+	std::cout << "Mirrored circle center: (" << mirroredCenter.X() << ", " << mirroredCenter.Y() << ")" << std::endl;
+	CHECK(mirroredCenter.X() == center2D.X());
+	CHECK(mirroredCenter.Y() == center2D.Y());
+	const AMCAX::FrameT<double, 2>& frame = circle2D.Position();
+	AMCAX::Point2 rotationPoint(0.0, 0.0);
+	double  rotationAngle = M_PI / 4;
+	auto rotatedCircle = circle2D.Rotated(rotationPoint, rotationAngle);
+	double cosAngle = cos(rotationAngle);
+	double sinAngle = sin(rotationAngle);
+	double newX = cosAngle * (center2D.X() - rotationPoint.X()) - sinAngle * (center2D.Y() - rotationPoint.Y()) + rotationPoint.X();
+	double newY = sinAngle * (center2D.X() - rotationPoint.X()) + cosAngle * (center2D.Y() - rotationPoint.Y()) + rotationPoint.Y();
+	auto rotatedCenter = rotatedCircle.Location();
+	CHECK(newX == center2D.X());
+	CHECK(newY == center2D.Y());
+	AMCAX::Point2 scalingCenter(0.0, 0.0);
+	double scalingFactor = 2.0;
+	auto scaledCircle = circle2D.Scale(scalingCenter, scalingFactor);
+	double scaledRadius = scaledCircle.Radius();
+	double expectedScaledRadius = redius2D * scalingFactor;
+	CHECK(std::abs(scaledRadius - expectedScaledRadius) < 1e-6);
+	AMCAX::VectorT<double, 2> translationVector(2.0, 3.0);
+	auto translatedCircle = circle2D.Translated(translationVector);
+	auto translatedCenter = translatedCircle.Location();
+	double translatedX = center2D.X() + translationVector.X();
+	CHECK(translatedX == translatedCenter.X());
+	auto xAxis = circle2D.XAxis();
+	auto directionAxis = xAxis.Direction();
+	CHECK(directionAxis.X() == -1.0);
+	CHECK(directionAxis.Y() == 0.0);
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] double Radius()	 @return The radius
+	 @brief Get the radius
+,
+ "output":#include <math/CircleT.hpp>
+#include <common/CoordT.hpp>
+#include <common/TransformationType.hpp>
+#include <common/DirectionT.hpp>
+#include <common/PointT.hpp>
+#include <common/Precision.hpp>
+#include <common/CoordT.hpp>
+#include <common/TransformationType.hpp>
+#include <topology/TopoEdge.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <topology/TopoWire.hpp>
+#include <modeling/MakeWire.hpp>
+#include <geometry/GlobalProperty.hpp>
+#include <topology/BRepGlobalProperty.hpp>
+#include<iostream>
+#include "catch.hpp" 
+using namespace std;
+using namespace AMCAX;
+TEST_CASE("TestCircle3D", "[math][Circle3D]")
+{
+	AMCAX::Circle3 circle3D;
+	AMCAX::Point3  center3D(0.0, 0.0, 0.0);
+	double radius3D = 5.0;
+	double tol = 0.1;
+	circle3D.SetLocation(center3D);
+	circle3D.SetRadius(radius3D);
+	double area = circle3D.Area();
+	auto axis = circle3D.Axis();
+	AMCAX::Point3 expectedDirection(0.0, 0.0, 1.0);
+	auto direction = axis.Direction();
+	CHECK(area == Approx(78.5398));
+	CHECK(direction.X() == Approx(expectedDirection.X()).margin(tol));
+	CHECK(direction.Y() == Approx(expectedDirection.Y()).margin(tol));
+	CHECK(direction.Z() == Approx(expectedDirection.Z()).margin(tol));
+	std::vector <AMCAX::Point3> test3DPoints = {
+		AMCAX::Point3(0.0, 0.0, 0.0),
+		AMCAX::Point3(4.0, 0.0, 0.0),
+	};
+	for (const auto& point : test3DPoints)
+	{
+		double distanceToCenter = std::sqrt(std::pow(point.X() - center3D.X(), 2) + std::pow(point.Y() - center3D.Y(), 2) + std::pow(point.Z() - center3D.Z(), 2));
+		bool expectedIsCircle = distanceToCenter <= 5.0 + tol;
+		bool isInCircle = circle3D.Contains(point, tol);
+		CHECK(!isInCircle == expectedIsCircle);
+	}
+	AMCAX::PointT<double, 3>  pointOutside(10.0, 0.0, 0.0);
+	double expectedDistance = 5.0;
+	CHECK(circle3D.Distance(pointOutside) == Approx(expectedDistance));
+	double length = circle3D.Length();
+	CHECK(length == Approx(31.4159));
+	auto location = circle3D.Location();
+	CHECK(location.X() == Approx(0.0));
+	CHECK(location.Y() == Approx(0.0));
+	CHECK(location.Z() == Approx(0.0));
+	AMCAX::PointT<double, 3> mirrorPoint(1.0, 0.0, 0.0);
+	circle3D.Mirror(mirrorPoint);
+	auto mirroredLocation = circle3D.Location();
+	CHECK(mirroredLocation.X() == Approx(2.0));
+	CHECK(mirroredLocation.Y() == Approx(0.0));
+	CHECK(mirroredLocation.Z() == Approx(0.0));
+	auto position = circle3D.Position();   
+	double r = circle3D.Radius();
+	CHECK(r == 5.0);
+	Direction3 zDirection(0.0, 0.0, 1.0);
+	Axis3 zAxis(center3D, zDirection);
+	Transformation3 rotation;
+	rotation.SetRotation(zAxis, M_PI / 2);  
+	Point3 newCenter1 = center3D.Transformed(rotation);
+	CHECK(newCenter1.X() == 0.0);
+	CHECK(newCenter1.Y() == 0.0);
+	CHECK(newCenter1.Z() == 0.0);
+	double angle = M_PI / 2;
+	circle3D.Rotated(zAxis, angle);
+	AMCAX::Frame3 frame = circle3D.Position();
+	CHECK(frame.Location().X() == 2.0);
+	CHECK(frame.Location().Y() == 0.0);
+	CHECK(frame.Location().Z() == 0.0);
+	double scale = 2.0;
+	circle3D.Scale(center3D, scale);
+	CHECK(circle3D.Radius() == radius3D * 2.0);
+	AMCAX::PointT<double, 3> insidePoint(3.0, 4.0, 0.0);
+	AMCAX::PointT<double, 3> onCirclePoint(5.0, 0.0, 0.0);
+	AMCAX::PointT<double, 3> outsidePoint(8.0, 6.0, 0.0);
+	double insideSquaredDistance = circle3D.SquaredDistance(insidePoint);
+	double onCircleSquaredDistance = circle3D.SquaredDistance(onCirclePoint);
+	double outsideSquaredDistance = circle3D.SquaredDistance(outsidePoint);
+	CHECK(insideSquaredDistance == Approx(34.5378));
+	CHECK(onCircleSquaredDistance == 81.0);
+	CHECK(outsideSquaredDistance == Approx(7.7779));
+	VectorT<double, 3> translationVector(5.0, 5.0, 0.0);
+	circle3D.Translate(translationVector);
+	CHECK(circle3D.Location().X() == 9.0);
+	CHECK(circle3D.Location().Y() == 5.0);
+	CHECK(circle3D.Location().Z() == 0.0);
+	auto xAxis = circle3D.XAxis();
+	auto yAxis = circle3D.YAxis();
+	CHECK(xAxis.Direction().X() == Approx(-1.0));
+	CHECK(yAxis.Direction().Y() == Approx(-1.0));
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] double Distance(const PointT<double, DIM>& p)	 @return The distance from the point to the circle
+	 @param p The point
+	 @brief Compute the distance from a point to the circle
+,
+ "output":#include <math/CircleT.hpp>
+#include <common/CoordT.hpp>
+#include <common/TransformationType.hpp>
+#include <common/DirectionT.hpp>
+#include <common/PointT.hpp>
+#include <common/Precision.hpp>
+#include <common/CoordT.hpp>
+#include <common/TransformationType.hpp>
+#include <topology/TopoEdge.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <topology/TopoWire.hpp>
+#include <modeling/MakeWire.hpp>
+#include <geometry/GlobalProperty.hpp>
+#include <topology/BRepGlobalProperty.hpp>
+#include<iostream>
+#include "catch.hpp" 
+using namespace std;
+using namespace AMCAX;
+TEST_CASE("TestCircle2D", "[math][Circle2D]")
+{
+	AMCAX::CircleT<double, 2> circle2D;
+	AMCAX::Point2 center2D(0.0, 0.0);
+	double redius2D = 5.0;
+	double tol = 0.1;
+	circle2D.SetLocation(center2D);
+	circle2D.SetRadius(redius2D);
+	double area2D = circle2D.Area();
+	double length2D = circle2D.Length();
+	AMCAX::Point2 retcenter2D = circle2D.Location();
+	double retarea2D = M_PI * redius2D * redius2D;
+	double retlength2D = 2 * M_PI * redius2D;
+	std::cout << area2D << std::endl;
+	std::cout << length2D << std::endl;
+	std::cout << retcenter2D.X() << std::endl;
+	std::cout << retcenter2D.Y() << std::endl;
+	CHECK(area2D == retarea2D);
+	CHECK(length2D == retlength2D);
+	CHECK(retcenter2D.X() == center2D.X());
+	CHECK(retcenter2D.Y() == center2D.Y());
+	double a, b, c, d, e, f;
+	circle2D.Coefficients(a, b, c, d, e, f);
+	std::cout << a << std::endl;
+	std::cout << b << std::endl;
+	std::cout << c << std::endl;
+	std::cout << d << std::endl;
+	std::cout << e << std::endl;
+	std::cout << f << std::endl;
+	CHECK(a == 1);
+	CHECK(b == 1);
+	CHECK(c == 0);
+	CHECK(d == 0);
+	CHECK(e == 0);
+	CHECK(f == -25);
+	std::vector < AMCAX::Point2> testPoints = {
+		AMCAX::Point2(3.0, 4.0),
+		AMCAX::Point2(5.0, 0.0),
+		AMCAX::Point2(4.9, 0.0),
+		AMCAX::Point2(5.1, 0.0),
+		AMCAX::Point2(6.0, 0.0)
+	};
+	for (const auto& point : testPoints)
+	{
+		double distanceToCenter = std::sqrt(point.X() * point.X() + point.Y() * point.Y());
+		bool expectedIsInCircle = distanceToCenter <= 5.0 + tol;
+		bool isInCircle = circle2D.Contains(point, tol);
+		CHECK(isInCircle == expectedIsInCircle);
+	}
+	for (const auto& point : testPoints)
+	{
+		double distance = circle2D.Distance(point);
+		double expectedDistance = std::abs(std::sqrt(std::pow(point.X() - center2D.X(), 2) + std::pow(point.Y() - center2D.Y(), 2)) - redius2D);
+		CHECK(distance == expectedDistance);
+	}
+	AMCAX::AxisT<double, 2> mirrorAxis(AMCAX::Point2(0.0, 0.0), AMCAX::Direction2(0.0, 1.0));
+	circle2D.Mirror(mirrorAxis);
+	AMCAX::Point2 mirroredCenter = circle2D.Location();
+	std::cout << "Mirrored circle center: (" << mirroredCenter.X() << ", " << mirroredCenter.Y() << ")" << std::endl;
+	CHECK(mirroredCenter.X() == center2D.X());
+	CHECK(mirroredCenter.Y() == center2D.Y());
+	const AMCAX::FrameT<double, 2>& frame = circle2D.Position();
+	AMCAX::Point2 rotationPoint(0.0, 0.0);
+	double  rotationAngle = M_PI / 4;
+	auto rotatedCircle = circle2D.Rotated(rotationPoint, rotationAngle);
+	double cosAngle = cos(rotationAngle);
+	double sinAngle = sin(rotationAngle);
+	double newX = cosAngle * (center2D.X() - rotationPoint.X()) - sinAngle * (center2D.Y() - rotationPoint.Y()) + rotationPoint.X();
+	double newY = sinAngle * (center2D.X() - rotationPoint.X()) + cosAngle * (center2D.Y() - rotationPoint.Y()) + rotationPoint.Y();
+	auto rotatedCenter = rotatedCircle.Location();
+	CHECK(newX == center2D.X());
+	CHECK(newY == center2D.Y());
+	AMCAX::Point2 scalingCenter(0.0, 0.0);
+	double scalingFactor = 2.0;
+	auto scaledCircle = circle2D.Scale(scalingCenter, scalingFactor);
+	double scaledRadius = scaledCircle.Radius();
+	double expectedScaledRadius = redius2D * scalingFactor;
+	CHECK(std::abs(scaledRadius - expectedScaledRadius) < 1e-6);
+	AMCAX::VectorT<double, 2> translationVector(2.0, 3.0);
+	auto translatedCircle = circle2D.Translated(translationVector);
+	auto translatedCenter = translatedCircle.Location();
+	double translatedX = center2D.X() + translationVector.X();
+	CHECK(translatedX == translatedCenter.X());
+	auto xAxis = circle2D.XAxis();
+	auto directionAxis = xAxis.Direction();
+	CHECK(directionAxis.X() == -1.0);
+	CHECK(directionAxis.Y() == 0.0);
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] double SquaredDistance(const PointT<double, DIM>& p)	 @return The squared distance from the point to the circle
+	 @param p The point
+	 @brief Compute the squared distance from a point to the circle
+,
+ "output":#include <math/CircleT.hpp>
+#include <common/CoordT.hpp>
+#include <common/TransformationType.hpp>
+#include <common/DirectionT.hpp>
+#include <common/PointT.hpp>
+#include <common/Precision.hpp>
+#include <common/CoordT.hpp>
+#include <common/TransformationType.hpp>
+#include <topology/TopoEdge.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <topology/TopoWire.hpp>
+#include <modeling/MakeWire.hpp>
+#include <geometry/GlobalProperty.hpp>
+#include <topology/BRepGlobalProperty.hpp>
+#include<iostream>
+#include "catch.hpp" 
+using namespace std;
+using namespace AMCAX;
+TEST_CASE("TestCircle3D", "[math][Circle3D]")
+{
+	AMCAX::Circle3 circle3D;
+	AMCAX::Point3  center3D(0.0, 0.0, 0.0);
+	double radius3D = 5.0;
+	double tol = 0.1;
+	circle3D.SetLocation(center3D);
+	circle3D.SetRadius(radius3D);
+	double area = circle3D.Area();
+	auto axis = circle3D.Axis();
+	AMCAX::Point3 expectedDirection(0.0, 0.0, 1.0);
+	auto direction = axis.Direction();
+	CHECK(area == Approx(78.5398));
+	CHECK(direction.X() == Approx(expectedDirection.X()).margin(tol));
+	CHECK(direction.Y() == Approx(expectedDirection.Y()).margin(tol));
+	CHECK(direction.Z() == Approx(expectedDirection.Z()).margin(tol));
+	std::vector <AMCAX::Point3> test3DPoints = {
+		AMCAX::Point3(0.0, 0.0, 0.0),
+		AMCAX::Point3(4.0, 0.0, 0.0),
+	};
+	for (const auto& point : test3DPoints)
+	{
+		double distanceToCenter = std::sqrt(std::pow(point.X() - center3D.X(), 2) + std::pow(point.Y() - center3D.Y(), 2) + std::pow(point.Z() - center3D.Z(), 2));
+		bool expectedIsCircle = distanceToCenter <= 5.0 + tol;
+		bool isInCircle = circle3D.Contains(point, tol);
+		CHECK(!isInCircle == expectedIsCircle);
+	}
+	AMCAX::PointT<double, 3>  pointOutside(10.0, 0.0, 0.0);
+	double expectedDistance = 5.0;
+	CHECK(circle3D.Distance(pointOutside) == Approx(expectedDistance));
+	double length = circle3D.Length();
+	CHECK(length == Approx(31.4159));
+	auto location = circle3D.Location();
+	CHECK(location.X() == Approx(0.0));
+	CHECK(location.Y() == Approx(0.0));
+	CHECK(location.Z() == Approx(0.0));
+	AMCAX::PointT<double, 3> mirrorPoint(1.0, 0.0, 0.0);
+	circle3D.Mirror(mirrorPoint);
+	auto mirroredLocation = circle3D.Location();
+	CHECK(mirroredLocation.X() == Approx(2.0));
+	CHECK(mirroredLocation.Y() == Approx(0.0));
+	CHECK(mirroredLocation.Z() == Approx(0.0));
+	auto position = circle3D.Position();   
+	double r = circle3D.Radius();
+	CHECK(r == 5.0);
+	Direction3 zDirection(0.0, 0.0, 1.0);
+	Axis3 zAxis(center3D, zDirection);
+	Transformation3 rotation;
+	rotation.SetRotation(zAxis, M_PI / 2);  
+	Point3 newCenter1 = center3D.Transformed(rotation);
+	CHECK(newCenter1.X() == 0.0);
+	CHECK(newCenter1.Y() == 0.0);
+	CHECK(newCenter1.Z() == 0.0);
+	double angle = M_PI / 2;
+	circle3D.Rotated(zAxis, angle);
+	AMCAX::Frame3 frame = circle3D.Position();
+	CHECK(frame.Location().X() == 2.0);
+	CHECK(frame.Location().Y() == 0.0);
+	CHECK(frame.Location().Z() == 0.0);
+	double scale = 2.0;
+	circle3D.Scale(center3D, scale);
+	CHECK(circle3D.Radius() == radius3D * 2.0);
+	AMCAX::PointT<double, 3> insidePoint(3.0, 4.0, 0.0);
+	AMCAX::PointT<double, 3> onCirclePoint(5.0, 0.0, 0.0);
+	AMCAX::PointT<double, 3> outsidePoint(8.0, 6.0, 0.0);
+	double insideSquaredDistance = circle3D.SquaredDistance(insidePoint);
+	double onCircleSquaredDistance = circle3D.SquaredDistance(onCirclePoint);
+	double outsideSquaredDistance = circle3D.SquaredDistance(outsidePoint);
+	CHECK(insideSquaredDistance == Approx(34.5378));
+	CHECK(onCircleSquaredDistance == 81.0);
+	CHECK(outsideSquaredDistance == Approx(7.7779));
+	VectorT<double, 3> translationVector(5.0, 5.0, 0.0);
+	circle3D.Translate(translationVector);
+	CHECK(circle3D.Location().X() == 9.0);
+	CHECK(circle3D.Location().Y() == 5.0);
+	CHECK(circle3D.Location().Z() == 0.0);
+	auto xAxis = circle3D.XAxis();
+	auto yAxis = circle3D.YAxis();
+	CHECK(xAxis.Direction().X() == Approx(-1.0));
+	CHECK(yAxis.Direction().Y() == Approx(-1.0));
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":CircleS& Scale(const PointT<double, DIM>& p, double scale)	 @return The reference to self
+	 @param scale The scale value
+	 @param p The scaling center point
+	 @brief Scale the circle by a center point
+,
+ "output":#include <math/CircleT.hpp>
+#include <common/CoordT.hpp>
+#include <common/TransformationType.hpp>
+#include <common/DirectionT.hpp>
+#include <common/PointT.hpp>
+#include <common/Precision.hpp>
+#include <common/CoordT.hpp>
+#include <common/TransformationType.hpp>
+#include <topology/TopoEdge.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <topology/TopoWire.hpp>
+#include <modeling/MakeWire.hpp>
+#include <geometry/GlobalProperty.hpp>
+#include <topology/BRepGlobalProperty.hpp>
+#include<iostream>
+#include "catch.hpp" 
+using namespace std;
+using namespace AMCAX;
+TEST_CASE("TestCircle2D", "[math][Circle2D]")
+{
+	AMCAX::CircleT<double, 2> circle2D;
+	AMCAX::Point2 center2D(0.0, 0.0);
+	double redius2D = 5.0;
+	double tol = 0.1;
+	circle2D.SetLocation(center2D);
+	circle2D.SetRadius(redius2D);
+	double area2D = circle2D.Area();
+	double length2D = circle2D.Length();
+	AMCAX::Point2 retcenter2D = circle2D.Location();
+	double retarea2D = M_PI * redius2D * redius2D;
+	double retlength2D = 2 * M_PI * redius2D;
+	std::cout << area2D << std::endl;
+	std::cout << length2D << std::endl;
+	std::cout << retcenter2D.X() << std::endl;
+	std::cout << retcenter2D.Y() << std::endl;
+	CHECK(area2D == retarea2D);
+	CHECK(length2D == retlength2D);
+	CHECK(retcenter2D.X() == center2D.X());
+	CHECK(retcenter2D.Y() == center2D.Y());
+	double a, b, c, d, e, f;
+	circle2D.Coefficients(a, b, c, d, e, f);
+	std::cout << a << std::endl;
+	std::cout << b << std::endl;
+	std::cout << c << std::endl;
+	std::cout << d << std::endl;
+	std::cout << e << std::endl;
+	std::cout << f << std::endl;
+	CHECK(a == 1);
+	CHECK(b == 1);
+	CHECK(c == 0);
+	CHECK(d == 0);
+	CHECK(e == 0);
+	CHECK(f == -25);
+	std::vector < AMCAX::Point2> testPoints = {
+		AMCAX::Point2(3.0, 4.0),
+		AMCAX::Point2(5.0, 0.0),
+		AMCAX::Point2(4.9, 0.0),
+		AMCAX::Point2(5.1, 0.0),
+		AMCAX::Point2(6.0, 0.0)
+	};
+	for (const auto& point : testPoints)
+	{
+		double distanceToCenter = std::sqrt(point.X() * point.X() + point.Y() * point.Y());
+		bool expectedIsInCircle = distanceToCenter <= 5.0 + tol;
+		bool isInCircle = circle2D.Contains(point, tol);
+		CHECK(isInCircle == expectedIsInCircle);
+	}
+	for (const auto& point : testPoints)
+	{
+		double distance = circle2D.Distance(point);
+		double expectedDistance = std::abs(std::sqrt(std::pow(point.X() - center2D.X(), 2) + std::pow(point.Y() - center2D.Y(), 2)) - redius2D);
+		CHECK(distance == expectedDistance);
+	}
+	AMCAX::AxisT<double, 2> mirrorAxis(AMCAX::Point2(0.0, 0.0), AMCAX::Direction2(0.0, 1.0));
+	circle2D.Mirror(mirrorAxis);
+	AMCAX::Point2 mirroredCenter = circle2D.Location();
+	std::cout << "Mirrored circle center: (" << mirroredCenter.X() << ", " << mirroredCenter.Y() << ")" << std::endl;
+	CHECK(mirroredCenter.X() == center2D.X());
+	CHECK(mirroredCenter.Y() == center2D.Y());
+	const AMCAX::FrameT<double, 2>& frame = circle2D.Position();
+	AMCAX::Point2 rotationPoint(0.0, 0.0);
+	double  rotationAngle = M_PI / 4;
+	auto rotatedCircle = circle2D.Rotated(rotationPoint, rotationAngle);
+	double cosAngle = cos(rotationAngle);
+	double sinAngle = sin(rotationAngle);
+	double newX = cosAngle * (center2D.X() - rotationPoint.X()) - sinAngle * (center2D.Y() - rotationPoint.Y()) + rotationPoint.X();
+	double newY = sinAngle * (center2D.X() - rotationPoint.X()) + cosAngle * (center2D.Y() - rotationPoint.Y()) + rotationPoint.Y();
+	auto rotatedCenter = rotatedCircle.Location();
+	CHECK(newX == center2D.X());
+	CHECK(newY == center2D.Y());
+	AMCAX::Point2 scalingCenter(0.0, 0.0);
+	double scalingFactor = 2.0;
+	auto scaledCircle = circle2D.Scale(scalingCenter, scalingFactor);
+	double scaledRadius = scaledCircle.Radius();
+	double expectedScaledRadius = redius2D * scalingFactor;
+	CHECK(std::abs(scaledRadius - expectedScaledRadius) < 1e-6);
+	AMCAX::VectorT<double, 2> translationVector(2.0, 3.0);
+	auto translatedCircle = circle2D.Translated(translationVector);
+	auto translatedCenter = translatedCircle.Location();
+	double translatedX = center2D.X() + translationVector.X();
+	CHECK(translatedX == translatedCenter.X());
+	auto xAxis = circle2D.XAxis();
+	auto directionAxis = xAxis.Direction();
+	CHECK(directionAxis.X() == -1.0);
+	CHECK(directionAxis.Y() == 0.0);
+}
+}
+,

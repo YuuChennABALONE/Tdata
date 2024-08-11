@@ -1,0 +1,65 @@
+{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] bool Contains(const PointT<double, DIM>& p, double tol)	 @return True if the point is on the line under the tolerance
+	 @param tol The tolerance
+	 @param p The point
+	 @brief Does the line contain a point under a distance tolerance
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <math/LineT.hpp>
+#include <math/Plane.hpp>
+#include <modeling/MakeFace.hpp>
+#include <modeling/MakeEdge.hpp>
+using AMCAX::Line3;
+using AMCAX::MakeEdge;
+using AMCAX::MakeFace;
+#define ONE_RADIAN (M_PI / 180.)
+#define SQUARE(x) ((x) * (x))
+TEST_CASE("case2: Line3 base method Test", "[math][Line3][p1]")
+{
+	SECTION("Contains")
+	{
+		Line3 line(Point3(), Direction3(1., 1., 1.));
+		Point3 point1(2., 2., 2.);
+		Point3 point2(2., 1., 2.);
+		auto isContains = [](const Line3& line, const Point3& point) {
+			Direction3 dir(line.Location().X() - point.X(), line.Location().Y() - point.Y(), line.Location().Z() - point.Z());
+			return line.Direction().IsParallel(dir, 1e-5);
+		};
+		CHECK(line.Contains(point1, 1e-5) == isContains(line, point1));
+		CHECK(line.Contains(point2, 1e-5) == isContains(line, point2));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] const PointT<double, DIM>& Location()	 @return The location of the line
+	 @brief Get the location point of the line
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <math/LineT.hpp>
+#include <math/Plane.hpp>
+#include <modeling/MakeFace.hpp>
+#include <modeling/MakeEdge.hpp>
+using AMCAX::Line3;
+using AMCAX::MakeEdge;
+using AMCAX::MakeFace;
+#define ONE_RADIAN (M_PI / 180.)
+#define SQUARE(x) ((x) * (x))
+TEST_CASE("case1: Derived class interface unit testing", "[math][Line3][p1]")
+{
+	SECTION("constructor")
+	{
+		Line3 line;  
+		CHECK(line.Location().IsEqual(Point3(0., 0., 0.), 1e-5));
+		CHECK(line.Direction().IsEqual(Direction3(0., 0., 1.), 1e-5 * ONE_RADIAN));
+		Axis3 axis(Point3(1., 1., 1.), Direction3(3., 3., 4.));
+		Line3 line2(axis);
+		CHECK(line2.Position().IsCoaxial(axis, 1e-5 * ONE_RADIAN, 1e-5));  
+		Line3 line3(Point3(1., 2., 3.), Direction3(3., 2., 1.));
+		CHECK(line3.Location().IsEqual(Point3(1., 2., 3.), 1e-5));
+		CHECK(line3.Direction().IsEqual(Direction3(3., 2., 1.), 1e-5 * ONE_RADIAN));
+	}}
+}
+,

@@ -1,0 +1,33 @@
+ #include <catch.hpp>
+#include <testHelper.h>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <modeling/MakeFace.hpp>
+#include <common/AxisT.hpp>
+#include <math/HyperbolaT.hpp>
+#include <occtio/OCCTTool.hpp>
+#include <common/VectorT.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <topology/TopoEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <iostream>
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Hyperbola3", "[math][Hyperbola3][p1]") {
+	Point3 point3_fr(0.0, 0.0, 1.0);
+	Direction3 dir3_fr(0.0, 0.0, 1.0);
+	Frame3 frame3(point3_fr, dir3_fr);
+	double major3 = 3.0, minor3 = 4.0;
+	Hyperbola3 hyperbola3d_fr(frame3, major3, minor3);
+	SECTION("Scale()") {	
+		Point3 point3_sca(1.0, 1.0, 1.0);
+		double scale3 = 0.5;
+		Hyperbola3 hyperbola3d_sca = hyperbola3d_fr.Scale(point3_sca, scale3);
+		CHECK(hyperbola3d_sca.Location().X() == Approx(1.0));
+		CHECK(hyperbola3d_sca.Location().Y() == Approx(1.0));
+		CHECK(hyperbola3d_sca.Location().Z() == Approx(1.0));
+		Point3 point1(1.0, 1.0, 1.0);
+		MakeEdge edge1(hyperbola3d_sca);
+		CHECK(BRepClassificationTools::IsPointInOnEdge(edge1, point1, 0.001) == true);
+	}}

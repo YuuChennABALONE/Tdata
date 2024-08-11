@@ -1,0 +1,543 @@
+{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":void SetMajorRadius(double r)	 @param r The new major radius
+	 @brief Set the major radius
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <modeling/MakeFace.hpp>
+#include <common/AxisT.hpp>
+#include <math/HyperbolaT.hpp>
+#include <occtio/OCCTTool.hpp>
+#include <common/VectorT.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <topology/TopoEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <iostream>
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Hyperbola3", "[math][Hyperbola3][p1]") {
+	Point3 point3_fr(0.0, 0.0, 1.0);
+	Direction3 dir3_fr(0.0, 0.0, 1.0);
+	Frame3 frame3(point3_fr, dir3_fr);
+	double major3 = 3.0, minor3 = 4.0;
+	Hyperbola3 hyperbola3d_fr(frame3, major3, minor3);
+	SECTION("Default()") {
+		Hyperbola3 hyperbola3d_de;	
+		CHECK(hyperbola3d_de.Location().X() == Approx(0.0));
+		CHECK(hyperbola3d_de.Location().Y() == Approx(0.0));
+		CHECK(hyperbola3d_de.Location().Z() == Approx(0.0));
+		hyperbola3d_de.SetMajorRadius(3.0);
+		hyperbola3d_de.SetMinorRadius(4.0);
+		CHECK(hyperbola3d_de.MajorRadius() == Approx(3.0));
+		CHECK(hyperbola3d_de.MinorRadius() == Approx(4.0));
+		CHECK(hyperbola3d_de.Focal() == Approx(10.0));
+		CHECK(hyperbola3d_de.Focus1().X() == Approx(5.0));
+		CHECK(hyperbola3d_de.Focus1().Y() == Approx(0.0));
+		CHECK(hyperbola3d_de.Focus1().Z() == Approx(0.0));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":void SetMinorRadius(double r)	 @param r The new minor radius
+	 @brief Set the minor radius
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <modeling/MakeFace.hpp>
+#include <common/AxisT.hpp>
+#include <math/HyperbolaT.hpp>
+#include <occtio/OCCTTool.hpp>
+#include <common/VectorT.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <topology/TopoEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <iostream>
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Hyperbola3", "[math][Hyperbola3][p1]") {
+	Point3 point3_fr(0.0, 0.0, 1.0);
+	Direction3 dir3_fr(0.0, 0.0, 1.0);
+	Frame3 frame3(point3_fr, dir3_fr);
+	double major3 = 3.0, minor3 = 4.0;
+	Hyperbola3 hyperbola3d_fr(frame3, major3, minor3);
+	SECTION("SetMinorRadius()") {
+		hyperbola3d_fr.SetMinorRadius(3.0);
+		CHECK(hyperbola3d_fr.Location().X() == Approx(0.0));
+		CHECK(hyperbola3d_fr.Location().Y() == Approx(0.0));
+		CHECK(hyperbola3d_fr.MajorRadius() == Approx(3.0));
+		CHECK(hyperbola3d_fr.MinorRadius() == Approx(3.0));
+		Point3 point1(3.0, 0.0, 1.0);
+		MakeEdge edge1(hyperbola3d_fr);
+		CHECK(BRepClassificationTools::IsPointInOnEdge(edge1, point1, 0.001) == true);
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] AxisT<double, DIM> Directrix1()	 @return The positive directrix
+	 @brief Get the directrix on the positive side of the major axis
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <modeling/MakeFace.hpp>
+#include <common/AxisT.hpp>
+#include <math/HyperbolaT.hpp>
+#include <occtio/OCCTTool.hpp>
+#include <common/VectorT.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <topology/TopoEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <iostream>
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Hyperbola3", "[math][Hyperbola3][p1]") {
+	Point3 point3_fr(0.0, 0.0, 1.0);
+	Direction3 dir3_fr(0.0, 0.0, 1.0);
+	Frame3 frame3(point3_fr, dir3_fr);
+	double major3 = 3.0, minor3 = 4.0;
+	Hyperbola3 hyperbola3d_fr(frame3, major3, minor3);
+	SECTION("Directrix1()") {
+		Axis3 axis3d_dir = hyperbola3d_fr.Directrix1();
+		CHECK(axis3d_dir.Direction().X() == Approx(0.0));
+		CHECK(axis3d_dir.Direction().Y() == Approx(1.0));
+		CHECK(axis3d_dir.Direction().Z() == Approx(0.0));
+		CHECK(axis3d_dir.Location().X() == Approx(9.0 / 5.0));
+		CHECK(axis3d_dir.Location().Y() == Approx(0.0));
+		CHECK(axis3d_dir.Location().Z() == Approx(1.0));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] AxisT<double, DIM> Directrix2()	 @return The negative directrix
+	 @brief Get the directrix on the negative side of the major axis
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <modeling/MakeFace.hpp>
+#include <common/AxisT.hpp>
+#include <math/HyperbolaT.hpp>
+#include <occtio/OCCTTool.hpp>
+#include <common/VectorT.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <topology/TopoEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <iostream>
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Hyperbola3", "[math][Hyperbola3][p1]") {
+	Point3 point3_fr(0.0, 0.0, 1.0);
+	Direction3 dir3_fr(0.0, 0.0, 1.0);
+	Frame3 frame3(point3_fr, dir3_fr);
+	double major3 = 3.0, minor3 = 4.0;
+	Hyperbola3 hyperbola3d_fr(frame3, major3, minor3);
+	SECTION("Directrix2()") {
+		Axis3 axis3d_dir = hyperbola3d_fr.Directrix2();
+		CHECK(axis3d_dir.Direction().X() == Approx(0.0));
+		CHECK(axis3d_dir.Direction().Y() == Approx(1.0));
+		CHECK(axis3d_dir.Direction().Z() == Approx(0.0));
+		CHECK(axis3d_dir.Location().X() == Approx(-9.0 / 5.0));
+		CHECK(axis3d_dir.Location().Y() == Approx(0.0));
+		CHECK(axis3d_dir.Location().Z() == Approx(1.0));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] PointT<double, DIM> Focus1()	 @return The positive focus
+	 @brief Get the focus on the positive side of the major axis
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <modeling/MakeFace.hpp>
+#include <common/AxisT.hpp>
+#include <math/HyperbolaT.hpp>
+#include <occtio/OCCTTool.hpp>
+#include <common/VectorT.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <topology/TopoEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <iostream>
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Hyperbola3", "[math][Hyperbola3][p1]") {
+	Point3 point3_fr(0.0, 0.0, 1.0);
+	Direction3 dir3_fr(0.0, 0.0, 1.0);
+	Frame3 frame3(point3_fr, dir3_fr);
+	double major3 = 3.0, minor3 = 4.0;
+	Hyperbola3 hyperbola3d_fr(frame3, major3, minor3);
+	SECTION("Default()") {
+		Hyperbola3 hyperbola3d_de;	
+		CHECK(hyperbola3d_de.Location().X() == Approx(0.0));
+		CHECK(hyperbola3d_de.Location().Y() == Approx(0.0));
+		CHECK(hyperbola3d_de.Location().Z() == Approx(0.0));
+		hyperbola3d_de.SetMajorRadius(3.0);
+		hyperbola3d_de.SetMinorRadius(4.0);
+		CHECK(hyperbola3d_de.MajorRadius() == Approx(3.0));
+		CHECK(hyperbola3d_de.MinorRadius() == Approx(4.0));
+		CHECK(hyperbola3d_de.Focal() == Approx(10.0));
+		CHECK(hyperbola3d_de.Focus1().X() == Approx(5.0));
+		CHECK(hyperbola3d_de.Focus1().Y() == Approx(0.0));
+		CHECK(hyperbola3d_de.Focus1().Z() == Approx(0.0));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] PointT<double, DIM> Focus2()	 @return The negative focus
+	 @brief Get the focus on the negative side of the major axis
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <modeling/MakeFace.hpp>
+#include <common/AxisT.hpp>
+#include <math/HyperbolaT.hpp>
+#include <occtio/OCCTTool.hpp>
+#include <common/VectorT.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <topology/TopoEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <iostream>
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Hyperbola3", "[math][Hyperbola3][p1]") {
+	Point3 point3_fr(0.0, 0.0, 1.0);
+	Direction3 dir3_fr(0.0, 0.0, 1.0);
+	Frame3 frame3(point3_fr, dir3_fr);
+	double major3 = 3.0, minor3 = 4.0;
+	Hyperbola3 hyperbola3d_fr(frame3, major3, minor3);
+	SECTION("Focus2") {
+		Point3 point3d_f1 = hyperbola3d_fr.Focus2();
+		CHECK(point3d_f1.X() == Approx(-5.0));
+		CHECK(point3d_f1.Y() == Approx(0.0));
+		CHECK(point3d_f1.Z() == Approx(1.0));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] double MajorRadius()	 @return The major radius
+	 @brief Get the major radius
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <modeling/MakeFace.hpp>
+#include <common/AxisT.hpp>
+#include <math/HyperbolaT.hpp>
+#include <occtio/OCCTTool.hpp>
+#include <common/VectorT.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <topology/TopoEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <iostream>
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Hyperbola3", "[math][Hyperbola3][p1]") {
+	Point3 point3_fr(0.0, 0.0, 1.0);
+	Direction3 dir3_fr(0.0, 0.0, 1.0);
+	Frame3 frame3(point3_fr, dir3_fr);
+	double major3 = 3.0, minor3 = 4.0;
+	Hyperbola3 hyperbola3d_fr(frame3, major3, minor3);
+	SECTION("ConjugateBranch1()") {
+		Hyperbola3 hyperbola3d_con = hyperbola3d_fr.ConjugateBranch1();
+		CHECK(hyperbola3d_con.Location().X() == Approx(0.0));
+		CHECK(hyperbola3d_con.Location().Y() == Approx(0.0));
+		CHECK(hyperbola3d_con.Location().Z() == Approx(1.0));
+		Point3 point1(0.0, 4.0, 1.0);
+		Point3 point2(9.0 / 4.0, 5.0, 1.0);
+		MakeEdge edge1(hyperbola3d_con);
+		CHECK(BRepClassificationTools::IsPointInOnEdge(edge1, point1, 0.001) == true);
+		CHECK(BRepClassificationTools::IsPointInOnEdge(edge1, point2, 0.001) == true);
+		double major3d_con = hyperbola3d_con.MajorRadius();
+		double minor3d_con = hyperbola3d_con.MinorRadius();
+		CHECK(major3d_con == Approx(4.0));
+		CHECK(minor3d_con == Approx(3.0));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] double MinorRadius()	 @return The minor radius
+	 @brief Get the minor radius
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <modeling/MakeFace.hpp>
+#include <common/AxisT.hpp>
+#include <math/HyperbolaT.hpp>
+#include <occtio/OCCTTool.hpp>
+#include <common/VectorT.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <topology/TopoEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <iostream>
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Hyperbola3", "[math][Hyperbola3][p1]") {
+	Point3 point3_fr(0.0, 0.0, 1.0);
+	Direction3 dir3_fr(0.0, 0.0, 1.0);
+	Frame3 frame3(point3_fr, dir3_fr);
+	double major3 = 3.0, minor3 = 4.0;
+	Hyperbola3 hyperbola3d_fr(frame3, major3, minor3);
+	SECTION("MinorRadius()") {
+		CHECK(hyperbola3d_fr.MinorRadius() == Approx(4.0));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] AxisT<double, DIM> Asymptote1()	 @return The positive asymptote
+	 @brief Get the asymptote of the hyperbola with positive slope
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <modeling/MakeFace.hpp>
+#include <common/AxisT.hpp>
+#include <math/HyperbolaT.hpp>
+#include <occtio/OCCTTool.hpp>
+#include <common/VectorT.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <topology/TopoEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <iostream>
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Hyperbola3", "[math][Hyperbola3][p1]") {
+	Point3 point3_fr(0.0, 0.0, 1.0);
+	Direction3 dir3_fr(0.0, 0.0, 1.0);
+	Frame3 frame3(point3_fr, dir3_fr);
+	double major3 = 3.0, minor3 = 4.0;
+	Hyperbola3 hyperbola3d_fr(frame3, major3, minor3);
+	SECTION("Asymptote1()") {
+		Axis3 axis3d_asy = hyperbola3d_fr.Asymptote1();
+		CHECK(axis3d_asy.Direction().X() / axis3d_asy.Direction().Y() == Approx(3.0 / 4.0));
+		CHECK(axis3d_asy.Direction().Z() == Approx(0.0));
+		Point3 point1(0.0, 0.0, 1.0);
+		Line3 line3d_asy(axis3d_asy);
+		MakeEdge edge1(line3d_asy);
+		CHECK(BRepClassificationTools::IsPointInOnEdge(edge1, point1, 0.001) == true);
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] AxisT<double, DIM> Asymptote2()	 @return The negative asymptote
+	 @brief Get the asymptote of the hyperbola with negative slope
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <modeling/MakeFace.hpp>
+#include <common/AxisT.hpp>
+#include <math/HyperbolaT.hpp>
+#include <occtio/OCCTTool.hpp>
+#include <common/VectorT.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <topology/TopoEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <iostream>
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Hyperbola3", "[math][Hyperbola3][p1]") {
+	Point3 point3_fr(0.0, 0.0, 1.0);
+	Direction3 dir3_fr(0.0, 0.0, 1.0);
+	Frame3 frame3(point3_fr, dir3_fr);
+	double major3 = 3.0, minor3 = 4.0;
+	Hyperbola3 hyperbola3d_fr(frame3, major3, minor3);
+	SECTION("Asymptote2()") {
+		Axis3 axis3d_asy = hyperbola3d_fr.Asymptote2();
+		CHECK(axis3d_asy.Direction().X() / axis3d_asy.Direction().Y() == Approx(-3.0 / 4.0));
+		CHECK(axis3d_asy.Direction().Z() == Approx(0.0));
+		Point3 point1(0.0, 0.0, 1.0);
+		Line3 line3d_asy(axis3d_asy);
+		MakeEdge edge1(line3d_asy);
+		CHECK(BRepClassificationTools::IsPointInOnEdge(edge1, point1, 0.001) == true);
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] HyperbolaS ConjugateBranch1()	 @return The positive conjugate hyperbola
+	 @brief Get the conjugate hyperbola on the positive side of the minor axis
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <modeling/MakeFace.hpp>
+#include <common/AxisT.hpp>
+#include <math/HyperbolaT.hpp>
+#include <occtio/OCCTTool.hpp>
+#include <common/VectorT.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <topology/TopoEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <iostream>
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Hyperbola3", "[math][Hyperbola3][p1]") {
+	Point3 point3_fr(0.0, 0.0, 1.0);
+	Direction3 dir3_fr(0.0, 0.0, 1.0);
+	Frame3 frame3(point3_fr, dir3_fr);
+	double major3 = 3.0, minor3 = 4.0;
+	Hyperbola3 hyperbola3d_fr(frame3, major3, minor3);
+	SECTION("ConjugateBranch1()") {
+		Hyperbola3 hyperbola3d_con = hyperbola3d_fr.ConjugateBranch1();
+		CHECK(hyperbola3d_con.Location().X() == Approx(0.0));
+		CHECK(hyperbola3d_con.Location().Y() == Approx(0.0));
+		CHECK(hyperbola3d_con.Location().Z() == Approx(1.0));
+		Point3 point1(0.0, 4.0, 1.0);
+		Point3 point2(9.0 / 4.0, 5.0, 1.0);
+		MakeEdge edge1(hyperbola3d_con);
+		CHECK(BRepClassificationTools::IsPointInOnEdge(edge1, point1, 0.001) == true);
+		CHECK(BRepClassificationTools::IsPointInOnEdge(edge1, point2, 0.001) == true);
+		double major3d_con = hyperbola3d_con.MajorRadius();
+		double minor3d_con = hyperbola3d_con.MinorRadius();
+		CHECK(major3d_con == Approx(4.0));
+		CHECK(minor3d_con == Approx(3.0));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] HyperbolaS ConjugateBranch2()	 @return The negative conjugate hyperbola
+	 @brief Get the conjugate hyperbola on the negative side of the minor axis
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <modeling/MakeFace.hpp>
+#include <common/AxisT.hpp>
+#include <math/HyperbolaT.hpp>
+#include <occtio/OCCTTool.hpp>
+#include <common/VectorT.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <topology/TopoEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <iostream>
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Hyperbola3", "[math][Hyperbola3][p1]") {
+	Point3 point3_fr(0.0, 0.0, 1.0);
+	Direction3 dir3_fr(0.0, 0.0, 1.0);
+	Frame3 frame3(point3_fr, dir3_fr);
+	double major3 = 3.0, minor3 = 4.0;
+	Hyperbola3 hyperbola3d_fr(frame3, major3, minor3);
+	SECTION("ConjugateBranch2()") {		
+		Hyperbola3 hyperbola3d_con = hyperbola3d_fr.ConjugateBranch2();
+		CHECK(hyperbola3d_con.Location().X() == Approx(0.0));
+		CHECK(hyperbola3d_con.Location().Y() == Approx(0.0));
+		CHECK(hyperbola3d_con.Location().Z() == Approx(1.0));
+		Point3 point1(0.0, -4.0, 1.0);
+		Point3 point2(9.0 / 4.0, -5.0, 1.0);
+		MakeEdge edge2(hyperbola3d_con);
+		CHECK(BRepClassificationTools::IsPointInOnEdge(edge2, point1, 0.001) == true);
+		CHECK(BRepClassificationTools::IsPointInOnEdge(edge2, point2, 0.001) == true);
+		double major3d_con = hyperbola3d_con.MajorRadius();
+		double minor3d_con = hyperbola3d_con.MinorRadius();
+		CHECK(major3d_con == Approx(4.0));
+		CHECK(minor3d_con == Approx(3.0));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":HyperbolaS& Scale(const PointT<double, DIM>& point, double scale)	 @return The reference to self
+	 @param scale The scale value
+	 @param point The scaling center point
+	 @brief Scale the hyperbola by a center point
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <common/DirectionT.hpp>
+#include <common/FrameT.hpp>
+#include <modeling/MakeFace.hpp>
+#include <common/AxisT.hpp>
+#include <math/HyperbolaT.hpp>
+#include <occtio/OCCTTool.hpp>
+#include <common/VectorT.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <topology/TopoEdge.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <iostream>
+using namespace AMCAX;
+using namespace std;
+TEST_CASE("case1:this is a case for Hyperbola3", "[math][Hyperbola3][p1]") {
+	Point3 point3_fr(0.0, 0.0, 1.0);
+	Direction3 dir3_fr(0.0, 0.0, 1.0);
+	Frame3 frame3(point3_fr, dir3_fr);
+	double major3 = 3.0, minor3 = 4.0;
+	Hyperbola3 hyperbola3d_fr(frame3, major3, minor3);
+	SECTION("Scale()") {		
+		Point3 point1(0.0, 0.0, 1.0);
+		hyperbola3d_fr.Scale(point1, 0.5);
+		CHECK(hyperbola3d_fr.Location().X() == Approx(0.0));
+		CHECK(hyperbola3d_fr.Location().Y() == Approx(0.0));
+		CHECK(hyperbola3d_fr.Location().Z() == Approx(1.0));
+		Point3 point2(1.5, 0.0, 1.0);
+		MakeEdge edge1(hyperbola3d_fr);
+		CHECK(BRepClassificationTools::IsPointInOnEdge(edge1, point2, 0.001) == true);
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] AMCAX_API static Vector2 D1(double u, const Circle2& circle)	 @return The first derivative vector
+	 @param circle The circle
+	 @param u The parameter
+	 @brief Compute the first derivative on a 2D circle at a parameter
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <common/PointT.hpp>
+#include <math/CurveCalculation.hpp>
+using namespace AMCAX;
+TEST_CASE("case1: CurveCalculation::CircleD1 1/4 ", "[math][CurveCalculation][P1][CircleD1]") {
+	Direction2 initialDir(1.0, 0.0); 
+	Frame2 defaultFrame2(Point2(1.0, 1.0), initialDir); 
+	double radius = 2.0; 
+	Vector2 tangentAt0 = AMCAX::CurveCalculation::CircleD1(0.0, defaultFrame2, radius);
+	Vector2 tangentAt90Deg = AMCAX::CurveCalculation::CircleD1(M_PI_2, defaultFrame2, radius);
+	Vector2 tangentAt180Deg = AMCAX::CurveCalculation::CircleD1(M_PI, defaultFrame2, radius);
+	Vector2 tangentAt270Deg = AMCAX::CurveCalculation::CircleD1(3 * M_PI_2, defaultFrame2, radius);
+	Vector2 tangentAt360Deg = AMCAX::CurveCalculation::CircleD1(2 * M_PI, defaultFrame2, radius);
+	CHECK(tangentAt0.X() == Approx(-0.0));
+	CHECK(tangentAt0.Y() == Approx(2.0));
+	CHECK(tangentAt90Deg.X() == Approx(-2.0));
+	CHECK(tangentAt90Deg.Y() == Approx(0.0).margin(1e-14));
+	CHECK(tangentAt180Deg.X() == Approx(-0.0).margin(1e-14));
+	CHECK(tangentAt180Deg.Y() == Approx(-2.0));
+	CHECK(tangentAt270Deg.X() == Approx(2.0));
+	CHECK(tangentAt270Deg.Y() == Approx(-0.0).margin(1e-14));
+	CHECK(tangentAt360Deg.X() == Approx(0.0).margin(1e-14));
+	CHECK(tangentAt360Deg.Y() == Approx(2.0));
+	std::cout << "Tangent at 0 deg: " << tangentAt0 << std::endl;
+	std::cout << "Tangent at 90 deg: " << tangentAt90Deg << std::endl;
+	std::cout << "Tangent at 180 deg: " << tangentAt180Deg << std::endl;
+	std::cout << "Tangent at 270 deg: " << tangentAt270Deg << std::endl;
+	std::cout << "Tangent at 360 deg: " << tangentAt360Deg << std::endl;
+}
+}
+,

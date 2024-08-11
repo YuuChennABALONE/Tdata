@@ -1,0 +1,68 @@
+ #include<catch.hpp>
+#include<testHelperBase.h>
+#include <modeling/MakeFace.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakeVertex.hpp>
+#include <topology/BRepExtremaProximityTool.hpp>
+#include <io/OBJTool.hpp>
+#include <topology/TopoFace.hpp>
+#include <modeling/MakePrism.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <topology/TopoExplorerTool.hpp>
+#include <geometry/Geom3BSplineCurve.hpp>
+#include <modeling/MakeWire.hpp>
+#include <topology/TopoExplorer.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <geometry/Geom3Surface.hpp>
+#include <hatch/BRepClassificationTools.hpp>
+#include <topology/TopoTool.hpp>
+#include <topology/TopoVertex.hpp>
+#include <modeling/MakeVertex.hpp>
+#include <topology/BRepExtremaDistShapeShape.hpp>
+#include <geometry/Geom3Line.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakePrism.hpp>
+#include <topology/TopoEdge.hpp>
+#include <modeling/MakeFace.hpp>
+#include <modeling/MakeRevol.hpp>
+#include <geometry/Geom3TrimmedCurve.hpp>
+#include <geometry/Geom3Circle.hpp>
+#include <modeling/MakeEdge.hpp>
+#include <modeling/MakeWire.hpp>
+#include <topology/TopoExplorer.hpp>
+#include <topology/TopoTool.hpp>
+#include <topology/TopoShape.hpp>
+#include <modeling/MakeEdge2d.hpp>
+#include <geometry/Geom2BSplineCurve.hpp>
+#include <geometry/Geom2Line.hpp>
+#include <geometry/Geom2Circle.hpp>
+#include <geometry/Geom2TrimmedCurve.hpp>
+#include <topology/BRepExtremaDistShapeShape.hpp>
+#include <topology/TopoFace.hpp>
+#include <modeling/MakeRevol.hpp>
+#include <modeling/MakeFace.hpp>
+TEST_CASE("case2: AMCAXMeshing with the input file is triangle3.brep ", "[modeling][AMCAXMeshing][P1]") {
+	OUTPUT_DIRECTORY(modeling, AMCAXMeshing);
+	AMCAXMeshing_API::SetParameter("MeshingOption::CharacteristicLengthType", AMCAXMeshing_API::LengthType::Face);
+	AMCAXMeshing_API::SetParameter("MeshingOption::CharacteristicLengthMin", 0.01);
+	AMCAXMeshing_API::SetParameter("MeshingOption::CharacteristicLengthMax", 0.01);
+	AMCAXMeshing_API::SetParameter("MeshingOption::LengthMin", 0.01);
+	AMCAXMeshing_API::SetParameter("MeshingOption::LengthMax", 0.01);
+	AMCAXMeshing_API::SetParameter("MeshingOption::MaxFaceArea", 0.01);
+	AMCAXMeshing_API::SetParameter("MeshingOption::MaxEdgeLength", 0.01);
+	AMCAXMeshing_API::SetParameter("MeshingOption::MinAngle", 1.0);
+	AMCAXMeshing_API::SetParameter("MeshingOption::MaxAngle", 1.75);
+	AMCAXMeshing_API::SetParameter("MeshingOption::SurfaceSamplingType", AMCAXMeshing_API::SurfaceSamplingType::Laplacian);
+	AMCAXMeshing_API::SetParameter("MeshingOption::TriangulationType", AMCAXMeshing_API::TriangulationType::Delaunay);
+	AMCAXMeshing_API::SetParameter("MeshingOption::UseLinearAlgebra", true);
+	AMCAXMeshing_API::SetParameter("MeshingOption::UseRandomSeed", false);
+	AMCAXMeshing_API::SetParameter("MeshingOption::UseSmoothedMesh", true);
+	AMCAXMeshing_API::SetParameter("MeshingOption::UseTetrahedronFace", false);
+	AMCAXMeshing_API::SetParameter("MeshingOption::UseTetrahedronVolume", false);
+	AMCAXMeshing_API::SetParameter("MeshingOption::VolumeSamplingType", AMCAXMeshing_API::VolumeSamplingType::Laplacian);
+	AMCAXMeshing_API::SetParameter("MeshingOption::UseSmoothedMesh", true);
+	AMCAXMeshing_API::SetParameter("MeshingOption::UseSmoothedMesh", true);
+	AMCAXMeshing_API::SetParameter("MeshingOption::UseTetrahedronFace", false);
+	AMCAXMeshing_API::SetParameter("MeshingOption::UseTetrahedronVolume", false);
+	AMCAXMeshing_API::SetParameter("MeshingOption::VolumeSamplingType", AMCAXMeshing_API::VolumeSamplingType::Laplacian);
+	AMCAXMeshing_API::Set"}

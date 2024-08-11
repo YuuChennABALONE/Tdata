@@ -1,0 +1,710 @@
+{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] bool Contains(const PointT<double, DIM>& p, double tol)	 @return True if the point is on the line under the tolerance
+	 @param tol The tolerance
+	 @param p The point
+	 @brief Does the line contain a point under a distance tolerance
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <math/LineT.hpp>
+#include <math/Plane.hpp>
+#include <modeling/MakeFace.hpp>
+#include <modeling/MakeEdge.hpp>
+using AMCAX::Line3;
+using AMCAX::MakeEdge;
+using AMCAX::MakeFace;
+#define ONE_RADIAN (M_PI / 180.)
+#define SQUARE(x) ((x) * (x))
+TEST_CASE("case2: Line3 base method Test", "[math][Line3][p1]")
+{
+	SECTION("Translate")
+	{
+		Line3 line(Point3(), Direction3(1., 1., 1.));
+		Line3 originalLine(Point3(), Direction3(1., 1., 1.));
+		line.Translate(Point3(), Point3(0., 1., 0.));
+		CHECK(originalLine.Direction().IsEqual(line.Direction(), 1e-6 * ONE_RADIAN));
+		CHECK(line.Contains(Point3(0., 1., 0.), 1e-6));
+		Line3 line2 = line.Translated(Vector3(Direction3(1., -1., 1.)));
+		CHECK(line.Direction().IsEqual(line2.Direction(), 1e-6 * ONE_RADIAN));
+		CHECK(line2.Contains(Point3(0. + 1. / std::sqrt(3.), 1 - 1. / std::sqrt(3.), 0. + 1. / std::sqrt(3.)), 1e-6));
+	}
+}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] const PointT<double, DIM>& Location()	 @return The location of the line
+	 @brief Get the location point of the line
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <math/LineT.hpp>
+#include <math/Plane.hpp>
+#include <modeling/MakeFace.hpp>
+#include <modeling/MakeEdge.hpp>
+using AMCAX::Line3;
+using AMCAX::MakeEdge;
+using AMCAX::MakeFace;
+#define ONE_RADIAN (M_PI / 180.)
+#define SQUARE(x) ((x) * (x))
+TEST_CASE("case1: Derived class interface unit testing", "[math][Line3][p1]")
+{
+	SECTION("constructor")
+	{
+		Line3 line;  
+		CHECK(line.Location().IsEqual(Point3(0., 0., 0.), 1e-5));
+		CHECK(line.Direction().IsEqual(Direction3(0., 0., 1.), 1e-5 * ONE_RADIAN));
+		Axis3 axis(Point3(1., 1., 1.), Direction3(3., 3., 4.));
+		Line3 line2(axis);
+		CHECK(line2.Position().IsCoaxial(axis, 1e-5 * ONE_RADIAN, 1e-5));  
+		Line3 line3(Point3(1., 2., 3.), Direction3(3., 2., 1.));
+		CHECK(line3.Location().IsEqual(Point3(1., 2., 3.), 1e-5));
+		CHECK(line3.Direction().IsEqual(Direction3(3., 2., 1.), 1e-5 * ONE_RADIAN));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] Derived Scaled(const PointT<double, DIM>& point, double scale)	 @return The scaled line
+	 @param scale The scale value
+	 @param point The scaling center point
+	 @brief Get the line scaled by a point
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <math/LineT.hpp>
+#include <math/Plane.hpp>
+#include <modeling/MakeFace.hpp>
+#include <modeling/MakeEdge.hpp>
+using AMCAX::Line3;
+using AMCAX::MakeEdge;
+using AMCAX::MakeFace;
+#define ONE_RADIAN (M_PI / 180.)
+#define SQUARE(x) ((x) * (x))
+TEST_CASE("case2: Line3 base method Test", "[math][Line3][p1]")
+{
+	SECTION("Scale")
+	{
+		Line3 line(Point3(), Direction3(0., 1., 0.));
+		Point3 point(1., 1., 0.);
+		double originalDistance = line.Distance(point);
+		Line3 line1 = line.Scaled(point, 1.1);
+		CHECK(line1.Distance(point) > originalDistance);
+		Line3 line2 = line.Scaled(point, 1.);
+		CHECK(line2.Distance(point) == originalDistance);
+		Line3 line3 = line.Scaled(point, 0.8);
+		CHECK(line3.Distance(point) < originalDistance);
+		Line3 line4 = line.Scaled(point, 0.);
+		CHECK(line4.Contains(point, 1e-6));
+		Line3 line5 = line.Scaled(point, -1.);
+		CHECK(line5.Direction().IsEqual(Direction3(0., -1., 0.), 1e-6 * ONE_RADIAN));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":Derived& Translate(const PointT<double, DIM>& p1, const PointT<double, DIM>& p2)	 @return The reference to self
+	 @param p2 The target point
+	 @param p1 The source point
+	 @brief Translate the line by a vector from a point to another point
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <math/LineT.hpp>
+#include <math/Plane.hpp>
+#include <modeling/MakeFace.hpp>
+#include <modeling/MakeEdge.hpp>
+using AMCAX::Line3;
+using AMCAX::MakeEdge;
+using AMCAX::MakeFace;
+#define ONE_RADIAN (M_PI / 180.)
+#define SQUARE(x) ((x) * (x))
+TEST_CASE("case2: Line3 base method Test", "[math][Line3][p1]")
+{
+	SECTION("Translate")
+	{
+		Line3 line(Point3(), Direction3(1., 1., 1.));
+		Line3 originalLine(Point3(), Direction3(1., 1., 1.));
+		line.Translate(Point3(), Point3(0., 1., 0.));
+		CHECK(originalLine.Direction().IsEqual(line.Direction(), 1e-6 * ONE_RADIAN));
+		CHECK(line.Contains(Point3(0., 1., 0.), 1e-6));
+		Line3 line2 = line.Translated(Vector3(Direction3(1., -1., 1.)));
+		CHECK(line.Direction().IsEqual(line2.Direction(), 1e-6 * ONE_RADIAN));
+		CHECK(line2.Contains(Point3(0. + 1. / std::sqrt(3.), 1 - 1. / std::sqrt(3.), 0. + 1. / std::sqrt(3.)), 1e-6));
+	}
+}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] Derived Translated(const VectorT<double, DIM>& vec)	 @return The translated line
+	 @param vec The translation vector
+	 @brief Get the line translated by a vector
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <math/LineT.hpp>
+#include <math/Plane.hpp>
+#include <modeling/MakeFace.hpp>
+#include <modeling/MakeEdge.hpp>
+using AMCAX::Line3;
+using AMCAX::MakeEdge;
+using AMCAX::MakeFace;
+#define ONE_RADIAN (M_PI / 180.)
+#define SQUARE(x) ((x) * (x))
+TEST_CASE("case2: Line3 base method Test", "[math][Line3][p1]")
+{
+	SECTION("Translate")
+	{
+		Line3 line(Point3(), Direction3(1., 1., 1.));
+		Line3 originalLine(Point3(), Direction3(1., 1., 1.));
+		line.Translate(Point3(), Point3(0., 1., 0.));
+		CHECK(originalLine.Direction().IsEqual(line.Direction(), 1e-6 * ONE_RADIAN));
+		CHECK(line.Contains(Point3(0., 1., 0.), 1e-6));
+		Line3 line2 = line.Translated(Vector3(Direction3(1., -1., 1.)));
+		CHECK(line.Direction().IsEqual(line2.Direction(), 1e-6 * ONE_RADIAN));
+		CHECK(line2.Contains(Point3(0. + 1. / std::sqrt(3.), 1 - 1. / std::sqrt(3.), 0. + 1. / std::sqrt(3.)), 1e-6));
+	}
+}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":void SetLocation(const PointT<double, DIM>& point)	 @param point The location point
+	 @brief Set the location of the line
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <math/LineT.hpp>
+#include <math/Plane.hpp>
+#include <modeling/MakeFace.hpp>
+#include <modeling/MakeEdge.hpp>
+using AMCAX::Line3;
+using AMCAX::MakeEdge;
+using AMCAX::MakeFace;
+#define ONE_RADIAN (M_PI / 180.)
+#define SQUARE(x) ((x) * (x))
+TEST_CASE("case2: Line3 base method Test", "[math][Line3][p1]")
+{
+	SECTION("SetLocation")
+	{
+		Line3 line(Point3(2., 3., 2.), Direction3(2., 3.4, -2.));
+		line.SetLocation(Point3(1., -2., 8.));
+		CHECK(line.Location().IsEqual(Point3(1., -2., 8.), std::numeric_limits<double>::min()));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":void SetDirection(const DirectionT<double, DIM>& dir)	 @param dir The line direction
+	 @brief Set the line direction
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <math/LineT.hpp>
+#include <math/Plane.hpp>
+#include <modeling/MakeFace.hpp>
+#include <modeling/MakeEdge.hpp>
+using AMCAX::Line3;
+using AMCAX::MakeEdge;
+using AMCAX::MakeFace;
+#define ONE_RADIAN (M_PI / 180.)
+#define SQUARE(x) ((x) * (x))
+TEST_CASE("case2: Line3 base method Test", "[math][Line3][p1]")
+{
+	SECTION("SetDirection")
+	{
+		Direction3 dir(1., 1., 1.);
+		Line3 line;
+		line.SetDirection(dir);
+		CHECK(line.Direction().IsEqual(dir, std::numeric_limits<double>::min()));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":void SetPosition(const AxisT<double, DIM>& axis)	 @param axis The axis
+	 @brief Set the axis of the line
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <math/LineT.hpp>
+#include <math/Plane.hpp>
+#include <modeling/MakeFace.hpp>
+#include <modeling/MakeEdge.hpp>
+using AMCAX::Line3;
+using AMCAX::MakeEdge;
+using AMCAX::MakeFace;
+#define ONE_RADIAN (M_PI / 180.)
+#define SQUARE(x) ((x) * (x))
+TEST_CASE("case2: Line3 base method Test", "[math][Line3][p1]")
+{
+	SECTION("SetPosition")
+	{
+		Axis3 axis(Point3(0.1, -2.3, 0.3), Direction3(1.2, -8.9, 3.));
+		Line3 line;
+		line.SetPosition(axis);
+		CHECK(line.Location().IsEqual(axis.Location(), std::numeric_limits<double>::min()));
+		CHECK(line.Direction().IsEqual(axis.Direction(), std::numeric_limits<double>::min()));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] const DirectionT<double, DIM>& Direction()	 @return The direction of the line
+	 @brief Get the direction of the line
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <math/LineT.hpp>
+#include <math/Plane.hpp>
+#include <modeling/MakeFace.hpp>
+#include <modeling/MakeEdge.hpp>
+using AMCAX::Line3;
+using AMCAX::MakeEdge;
+using AMCAX::MakeFace;
+#define ONE_RADIAN (M_PI / 180.)
+#define SQUARE(x) ((x) * (x))
+TEST_CASE("case1: Derived class interface unit testing", "[math][Line3][p1]")
+{
+	SECTION("constructor")
+	{
+		Line3 line;  
+		CHECK(line.Location().IsEqual(Point3(0., 0., 0.), 1e-5));
+		CHECK(line.Direction().IsEqual(Direction3(0., 0., 1.), 1e-5 * ONE_RADIAN));
+		Axis3 axis(Point3(1., 1., 1.), Direction3(3., 3., 4.));
+		Line3 line2(axis);
+		CHECK(line2.Position().IsCoaxial(axis, 1e-5 * ONE_RADIAN, 1e-5));  
+		Line3 line3(Point3(1., 2., 3.), Direction3(3., 2., 1.));
+		CHECK(line3.Location().IsEqual(Point3(1., 2., 3.), 1e-5));
+		CHECK(line3.Direction().IsEqual(Direction3(3., 2., 1.), 1e-5 * ONE_RADIAN));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] const AxisT<double, DIM>& Position()	 @return The axis of the line
+	 @brief Get the axis of the line
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <math/LineT.hpp>
+#include <math/Plane.hpp>
+#include <modeling/MakeFace.hpp>
+#include <modeling/MakeEdge.hpp>
+using AMCAX::Line3;
+using AMCAX::MakeEdge;
+using AMCAX::MakeFace;
+#define ONE_RADIAN (M_PI / 180.)
+#define SQUARE(x) ((x) * (x))
+TEST_CASE("case1: Derived class interface unit testing", "[math][Line3][p1]")
+{
+	SECTION("constructor")
+	{
+		Line3 line;  
+		CHECK(line.Location().IsEqual(Point3(0., 0., 0.), 1e-5));
+		CHECK(line.Direction().IsEqual(Direction3(0., 0., 1.), 1e-5 * ONE_RADIAN));
+		Axis3 axis(Point3(1., 1., 1.), Direction3(3., 3., 4.));
+		Line3 line2(axis);
+		CHECK(line2.Position().IsCoaxial(axis, 1e-5 * ONE_RADIAN, 1e-5));  
+		Line3 line3(Point3(1., 2., 3.), Direction3(3., 2., 1.));
+		CHECK(line3.Location().IsEqual(Point3(1., 2., 3.), 1e-5));
+		CHECK(line3.Direction().IsEqual(Direction3(3., 2., 1.), 1e-5 * ONE_RADIAN));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] auto Angle(const LineBase& other)	 @return The angle between the line and the other line
+	 @param other The other line
+	 @brief Compute the angle between the line and the other line
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <math/LineT.hpp>
+#include <math/Plane.hpp>
+#include <modeling/MakeFace.hpp>
+#include <modeling/MakeEdge.hpp>
+using AMCAX::Line3;
+using AMCAX::MakeEdge;
+using AMCAX::MakeFace;
+#define ONE_RADIAN (M_PI / 180.)
+#define SQUARE(x) ((x) * (x))
+TEST_CASE("case2: Line3 base method Test", "[math][Line3][p1]")
+{
+	SECTION("Angle")
+	{
+		Line3 line(Point3(0., 1., 0.), Direction3(1., 1., 1.));
+		Line3 line2(Point3(0., 3.4, 0.), Direction3(2., -1., -1.5));
+		CHECK(line.Angle(line2) == Approx(std::acos(line.Direction().Dot(line2.Direction()))).margin(1e-6 * ONE_RADIAN));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] Derived Reversed()	 @return The line with reversed direction
+	 @brief Get the line with reversed direction
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <math/LineT.hpp>
+#include <math/Plane.hpp>
+#include <modeling/MakeFace.hpp>
+#include <modeling/MakeEdge.hpp>
+using AMCAX::Line3;
+using AMCAX::MakeEdge;
+using AMCAX::MakeFace;
+#define ONE_RADIAN (M_PI / 180.)
+#define SQUARE(x) ((x) * (x))
+TEST_CASE("case2: Line3 base method Test", "[math][Line3][p1]")
+{
+	SECTION("Reverse")
+	{
+		Line3 line(Point3(), Direction3(1., 1., 1.));
+		Line3 reverseLine = line.Reversed();
+		CHECK(reverseLine.Direction().IsEqual(Direction3(-1., -1., -1.), 1e-6 * ONE_RADIAN));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] auto Distance(const LineS& l)	 @return The distance between two lines
+	 @param l The other line
+	 @brief Compute the distance between two lines
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <math/LineT.hpp>
+#include <math/Plane.hpp>
+#include <modeling/MakeFace.hpp>
+#include <modeling/MakeEdge.hpp>
+using AMCAX::Line3;
+using AMCAX::MakeEdge;
+using AMCAX::MakeFace;
+#define ONE_RADIAN (M_PI / 180.)
+#define SQUARE(x) ((x) * (x))
+TEST_CASE("case1: Derived class interface unit testing", "[math][Line3][p1]")
+{
+	SECTION("Distance and SquaredDistance")
+	{
+		auto pointToLine = [](const Point3& p, const Line3& line) {
+			const Point3& p1 = line.Location();
+			double dX = p1.X() - p.X();
+			double dY = p1.Y() - p.Y();
+			double dZ = p1.Z() - p.Z();
+			double pp1Square = SQUARE(dX) + SQUARE(dY) + SQUARE(dZ);
+			Direction3 dir(dX, dY, dZ);
+			double cos = std::fabs(dir.Dot(line.Direction()));
+			return std::sqrt(pp1Square - SQUARE(cos*std::sqrt(pp1Square)));
+		};
+		auto lineToLine = [&pointToLine](const Line3& line1, const Line3& line2) {
+			if (line1.Direction().IsParallel(line2.Direction(), std::numeric_limits<double>::min()))
+				return pointToLine(line1.Location(), line2);
+			Direction3 line1Dir = line1.Direction();
+			Direction3 line2Dir = line2.Direction();
+			double x3 = line1Dir.Y() * line2Dir.Z() - line2Dir.Y() * line1Dir.Z();
+			double y3 = -(line1Dir.X() * line2Dir.Z() - line2Dir.X() * line1Dir.Z());
+			double z3 = line1Dir.X() * line2Dir.Y() - line2Dir.X() * line1Dir.Y();
+			Direction3 line3Dir(x3, y3, z3);
+			Direction3 line12Dir(line1.Location().X() - line2.Location().X(), 
+								 line1.Location().Y() - line2.Location().Y(), line1.Location().Z() - line2.Location().Z());
+			return std::fabs(line3Dir.Dot(line12Dir));
+		};
+		Line3 line(Point3(99., 2., 33.), Direction3(2.3, 4.6, 9.8));
+		CHECK(line.Distance(Point3(0., 1., 0.)) == Approx(pointToLine(Point3(0., 1., 0.), line)).margin(1e-5));
+		Line3 line2(Point3(0., 0., 0.), Direction3(1., 0., 0.));
+		Line3 line3(Point3(0., 1., 0.), Direction3(1., 0., 0.));
+		CHECK(line2.Distance(line3) == Approx(lineToLine(line2, line3)).margin(std::numeric_limits<double>::min()));
+		CHECK(line2.SquaredDistance(line3) == Approx(SQUARE(lineToLine(line2, line3))).margin(std::numeric_limits<double>::min()));
+		Line3 line4(Point3(0., 0., 0.), Direction3(1., 0., 0.));
+		Line3 line5(Point3(0., 1., 0.), Direction3(1., 1., 0.));
+		CHECK(line4.Distance(line5) == Approx(lineToLine(line4, line5)).margin(std::numeric_limits<double>::min()));
+		Line3 line6(Point3(0., 0., 0.), Direction3(0., 0., 1.));
+		Line3 line7(Point3(0., 1., 0.), Direction3(1., 1., 0.));
+		CHECK(line6.Distance(line7) == Approx(lineToLine(line6, line7)).margin(std::numeric_limits<double>::min()));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] auto SquaredDistance(const LineS& l)	 @return The squared distance between two lines
+	 @param l The other line
+	 @brief Compute the squared distance between two lines
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <math/LineT.hpp>
+#include <math/Plane.hpp>
+#include <modeling/MakeFace.hpp>
+#include <modeling/MakeEdge.hpp>
+using AMCAX::Line3;
+using AMCAX::MakeEdge;
+using AMCAX::MakeFace;
+#define ONE_RADIAN (M_PI / 180.)
+#define SQUARE(x) ((x) * (x))
+TEST_CASE("case1: Derived class interface unit testing", "[math][Line3][p1]")
+{
+	SECTION("Distance and SquaredDistance")
+	{
+		auto pointToLine = [](const Point3& p, const Line3& line) {
+			const Point3& p1 = line.Location();
+			double dX = p1.X() - p.X();
+			double dY = p1.Y() - p.Y();
+			double dZ = p1.Z() - p.Z();
+			double pp1Square = SQUARE(dX) + SQUARE(dY) + SQUARE(dZ);
+			Direction3 dir(dX, dY, dZ);
+			double cos = std::fabs(dir.Dot(line.Direction()));
+			return std::sqrt(pp1Square - SQUARE(cos*std::sqrt(pp1Square)));
+		};
+		auto lineToLine = [&pointToLine](const Line3& line1, const Line3& line2) {
+			if (line1.Direction().IsParallel(line2.Direction(), std::numeric_limits<double>::min()))
+				return pointToLine(line1.Location(), line2);
+			Direction3 line1Dir = line1.Direction();
+			Direction3 line2Dir = line2.Direction();
+			double x3 = line1Dir.Y() * line2Dir.Z() - line2Dir.Y() * line1Dir.Z();
+			double y3 = -(line1Dir.X() * line2Dir.Z() - line2Dir.X() * line1Dir.Z());
+			double z3 = line1Dir.X() * line2Dir.Y() - line2Dir.X() * line1Dir.Y();
+			Direction3 line3Dir(x3, y3, z3);
+			Direction3 line12Dir(line1.Location().X() - line2.Location().X(), 
+								 line1.Location().Y() - line2.Location().Y(), line1.Location().Z() - line2.Location().Z());
+			return std::fabs(line3Dir.Dot(line12Dir));
+		};
+		Line3 line(Point3(99., 2., 33.), Direction3(2.3, 4.6, 9.8));
+		CHECK(line.Distance(Point3(0., 1., 0.)) == Approx(pointToLine(Point3(0., 1., 0.), line)).margin(1e-5));
+		Line3 line2(Point3(0., 0., 0.), Direction3(1., 0., 0.));
+		Line3 line3(Point3(0., 1., 0.), Direction3(1., 0., 0.));
+		CHECK(line2.Distance(line3) == Approx(lineToLine(line2, line3)).margin(std::numeric_limits<double>::min()));
+		CHECK(line2.SquaredDistance(line3) == Approx(SQUARE(lineToLine(line2, line3))).margin(std::numeric_limits<double>::min()));
+		Line3 line4(Point3(0., 0., 0.), Direction3(1., 0., 0.));
+		Line3 line5(Point3(0., 1., 0.), Direction3(1., 1., 0.));
+		CHECK(line4.Distance(line5) == Approx(lineToLine(line4, line5)).margin(std::numeric_limits<double>::min()));
+		Line3 line6(Point3(0., 0., 0.), Direction3(0., 0., 1.));
+		Line3 line7(Point3(0., 1., 0.), Direction3(1., 1., 0.));
+		CHECK(line6.Distance(line7) == Approx(lineToLine(line6, line7)).margin(std::numeric_limits<double>::min()));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] auto Distance(const Point3& p)	 @return The distance between the point and the line
+	 @param p The point
+	 @brief Compute the distance from a point to the line
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <math/LineT.hpp>
+#include <math/Plane.hpp>
+#include <modeling/MakeFace.hpp>
+#include <modeling/MakeEdge.hpp>
+using AMCAX::Line3;
+using AMCAX::MakeEdge;
+using AMCAX::MakeFace;
+#define ONE_RADIAN (M_PI / 180.)
+#define SQUARE(x) ((x) * (x))
+TEST_CASE("case1: Derived class interface unit testing", "[math][Line3][p1]")
+{
+	SECTION("Distance and SquaredDistance")
+	{
+		auto pointToLine = [](const Point3& p, const Line3& line) {
+			const Point3& p1 = line.Location();
+			double dX = p1.X() - p.X();
+			double dY = p1.Y() - p.Y();
+			double dZ = p1.Z() - p.Z();
+			double pp1Square = SQUARE(dX) + SQUARE(dY) + SQUARE(dZ);
+			Direction3 dir(dX, dY, dZ);
+			double cos = std::fabs(dir.Dot(line.Direction()));
+			return std::sqrt(pp1Square - SQUARE(cos*std::sqrt(pp1Square)));
+		};
+		auto lineToLine = [&pointToLine](const Line3& line1, const Line3& line2) {
+			if (line1.Direction().IsParallel(line2.Direction(), std::numeric_limits<double>::min()))
+				return pointToLine(line1.Location(), line2);
+			Direction3 line1Dir = line1.Direction();
+			Direction3 line2Dir = line2.Direction();
+			double x3 = line1Dir.Y() * line2Dir.Z() - line2Dir.Y() * line1Dir.Z();
+			double y3 = -(line1Dir.X() * line2Dir.Z() - line2Dir.X() * line1Dir.Z());
+			double z3 = line1Dir.X() * line2Dir.Y() - line2Dir.X() * line1Dir.Y();
+			Direction3 line3Dir(x3, y3, z3);
+			Direction3 line12Dir(line1.Location().X() - line2.Location().X(), 
+								 line1.Location().Y() - line2.Location().Y(), line1.Location().Z() - line2.Location().Z());
+			return std::fabs(line3Dir.Dot(line12Dir));
+		};
+		Line3 line(Point3(99., 2., 33.), Direction3(2.3, 4.6, 9.8));
+		CHECK(line.Distance(Point3(0., 1., 0.)) == Approx(pointToLine(Point3(0., 1., 0.), line)).margin(1e-5));
+		Line3 line2(Point3(0., 0., 0.), Direction3(1., 0., 0.));
+		Line3 line3(Point3(0., 1., 0.), Direction3(1., 0., 0.));
+		CHECK(line2.Distance(line3) == Approx(lineToLine(line2, line3)).margin(std::numeric_limits<double>::min()));
+		CHECK(line2.SquaredDistance(line3) == Approx(SQUARE(lineToLine(line2, line3))).margin(std::numeric_limits<double>::min()));
+		Line3 line4(Point3(0., 0., 0.), Direction3(1., 0., 0.));
+		Line3 line5(Point3(0., 1., 0.), Direction3(1., 1., 0.));
+		CHECK(line4.Distance(line5) == Approx(lineToLine(line4, line5)).margin(std::numeric_limits<double>::min()));
+		Line3 line6(Point3(0., 0., 0.), Direction3(0., 0., 1.));
+		Line3 line7(Point3(0., 1., 0.), Direction3(1., 1., 0.));
+		CHECK(line6.Distance(line7) == Approx(lineToLine(line6, line7)).margin(std::numeric_limits<double>::min()));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] auto SquaredDistance(const Point3& p)	 @return The squared distance between the point and the line
+	 @param p The point
+	 @brief Compute the squared distance from a point to the line
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <math/LineT.hpp>
+#include <math/Plane.hpp>
+#include <modeling/MakeFace.hpp>
+#include <modeling/MakeEdge.hpp>
+using AMCAX::Line3;
+using AMCAX::MakeEdge;
+using AMCAX::MakeFace;
+#define ONE_RADIAN (M_PI / 180.)
+#define SQUARE(x) ((x) * (x))
+TEST_CASE("case1: Derived class interface unit testing", "[math][Line3][p1]")
+{
+	SECTION("Distance and SquaredDistance")
+	{
+		auto pointToLine = [](const Point3& p, const Line3& line) {
+			const Point3& p1 = line.Location();
+			double dX = p1.X() - p.X();
+			double dY = p1.Y() - p.Y();
+			double dZ = p1.Z() - p.Z();
+			double pp1Square = SQUARE(dX) + SQUARE(dY) + SQUARE(dZ);
+			Direction3 dir(dX, dY, dZ);
+			double cos = std::fabs(dir.Dot(line.Direction()));
+			return std::sqrt(pp1Square - SQUARE(cos*std::sqrt(pp1Square)));
+		};
+		auto lineToLine = [&pointToLine](const Line3& line1, const Line3& line2) {
+			if (line1.Direction().IsParallel(line2.Direction(), std::numeric_limits<double>::min()))
+				return pointToLine(line1.Location(), line2);
+			Direction3 line1Dir = line1.Direction();
+			Direction3 line2Dir = line2.Direction();
+			double x3 = line1Dir.Y() * line2Dir.Z() - line2Dir.Y() * line1Dir.Z();
+			double y3 = -(line1Dir.X() * line2Dir.Z() - line2Dir.X() * line1Dir.Z());
+			double z3 = line1Dir.X() * line2Dir.Y() - line2Dir.X() * line1Dir.Y();
+			Direction3 line3Dir(x3, y3, z3);
+			Direction3 line12Dir(line1.Location().X() - line2.Location().X(), 
+								 line1.Location().Y() - line2.Location().Y(), line1.Location().Z() - line2.Location().Z());
+			return std::fabs(line3Dir.Dot(line12Dir));
+		};
+		Line3 line(Point3(99., 2., 33.), Direction3(2.3, 4.6, 9.8));
+		CHECK(line.Distance(Point3(0., 1., 0.)) == Approx(pointToLine(Point3(0., 1., 0.), line)).margin(1e-5));
+		Line3 line2(Point3(0., 0., 0.), Direction3(1., 0., 0.));
+		Line3 line3(Point3(0., 1., 0.), Direction3(1., 0., 0.));
+		CHECK(line2.Distance(line3) == Approx(lineToLine(line2, line3)).margin(std::numeric_limits<double>::min()));
+		CHECK(line2.SquaredDistance(line3) == Approx(SQUARE(lineToLine(line2, line3))).margin(std::numeric_limits<double>::min()));
+		Line3 line4(Point3(0., 0., 0.), Direction3(1., 0., 0.));
+		Line3 line5(Point3(0., 1., 0.), Direction3(1., 1., 0.));
+		CHECK(line4.Distance(line5) == Approx(lineToLine(line4, line5)).margin(std::numeric_limits<double>::min()));
+		Line3 line6(Point3(0., 0., 0.), Direction3(0., 0., 1.));
+		Line3 line7(Point3(0., 1., 0.), Direction3(1., 1., 0.));
+		CHECK(line6.Distance(line7) == Approx(lineToLine(line6, line7)).margin(std::numeric_limits<double>::min()));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] LineS Normal(const Point3& p)	 @return The line passing through a point and perpendicular to the line
+	 @param p The point
+	 @brief Get a line passing through a point and perpendicular to the line
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <math/LineT.hpp>
+#include <math/Plane.hpp>
+#include <modeling/MakeFace.hpp>
+#include <modeling/MakeEdge.hpp>
+using AMCAX::Line3;
+using AMCAX::MakeEdge;
+using AMCAX::MakeFace;
+#define ONE_RADIAN (M_PI / 180.)
+#define SQUARE(x) ((x) * (x))
+TEST_CASE("case1: Derived class interface unit testing", "[math][Line3][p1]")
+{
+	SECTION("Normal")
+	{
+		Line3 line(Point3(94., 32., 4.8), Direction3(2.65, 3.28, 5.14));
+		Line3 line2 = line.Normal(Point3(2.1, 3.4, 11.2));
+		CHECK(line.Direction().Dot(line2.Direction()) == Approx(0.).margin(1e-6));
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":LineS& Mirror(const Frame3& frame)	 @return The reference to self
+	 @param frame The mirror frame
+	 @brief Mirror the line by a frame
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <math/LineT.hpp>
+#include <math/Plane.hpp>
+#include <modeling/MakeFace.hpp>
+#include <modeling/MakeEdge.hpp>
+using AMCAX::Line3;
+using AMCAX::MakeEdge;
+using AMCAX::MakeFace;
+#define ONE_RADIAN (M_PI / 180.)
+#define SQUARE(x) ((x) * (x))
+TEST_CASE("case1: Derived class interface unit testing", "[math][Line3][p1]")
+{
+	SECTION("Mirror")
+	{
+		Line3 line(Point3(1.0, 2.0, 3.0), Direction3(1.0, 0.0, 0.0));
+		Line3 originalLine(Point3(1.0, 2.0, 3.0), Direction3(1.0, 0.0, 0.0));
+		Frame3 frame(Point3(0.0, 0.0, 0.0), Direction3(0.0, 1.0, 0.0));
+		line.Mirror(frame);
+		CHECK(line.Distance(Point3(0.0, 0.0, 0.0)) == Approx(originalLine.Distance(Point3(0., 0., 0.))).margin(std::numeric_limits<double>::min()));
+		Direction3 dir(originalLine.Location().X() - line.Location().X(),
+					   originalLine.Location().Y() - line.Location().Y(),
+					   originalLine.Location().Z() - line.Location().Z());
+		CHECK(dir.IsParallel(Direction3(0.0, 1.0, 0.0), 1e-5 * ONE_RADIAN));
+		Line3 line2(Point3(1.2, -4.6, 2.3), Direction3(1.8, 97.4, -12.8));
+		Frame3 frame2(Point3(87.0, 2.3, 10.14), Direction3(-92.3, 2.6, 1.0));
+		Line3 mirrorLine2 = line2.Mirrored(frame2);
+		CHECK(line2.Distance(Point3(87.0, 2.3, 10.14)) == Approx(mirrorLine2.Distance(Point3(87.0, 2.3, 10.14))).margin(std::numeric_limits<double>::min()));
+		Direction3 dir2(line2.Location().X() - mirrorLine2.Location().X(),
+					    line2.Location().Y() - mirrorLine2.Location().Y(),
+					    line2.Location().Z() - mirrorLine2.Location().Z());
+		CHECK(dir2.IsParallel(Direction3(-92.3, 2.6, 1.0), 1e-5 * ONE_RADIAN));
+		TopoFace face = MakeFace(Plane(frame2), 0., 4., 0., 4.);
+		TopoEdge edgeLine2 = MakeEdge(line2, 0., 1.);
+		TopoEdge edgeMirrorLine2 = MakeEdge(mirrorLine2, 0., 1.);
+		AMCAX::OCCTIO::OCCTTool::Write(face, OUTPUT_PATH_PREFIX"Line3_Mirror_face2.brep");
+		AMCAX::OCCTIO::OCCTTool::Write(edgeLine2, OUTPUT_PATH_PREFIX"Line3_Mirror_edge.brep");
+		AMCAX::OCCTIO::OCCTTool::Write(edgeMirrorLine2, OUTPUT_PATH_PREFIX"Line3_Mirror_Mirroredge.brep");
+	}}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] LineS Rotated(const Axis3& axis, double angle)	 @return The rotated line
+	 @param angle The rotation angle
+	 @param axis The rotation axis
+	 @brief Get the line rotated around an axis with an angle in 3D
+,
+ "output":#include <catch.hpp>
+#include <testHelper.h>
+#include <math/LineT.hpp>
+#include <math/Plane.hpp>
+#include <modeling/MakeFace.hpp>
+#include <modeling/MakeEdge.hpp>
+using AMCAX::Line3;
+using AMCAX::MakeEdge;
+using AMCAX::MakeFace;
+#define ONE_RADIAN (M_PI / 180.)
+#define SQUARE(x) ((x) * (x))
+TEST_CASE("case1: Derived class interface unit testing", "[math][Line3][p1]")
+{
+	SECTION("Rotate")
+	{
+		Axis3 axis(Point3(0., 0., 0.), Direction3(0., 1., 0.));
+		Line3 line(Point3(0., 0., 0.), Direction3(1., 1., -1.));
+		Line3 rotateLine = line.Rotated(axis, 90. * ONE_RADIAN);  
+		TopoEdge edge1 = MakeEdge(line);
+		TopoEdge edge2 = MakeEdge(rotateLine);
+		TopoEdge edge3 = MakeEdge(Line3(axis));
+		bool isWriteSuccess1 = AMCAX::OCCTIO::OCCTTool::Write(edge1, OUTPUT_PATH_PREFIX"Line3_Rotate_line.brep");
+		bool isWriteSuccess2 = AMCAX::OCCTIO::OCCTTool::Write(edge2, OUTPUT_PATH_PREFIX"Line3_Rotate_lineRotate.brep");
+		bool isWriteSuccess3 = AMCAX::OCCTIO::OCCTTool::Write(edge3, OUTPUT_PATH_PREFIX"Line3_Rotate_axis.brep");
+		REQUIRE(isWriteSuccess1);
+		REQUIRE(isWriteSuccess2);
+		REQUIRE(isWriteSuccess3);
+		auto pointToPoint = [](const Point3& p1, const Point3& p2) {
+			return std::sqrt(
+				SQUARE(p1.X() - p2.X()) +
+				SQUARE(p1.Y() - p2.Y()) +
+				SQUARE(p1.Z() - p2.Z())
+			);
+		};
+		CHECK(line.Distance(Line3(axis)) == Approx(rotateLine.Distance(Line3(axis))).margin(std::numeric_limits<double>::min()));
+		CHECK(pointToPoint(line.Location(), Point3()) == Approx(pointToPoint(rotateLine.Location(), Point3())).margin(std::numeric_limits<double>::min()));
+		Point3 p(-1., 1., -1.);
+		CHECK(rotateLine.Contains(p, 1e-6) == true);
+	}
+}}
+}
+,

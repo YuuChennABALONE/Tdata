@@ -1,0 +1,72 @@
+{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] AMCAX_API static Point2 CircleValue(double u, const Frame2& pos, double radius)	 @return The point
+	 @param radius The radius
+	 @param pos The local frame where the circle lies
+	 @param u The parameter
+	 @brief Compute the point on a 2D circle represented by a local frame and a radius at a parameter
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <common/PointT.hpp>
+#include <math/CurveCalculation.hpp>
+using namespace AMCAX;
+TEST_CASE("case1: CurveCalculation::CircleValue()[1 / 2] ", "[math][CurveCalculation][P1][CircleValue]") {
+	Direction2 defaultDirection(1.0, 0.0); 
+	Frame2 defaultFrame2(Point2(1.0, 1.0), defaultDirection);
+	Point2 point2 = AMCAX::CurveCalculation::CircleValue(0.0, defaultFrame2, 3.0);
+	CHECK(point2.X() == 4.0);
+	CHECK(point2.Y() == 1.0);
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] AMCAX_API static Point3 CircleD0(double u, const Frame3& pos, double radius)	 @return The point
+	 @param radius The radius
+	 @param pos The local frame where the circle lies
+	 @param u The parameter
+	 @brief Compute the point on a 3D circle represented by a local frame and a radius at a parameter
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <common/PointT.hpp>
+#include <math/CurveCalculation.hpp>
+using namespace AMCAX;
+TEST_CASE("case1: CurveCalculation::CircleD0 1/2 ", "[math][CurveCalculation][P1]") {
+	Direction2 defaultDirection(1.0,0.0); 
+	Frame2 defaultFrame2(Point2(0.0, 0.0), defaultDirection);
+	double 	r = 3.0;
+	double u = 4 * M_PI ; 
+	Point2  pointOnCirecle = CurveCalculation::CircleD0(u, defaultFrame2, r);
+	std::cout << pointOnCirecle.X() << " " << pointOnCirecle.Y() << " "  << std::endl;
+	CHECK(pointOnCirecle.X() == 3.0);
+	CHECK(pointOnCirecle.Y() == Approx(0.0).margin(1e-14));
+	CHECK(pointOnCirecle.X() * pointOnCirecle.X() + pointOnCirecle.Y() * pointOnCirecle.Y() == r * r);
+}
+}
+,{
+ "instruction":Generate a test program based on the following method declarations and parameter parsing ,
+ "input":[[nodiscard]] AMCAX_API static Point2 CircleD0(double u, const Frame2& pos, double radius)	 @return The point
+	 @param radius The radius
+	 @param pos The local frame where the circle lies
+	 @param u The parameter
+	 @brief Compute the point on a 2D circle represented by a local frame and a radius at a parameter
+,
+ "output":#include<catch.hpp>
+#include<testHelper.h>
+#include <common/PointT.hpp>
+#include <math/CurveCalculation.hpp>
+using namespace AMCAX;
+TEST_CASE("case1: CurveCalculation::CircleD0 1/2 ", "[math][CurveCalculation][P1]") {
+	Direction2 defaultDirection(1.0,0.0); 
+	Frame2 defaultFrame2(Point2(0.0, 0.0), defaultDirection);
+	double 	r = 3.0;
+	double u = 4 * M_PI ; 
+	Point2  pointOnCirecle = CurveCalculation::CircleD0(u, defaultFrame2, r);
+	std::cout << pointOnCirecle.X() << " " << pointOnCirecle.Y() << " "  << std::endl;
+	CHECK(pointOnCirecle.X() == 3.0);
+	CHECK(pointOnCirecle.Y() == Approx(0.0).margin(1e-14));
+	CHECK(pointOnCirecle.X() * pointOnCirecle.X() + pointOnCirecle.Y() * pointOnCirecle.Y() == r * r);
+}
+}
+,
